@@ -1,0 +1,43 @@
+<ion-card class="athlete-card">
+
+    <img
+        class="photo"
+        [src]="athlete.photo || 'assets/avatars/athlete.png'">
+
+    <h2>
+
+        {{ athlete.firstName }}
+
+        {{ athlete.lastName }}
+
+    </h2>
+
+    <span class="category">
+
+        {{ athlete.category }}
+
+    </span>
+
+    <div class="status">
+
+        <span
+            class="dot"
+            [class.active]="athlete.active">
+
+        </span>
+
+        {{ athlete.active ? 'Activo' : 'Inactivo' }}
+
+    </div>
+
+    <div class="footer">
+
+        <small>
+
+            {{ athlete.club }}
+
+        </small>
+
+    </div>
+
+</ion-card>

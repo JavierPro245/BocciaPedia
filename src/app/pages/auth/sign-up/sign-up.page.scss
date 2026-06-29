@@ -1,0 +1,82 @@
+.auth-form {
+
+    width: 100%;
+    max-width: 420px;
+
+    margin: auto;
+
+    padding: 20px;
+
+}
+
+.title {
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    font-size: 1.7rem;
+
+    font-weight: 700;
+
+    color: var(--ion-color-primary);
+
+}
+
+.subtitle {
+
+    text-align: center;
+
+    color: #6b7280;
+
+    margin-bottom: 24px;
+
+}
+
+.terms-item {
+
+    --background: transparent;
+
+    margin-top: 10px;
+
+    margin-bottom: 20px;
+
+}
+
+.submit {
+
+    height: 50px;
+
+    --border-radius: 16px;
+
+    font-weight: 600;
+
+}
+
+.login-link {
+
+    margin-top: 24px;
+
+    text-align: center;
+
+    font-size: .95rem;
+
+}
+
+.login-link span {
+
+    color: #6b7280;
+
+}
+
+.login-link a {
+
+    margin-left: 6px;
+
+    color: var(--ion-color-primary);
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+}

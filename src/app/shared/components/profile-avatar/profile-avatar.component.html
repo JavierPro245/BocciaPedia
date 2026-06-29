@@ -1,0 +1,29 @@
+<div class="profile-container">
+
+    <div class="avatar-wrapper">
+
+        <ion-avatar>
+            <img [src]="image">
+        </ion-avatar>
+
+        <ion-button
+        *ngIf="editable"
+        fill="solid"
+        shape="round"
+        class="edit-btn">
+
+        📷
+
+        </ion-button>
+    </div>
+
+    <h2>{{name}}</h2>
+
+    <p>{{role}}</p>
+
+    <div class="status" *ngIf="online">
+        <span class="dot"></span>
+        Activo
+    </div>
+
+</div>

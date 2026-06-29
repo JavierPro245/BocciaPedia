@@ -1,0 +1,67 @@
+<div class="input-group">
+
+    <label
+        *ngIf="label"
+        class="input-label">
+
+        {{ label }}
+
+    </label>
+
+    <div
+        class="input-container"
+        [class.invalid]="hasError">
+
+        <ion-icon
+            *ngIf="icon"
+            class="left-icon"
+            [name]="icon">
+        </ion-icon>
+
+        <ion-input
+
+            [formControl]="control"
+
+            [type]="inputType"
+
+            [placeholder]="placeholder"
+
+            [maxlength]="maxlength"
+
+            [readonly]="readonly">
+
+        </ion-input>
+
+        <ion-button
+
+            *ngIf="type === 'password'"
+
+            fill="clear"
+
+            class="eye-button"
+
+            (click)="togglePassword()"
+
+            type="button">
+
+            <ion-icon
+
+                [name]="showPassword
+                ? 'eye-off-outline'
+                : 'eye-outline'">
+
+            </ion-icon>
+
+        </ion-button>
+
+    </div>
+
+    <small
+        class="error-message"
+        *ngIf="hasError">
+
+        {{ errorMessage }}
+
+    </small>
+
+</div>

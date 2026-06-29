@@ -1,0 +1,54 @@
+ion-toolbar{
+
+    --background: var(--ion-color-primary);
+
+    --color:white;
+
+    --min-height:56px;
+
+    padding-top:0;
+
+    padding-bottom:0;
+
+    box-shadow:var(--shadow-small);
+
+}
+
+ion-title{
+
+    font-size:1.15rem;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.subtitle{
+
+    display:block;
+
+    font-size:.8rem;
+
+    opacity:.8;
+
+    font-weight:400;
+
+}
+
+ion-buttons{
+
+    color:white;
+
+}
+
+ion-menu-button,
+ion-back-button{
+
+    color:white;
+
+}

@@ -1,0 +1,28 @@
+<ion-item
+    button
+    detail="true"
+    [routerLink]="route">
+
+    <ion-icon
+        slot="start"
+        [name]="icon"
+        [color]="color">
+    </ion-icon>
+
+    <ion-label>
+
+        <h2>
+
+            {{title}}
+
+        </h2>
+
+        <p *ngIf="subtitle">
+
+            {{subtitle}}
+
+        </p>
+
+    </ion-label>
+
+</ion-item>

@@ -1,0 +1,114 @@
+<app-header
+    [showBackButton]="true"
+    title="Registrarse">
+</app-header>
+
+<ion-content>
+
+    <form
+        class="auth-form"
+        [formGroup]="form"
+        (ngSubmit)="submit()">
+
+        <h2 class="title">
+
+            Crear cuenta
+
+        </h2>
+
+        <p class="subtitle">
+
+            Completa la información para crear tu cuenta.
+
+        </p>
+
+        <!-- Nombre -->
+
+        <app-login-input
+            label="Nombre completo"
+            placeholder="Ingrese su nombre"
+            icon="person-outline"
+            [control]="form.controls.fullName">
+        </app-login-input>
+
+        <!-- Correo -->
+
+        <app-login-input
+            label="Correo electrónico"
+            placeholder="correo@bocciapp.cl"
+            icon="mail-outline"
+            type="email"
+            [control]="form.controls.email">
+        </app-login-input>
+
+        <!-- Contraseña -->
+
+        <app-login-input
+            label="Contraseña"
+            placeholder="Ingrese una contraseña"
+            icon="lock-closed-outline"
+            type="password"
+            [control]="form.controls.password">
+        </app-login-input>
+
+        <!-- Confirmar contraseña -->
+
+        <app-login-input
+            label="Confirmar contraseña"
+            placeholder="Repita la contraseña"
+            icon="shield-checkmark-outline"
+            type="password"
+            [control]="form.controls.confirmPassword">
+        </app-login-input>
+
+        <!-- Términos -->
+
+        <ion-item
+            lines="none"
+            class="terms-item">
+
+            <ion-checkbox
+                slot="start"
+                formControlName="acceptTerms">
+            </ion-checkbox>
+
+            <ion-label>
+
+                Acepto los términos y condiciones.
+
+            </ion-label>
+
+        </ion-item>
+
+        <!-- Botón -->
+
+        <ion-button
+            expand="block"
+            type="submit"
+            color="primary"
+            class="submit"
+            [disabled]="form.invalid">
+
+            Crear cuenta
+
+        </ion-button>
+
+        <div class="login-link">
+
+            <span>
+
+                ¿Ya tienes una cuenta?
+
+            </span>
+
+            <a routerLink="/auth">
+
+                Iniciar sesión
+
+            </a>
+
+        </div>
+
+    </form>
+
+</ion-content>

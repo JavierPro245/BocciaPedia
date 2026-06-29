@@ -1,0 +1,140 @@
+<ion-menu
+  contentId="menu-content"
+  menuId="menu-content"
+  side="start">
+
+  <ion-content>
+
+    <!-- ========================= -->
+    <!-- CABECERA -->
+    <!-- ========================= -->
+
+    <div class="menu-header">
+
+      <img
+        src="assets/logos/logo.png"
+        alt="BocciApp">
+
+      <h2>BocciApp</h2>
+
+      <p>Sistema de Gestión</p>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MENÚ -->
+    <!-- ========================= -->
+
+    <ng-container *ngFor="let item of pages">
+
+      <!-- ========================= -->
+      <!-- OPCIÓN NORMAL -->
+      <!-- ========================= -->
+
+      <ion-menu-toggle
+        autoHide="false"
+        *ngIf="!item.children">
+
+        <ion-item
+
+          [routerLink]="item.url"
+
+          routerDirection="root"
+
+          routerLinkActive="active">
+
+          <ion-icon
+
+            slot="start"
+
+            [name]="item.icon">
+
+          </ion-icon>
+
+          <ion-label>
+
+            {{ item.title }}
+
+          </ion-label>
+
+        </ion-item>
+
+      </ion-menu-toggle>
+
+      <!-- ========================= -->
+      <!-- GRUPOS -->
+      <!-- ========================= -->
+
+      <ion-accordion-group
+        *ngIf="item.children">
+
+        <ion-accordion
+          [value]="item.title">
+
+          <ion-item slot="header">
+
+            <ion-icon
+
+              slot="start"
+
+              [name]="item.icon">
+
+            </ion-icon>
+
+            <ion-label>
+
+              {{ item.title }}
+
+            </ion-label>
+
+          </ion-item>
+
+          <div slot="content">
+
+            <ion-menu-toggle
+
+              autoHide="false"
+
+              *ngFor="let child of item.children">
+
+              <ion-item
+
+                [routerLink]="child.url"
+
+                routerDirection="root"
+
+                routerLinkActive="active">
+
+                <ion-icon
+
+                  slot="start"
+
+                  [name]="child.icon">
+
+                </ion-icon>
+
+                <ion-label>
+
+                  {{ child.title }}
+
+                </ion-label>
+
+              </ion-item>
+
+            </ion-menu-toggle>
+
+          </div>
+
+        </ion-accordion>
+
+      </ion-accordion-group>
+
+    </ng-container>
+
+  </ion-content>
+
+</ion-menu>
+
+<ion-router-outlet
+  id="menu-content">
+</ion-router-outlet>

@@ -1,0 +1,78 @@
+<app-header
+    title="Iniciar Sesión">
+</app-header>
+
+<ion-content>
+
+    <form
+        class="auth-form"
+        [formGroup]="form"
+        (ngSubmit)="submit()">
+
+        <!-- Logo -->
+
+        <app-logo></app-logo>
+
+        <!-- Correo -->
+
+        <app-login-input
+            label="Correo electrónico"
+            placeholder="correo@bocciapp.cl"
+            icon="mail-outline"
+            type="email"
+            [control]="form.controls.email">
+        </app-login-input>
+
+        <!-- Contraseña -->
+
+        <app-login-input
+            label="Contraseña"
+            placeholder="Ingrese su contraseña"
+            icon="lock-closed-outline"
+            type="password"
+            [control]="form.controls.password">
+        </app-login-input>
+
+        <!-- Recuperar contraseña -->
+
+        <div class="forgot-password">
+
+            <a routerLink="/auth/forgot-password">
+
+                ¿Olvidaste tu contraseña?
+
+            </a>
+
+        </div>
+
+        <!-- Botón Login -->
+
+        <ion-button
+          expand="block"
+          type="submit"
+          class="submit"
+          mode="ios"
+          color="primary"
+          [disabled]="form.invalid">
+
+          Ingresar
+
+        </ion-button>
+
+        <!-- Registro -->
+
+        <ion-button
+            expand="block"
+            type="button"
+            fill="outline"
+            mode="ios"
+            class="register-btn"
+            routerLink="/auth/sign-up">
+
+            Registrarse
+
+        </ion-button>
+
+    </form>
+
+</ion-content>

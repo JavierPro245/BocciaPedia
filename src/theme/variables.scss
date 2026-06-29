@@ -1,2 +1,167 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+/* ==========================================================
+   BOCCIAPP THEME
+========================================================== */
+
+:root {
+
+  /* ==========================================================
+     BOCCIAPP THEME
+  ========================================================== */
+
+  /* Primary */
+  --ion-color-primary: #0A3D91;
+  --ion-color-primary-rgb: 10, 61, 145;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #09367f;
+  --ion-color-primary-tint: #23519d;
+
+  /* Secondary */
+  --ion-color-secondary: #3A86FF;
+  --ion-color-secondary-rgb: 58,134,255;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-shade: #3377e0;
+  --ion-color-secondary-tint: #4f92ff;
+
+ /* Success */
+--ion-color-success: #2E7D32;
+--ion-color-success-rgb: 46,125,50;
+--ion-color-success-contrast: #ffffff;
+--ion-color-success-contrast-rgb: 255,255,255;
+--ion-color-success-shade: #296e2c;
+--ion-color-success-tint: #438a47;
+
+/* Warning */
+--ion-color-warning: #F9A825;
+--ion-color-warning-rgb: 249,168,37;
+--ion-color-warning-contrast: #000000;
+--ion-color-warning-contrast-rgb: 0,0,0;
+--ion-color-warning-shade: #db9421;
+--ion-color-warning-tint: #fab33b;
+
+/* Danger */
+--ion-color-danger: #E53935;
+--ion-color-danger-rgb: 229,57,53;
+--ion-color-danger-contrast: #ffffff;
+--ion-color-danger-contrast-rgb: 255,255,255;
+--ion-color-danger-shade: #ca322f;
+--ion-color-danger-tint: #e84d49;
+
+/* Dark */
+
+--ion-color-dark: #1B263B;
+
+--page-background: #F8FAFC;
+
+--card-border: #E5E7EB;
+
+--toolbar-height: 60px;
+
+--avatar-size: 90px;
+  /* ==========================================================
+   BOCCIAPP VARIABLES
+========================================================== */
+
+--boccia-blue: #0A3D91;
+--boccia-light-blue: #3A86FF;
+--boccia-red: #E53935;
+
+--boccia-background: #F5F7FA;
+
+--boccia-card: #FFFFFF;
+
+--boccia-text: #263238;
+
+--boccia-border-radius: 18px;
+
+--boccia-shadow: 0 6px 18px rgba(0,0,0,.12);
+
+--boccia-padding: 18px;
+
+/* ==========================================================
+   TEAM COLORS
+========================================================== */
+
+--team-red: #E53935;
+
+--team-blue: #1565C0;
+
+--team-white: #FFFFFF;
+
+--team-ball: #424242;
+
+/* ==========================================================
+   STATUS COLORS
+========================================================== */
+
+--status-online: #43A047;
+
+--status-offline: #EF5350;
+
+--status-sync: #FFB300;
+
+/* ==========================================================
+   TYPOGRAPHY
+========================================================== */
+
+--title-size: 2rem;
+
+--subtitle-size: 1rem;
+
+--text-size: .95rem;
+
+--small-size: .8rem;
+
+/* ==========================================================
+   BORDERS
+========================================================== */
+
+--card-radius: 20px;
+
+--button-radius: 16px;
+
+--input-radius: 14px;
+
+/* ==========================================================
+   SHADOWS
+========================================================== */
+
+--shadow-small: 0 2px 6px rgba(0,0,0,.08);
+
+--shadow-medium: 0 6px 18px rgba(0,0,0,.12);
+
+--shadow-large: 0 10px 25px rgba(0,0,0,.18);
+
+/* ==========================================================
+   ANIMATIONS
+========================================================== */
+
+--transition-fast: .2s;
+
+--transition-normal: .3s;
+
+--transition-slow: .5s;
+
+/* ==========================================================
+   SPACING
+========================================================== */
+
+--space-xs: 4px;
+
+--space-sm: 8px;
+
+--space-md: 16px;
+
+--space-lg: 24px;
+
+--space-xl: 32px;
+
+/* Inputs */
+
+--input-height: 52px;
+
+--input-padding: 14px;
+
+}

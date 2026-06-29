@@ -1,0 +1,264 @@
+/* ==========================================
+   MENU LATERAL - BOCCIAPP
+========================================== */
+
+ion-menu {
+  --width: 280px;
+  --min-width: 280px;
+  outline: none;
+}
+
+/* Fondo */
+
+ion-content {
+  --background: linear-gradient(
+    180deg,
+    #0A3D91 0%,
+    #0C4BAE 35%,
+    #0A3D91 100%
+  );
+
+  --padding-top: var(--space-md);
+}
+
+/* ==========================================
+   ITEMS PRINCIPALES
+========================================== */
+
+ion-item {
+
+  --background: transparent;
+  --color: white;
+  --border-style: none;
+  --inner-border-width: 0;
+
+  margin: 6px 12px;
+  border-radius: var(--card-radius);
+
+  font-size: .95rem;
+  font-weight: 600;
+
+  transition: var(--transition-fast);
+
+  ion-icon{
+      color: rgba(255,255,255,.9);
+      font-size:20px;
+      margin-right:8px;
+  }
+
+  &:hover{
+
+      --background: rgba(255,255,255,.08);
+
+  }
+
+}
+
+/* Item seleccionado */
+
+ion-item.active{
+
+    --background: var(--ion-color-secondary);
+
+    --color:white;
+
+    box-shadow: var(--shadow-small);
+
+    ion-icon{
+
+        color:white;
+
+    }
+
+}
+
+/* ==========================================
+   ACORDEONES
+========================================== */
+
+ion-accordion{
+
+    background: transparent;
+    margin:8px 10px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+/* Cabecera */
+
+ion-accordion ion-item[slot="header"]{
+
+    --background: rgba(255,255,255,.08);
+
+    --color:white;
+
+    border-radius:20px;
+
+    font-weight:700;
+
+    ion-icon{
+
+        color:white;
+
+    }
+
+}
+
+/* Cuando está abierto */
+
+ion-accordion.accordion-expanded ion-item[slot="header"]{
+
+    --background: var(--ion-color-secondary);
+
+}
+
+/* Contenido */
+
+ion-accordion div[slot="content"]{
+
+    background: transparent;
+
+    padding:6px 0 10px;
+
+}
+
+/* Submenú */
+
+ion-accordion div[slot="content"] ion-item{
+
+    margin:5px 14px 5px 34px;
+
+    border-radius:16px;
+
+    --background: rgba(255,255,255,.05);
+
+    --color:white;
+
+    font-size:.9rem;
+
+    font-weight:500;
+
+}
+
+ion-accordion div[slot="content"] ion-item:hover{
+
+    --background: rgba(255,255,255,.10);
+
+}
+
+ion-accordion div[slot="content"] ion-item.active{
+
+    --background: var(--ion-color-secondary);
+
+}
+
+/* ==========================================
+   TITULO
+========================================== */
+
+h4{
+
+    margin-top:10px;
+
+    margin-bottom:4px;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:1.15rem;
+
+    font-weight:700;
+
+}
+
+/* ==========================================
+   AVATAR
+========================================== */
+
+ion-avatar{
+
+    width:96px;
+
+    height:96px;
+
+    margin:18px auto 12px;
+
+    border:3px solid rgba(255,255,255,.15);
+
+    box-shadow:var(--shadow-medium);
+
+}
+
+/* ==========================================
+   ICONO VACIO
+========================================== */
+
+.empty-icon{
+
+    font-size:90px;
+
+    color:rgba(255,255,255,.35);
+
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+ion-footer{
+
+    --background: transparent;
+
+    color:rgba(255,255,255,.75);
+
+    text-align:center;
+
+    padding:12px;
+
+    font-size:.8rem;
+
+}
+
+.menu-header{
+
+    padding:24px 0 18px;
+
+    text-align:center;
+
+}
+
+.menu-header img{
+
+    width:72px;
+
+    margin:auto;
+
+    display:block;
+
+}
+
+.menu-header h2{
+
+    margin-top:12px;
+
+    color:white;
+
+    font-size:1.4rem;
+
+    font-weight:700;
+
+}
+
+.menu-header p{
+
+    color:rgba(255,255,255,.7);
+
+    margin-top:4px;
+
+    font-size:.85rem;
+
+}

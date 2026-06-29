@@ -1,0 +1,58 @@
+<app-header
+    [showMenu]="true"
+    title="Configuración">
+</app-header>
+
+<ion-content class="ion-padding">
+
+    <h3>Usuario</h3>
+
+    <app-settings-item
+        icon="person-outline"
+        title="Mi perfil"
+        subtitle="Editar información personal"
+        route="/main/profile">
+    </app-settings-item>
+
+    <app-settings-item
+        icon="lock-closed-outline"
+        title="Cambiar contraseña"
+        subtitle="Actualizar credenciales"
+        route="">
+    </app-settings-item>
+
+    <h3>Competencia</h3>
+
+    <app-settings-item
+        icon="trophy-outline"
+        title="Categorías"
+        subtitle="Administrar categorías"
+        route="">
+    </app-settings-item>
+
+    <app-settings-item
+        icon="clipboard-outline"
+        title="Evaluaciones"
+        subtitle="Configuración general"
+        route="">
+    </app-settings-item>
+
+    <h3>Datos</h3>
+
+    <app-settings-item
+        icon="cloud-upload-outline"
+        title="Respaldos"
+        subtitle="Exportar e importar información"
+        route="">
+    </app-settings-item>
+
+    <h3>Información</h3>
+
+    <app-settings-item
+        icon="information-circle-outline"
+        title="Acerca de BocciApp"
+        subtitle="Versión 1.0"
+        route="">
+    </app-settings-item>
+
+</ion-content>

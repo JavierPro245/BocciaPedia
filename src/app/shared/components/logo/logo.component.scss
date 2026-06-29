@@ -1,0 +1,25 @@
+.logo-image {
+    width: 180px;
+    max-width: 55%;
+    display: block;
+    margin: 40px auto 20px;
+}
+
+h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    letter-spacing: 1px;
+}
+
+.slogan {
+    margin-top: 8px;
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
