@@ -1,0 +1,29 @@
+.court-container{
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  width:100%;
+
+  padding:20px;
+
+}
+
+.court-canvas{
+
+  width:100%;
+
+  max-width:430px;
+
+  aspect-ratio:1/2;
+
+  border-radius:10px;
+
+  background:#f4f4f4;
+
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+
+}

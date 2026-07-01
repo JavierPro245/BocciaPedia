@@ -123,3 +123,25 @@ h2{
     font-size:13px;
 
 }
+
+.athlete-card{
+
+    position: relative;
+
+}
+
+.menu-btn{
+
+    position:absolute;
+
+    top:6px;
+
+    right:6px;
+
+    z-index:10;
+
+    --padding-start:0;
+
+    --padding-end:0;
+
+}

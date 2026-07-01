@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { EvaluationsCreatePageRoutingModule } from './evaluations-create-routing.module';
 
 import { EvaluationsCreatePage } from './evaluations-create.page';
+import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EvaluationsCreatePageRoutingModule
+    EvaluationsCreatePageRoutingModule,
+    SharedModule
   ],
   declarations: [EvaluationsCreatePage]
 })

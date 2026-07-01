@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Athlete } from 'src/app/models/athlete.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-athlete-list',
@@ -8,6 +9,10 @@ import { Athlete } from 'src/app/models/athlete.model';
   standalone: false
 })
 export class AthleteListPage {
+
+  constructor(
+    private router: Router
+  ) {}
 
   athletes: Athlete[] = [
 
@@ -21,15 +26,10 @@ export class AthleteListPage {
       birthDate: new Date(1998,5,10),
       category: 'BC2',
       club: 'Club Paralímpico Los Ángeles',
-      coach: 'Juan Pérez',
-      country: 'Chile',
-      region: 'Biobío',
-      city: 'Los Ángeles',
-      address: '',
       photo: '',
       observations: '',
       active: true,
-      createdAt: new Date()
+    
     },
 
     {
@@ -42,17 +42,38 @@ export class AthleteListPage {
       birthDate: new Date(2000,8,15),
       category: 'BC2',
       club: 'Club Santiago',
-      coach: 'Carlos Díaz',
-      country: 'Chile',
-      region: 'Metropolitana',
-      city: 'Santiago',
-      address: '',
       photo: '',
       observations: '',
-      active: true,
-      createdAt: new Date()
+      active: true
     }
 
   ];
+
+  viewAthlete(id: string) {
+
+  this.router.navigate([
+    '/main/athlete-detail',
+    id
+  ]);
+
+}
+
+editAthlete(id: string) {
+
+  console.log('Editar', id);
+
+}
+
+deleteAthlete(id: string) {
+
+  console.log('Eliminar', id);
+
+}
+
+openEvaluations(id: string) {
+
+  console.log('Evaluaciones', id);
+
+}
 
 }

@@ -1,0 +1,174 @@
+<app-header
+    [showBackButton]="true"
+    title="Evaluacion">
+</app-header>
+
+<ion-content>
+
+  <div class="container">
+
+    <ion-card>
+
+  <ion-card-content>
+
+    <h2>{{ athlete }}</h2>
+
+    <p>{{ category }}</p>
+
+    <ion-chip color="primary">
+
+      <ion-icon name="flag-outline"></ion-icon>
+
+      <ion-label>
+
+        {{ evaluation }}
+
+      </ion-label>
+
+    </ion-chip>
+
+    <ion-chip color="medium">
+
+      <ion-icon name="resize-outline"></ion-icon>
+
+      <ion-label>
+
+        {{ distance }} m
+
+      </ion-label>
+
+    </ion-chip>
+
+  </ion-card-content>
+
+</ion-card>
+
+    <ion-card>
+
+      <ion-card-content>
+
+        <div class="throw-header">
+
+          <span>Lanzamiento</span>
+
+          <strong>{{ currentThrow }} / {{ totalThrows }}</strong>
+
+        </div>
+
+        <ion-progress-bar
+        [value]="progress">
+        </ion-progress-bar>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <ion-card>
+
+      <ion-card-content>
+
+        <app-court-engine
+        [throws]="throws"
+        [ballColor]="ballColor"
+        [locked]="evaluationFinished"
+        (courtSelection)="onSelection($event)"
+        (throwRegistered)="onThrowRegistered($event)">
+      </app-court-engine>
+
+        <ion-segment
+        [(ngModel)]="ballColor">
+
+          <ion-segment-button
+          value="red">
+
+          Roja
+
+          </ion-segment-button>
+
+          <ion-segment-button
+          value="blue">
+
+          Azul
+
+          </ion-segment-button>
+
+        </ion-segment>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <ion-card>
+
+      <ion-item>
+
+        <ion-label>
+
+          Objetivo
+
+        </ion-label>
+
+        <ion-note slot="end">
+
+          {{ selectedQuadrant }}
+
+        </ion-note>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label>
+
+          Box
+
+        </ion-label>
+
+        <ion-note slot="end">
+
+          {{ selectedBox }}
+
+        </ion-note>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label>
+
+          Distancia
+
+        </ion-label>
+
+        <ion-note slot="end">
+
+          {{ distance }} m
+
+        </ion-note>
+
+      </ion-item>
+
+    </ion-card>
+
+    <div class="buttons">
+
+      <ion-button
+          expand="block"
+          color="medium">
+
+        Cancelar
+
+      </ion-button>
+
+      <ion-button
+          expand="block">
+
+        Continuar
+
+      </ion-button>
+
+    </div>
+
+  </div>
+
+</ion-content>

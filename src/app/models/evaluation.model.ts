@@ -1,7 +1,43 @@
 export interface Evaluation {
-  uid: string;
-  atletaId: string;
-  fecha: Date;
-  tipo: string;
-  observaciones: string;
+
+  id?: string;
+
+  athleteId: string;
+
+  athleteName: string;
+
+  evaluationType: EvaluationType;
+
+  throws: number;
+
+  currentThrow: number;
+
+  distance: number;
+
+  selectedBox?: number;
+
+  selectedQuadrant?: string;
+
+  notes?: string;
+
+  date: Date;
+
+  status: 'config' | 'running' | 'finished';
+
 }
+
+export type EvaluationType =
+
+'First Ball'
+
+| 'Placement'
+
+| 'Push On'
+
+| 'Push Off'
+
+| 'Ricochet'
+
+| 'Smash'
+
+| 'Bochada';

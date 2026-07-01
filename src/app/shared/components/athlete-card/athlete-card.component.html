@@ -1,5 +1,16 @@
 <ion-card class="athlete-card">
 
+   <ion-button
+    fill="clear"
+    class="menu-btn"
+    (click)="openMenu($event)">
+
+    <ion-icon
+        name="ellipsis-vertical">
+    </ion-icon>
+
+    </ion-button>
+
     <img
         class="photo"
         [src]="athlete.photo || 'assets/avatars/athlete.png'">
@@ -23,7 +34,6 @@
         <span
             class="dot"
             [class.active]="athlete.active">
-
         </span>
 
         {{ athlete.active ? 'Activo' : 'Inactivo' }}

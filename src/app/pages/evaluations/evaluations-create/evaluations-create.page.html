@@ -1,13 +1,157 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>evaluationsCreate</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+title="Nueva Evaluación"
+[showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">evaluationsCreate</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+<ion-card>
+
+<ion-card-header>
+
+<ion-card-title>
+
+Configuración
+
+</ion-card-title>
+
+</ion-card-header>
+
+<ion-card-content>
+
+<ion-item>
+
+<ion-label position="stacked">
+
+Deportista
+
+</ion-label>
+
+<ion-select
+[(ngModel)]="config.athleteId">
+
+<ion-select-option
+*ngFor="let athlete of athletes"
+[value]="athlete.id">
+
+{{athlete.name}}
+
+</ion-select-option>
+
+</ion-select>
+
+</ion-item>
+
+<ion-item>
+
+<ion-label position="stacked">
+
+Tipo evaluación
+
+</ion-label>
+
+<ion-select
+[(ngModel)]="config.evaluationType">
+
+<ion-select-option
+*ngFor="let evaluation of evaluations"
+[value]="evaluation">
+
+{{evaluation}}
+
+</ion-select-option>
+
+</ion-select>
+
+</ion-item>
+
+<ion-item>
+
+<ion-label>
+
+Lanzamientos
+
+</ion-label>
+
+<ion-buttons slot="end">
+
+<ion-button
+(click)="decreaseThrows()">
+
+-
+
+</ion-button>
+
+<ion-label>
+
+{{config.throws}}
+
+</ion-label>
+
+<ion-button
+(click)="increaseThrows()">
+
++
+
+</ion-button>
+
+</ion-buttons>
+
+</ion-item>
+
+<ion-item>
+
+<ion-label>
+
+Distancia
+
+</ion-label>
+
+<ion-segment
+[(ngModel)]="config.distance">
+
+<ion-segment-button
+*ngFor="let distance of distances"
+[value]="distance">
+
+{{distance}} m
+
+</ion-segment-button>
+
+</ion-segment>
+
+</ion-item>
+
+<ion-item>
+
+<ion-label
+position="stacked">
+
+Observaciones
+
+</ion-label>
+
+<ion-textarea
+[(ngModel)]="config.notes">
+
+</ion-textarea>
+
+</ion-item>
+
+<ion-button
+
+expand="block"
+
+size="large"
+
+(click)="continue()">
+
+Continuar
+
+</ion-button>
+
+</ion-card-content>
+
+</ion-card>
+
 </ion-content>

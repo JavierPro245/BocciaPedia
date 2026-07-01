@@ -1,13 +1,225 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>athleteDetail</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+    title="Detalle Deportista"
+    [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">athleteDetail</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+    <div class="container">
+
+        <app-profile-avatar
+          [image]="athlete.photo || 'assets/avatars/athlete.png'"
+          [editable]="false">
+        </app-profile-avatar>
+
+        <h2>
+
+            {{ athlete.firstName }}
+
+            {{ athlete.lastName }}
+
+        </h2>
+
+        <p class="category">
+
+            {{ athlete.category }}
+
+        </p>
+
+        <ion-chip
+            color="success"
+            *ngIf="athlete.active">
+
+            <ion-icon
+                name="checkmark-circle">
+            </ion-icon>
+
+            <ion-label>
+
+                Activo
+
+            </ion-label>
+
+        </ion-chip>
+
+        <app-form-section
+
+            title="Información Personal"
+
+            icon="person-outline">
+
+        </app-form-section>
+
+        <ion-list>
+
+            <ion-item>
+
+                <ion-label>
+
+                    RUN
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.rut }}
+
+                </ion-note>
+
+            </ion-item>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Fecha nacimiento
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.birthDate | date:'dd/MM/yyyy' }}
+
+                </ion-note>
+
+            </ion-item>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Correo
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.email }}
+
+                </ion-note>
+
+            </ion-item>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Teléfono
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.phone }}
+
+                </ion-note>
+
+            </ion-item>
+
+        </ion-list>
+
+        <app-form-section
+
+            title="Información Deportiva"
+
+            icon="trophy-outline">
+
+        </app-form-section>
+
+        <ion-list>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Categoría
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.category }}
+
+                </ion-note>
+
+            </ion-item>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Club
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.club }}
+
+                </ion-note>
+
+            </ion-item>
+
+            <ion-item>
+
+                <ion-label>
+
+                    Mano dominante
+
+                </ion-label>
+
+                <ion-note slot="end">
+
+                    {{ athlete.dominantHand }}
+
+                </ion-note>
+
+            </ion-item>
+
+        </ion-list>
+
+        <app-form-section
+
+            title="Observaciones"
+
+            icon="document-text-outline">
+
+        </app-form-section>
+
+        <ion-card>
+
+            <ion-card-content>
+
+                {{ athlete.observations }}
+
+            </ion-card-content>
+
+        </ion-card>
+
+        <ion-button
+            expand="block"
+            routerLink="/main/evaluations-list">
+
+            Evaluaciones
+
+        </ion-button>
+
+        <ion-button
+            expand="block"
+            fill="outline">
+
+            Estadísticas
+
+        </ion-button>
+
+        <ion-button
+            expand="block"
+            color="warning">
+
+            Editar Deportista
+
+        </ion-button>
+
+    </div>
+
 </ion-content>

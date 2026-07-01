@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -6,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./header.component.scss'],
   standalone: false
 })
-export class HeaderComponent  implements OnInit {
+export class HeaderComponent {
 
   @Input() title!: string;
 
@@ -14,7 +15,7 @@ export class HeaderComponent  implements OnInit {
 
   @Input() icon?: string;
 
-  @Input() showMenu!: boolean;
+  @Input() showMenu = false;
 
   @Input() showBackButton = false;
 
@@ -23,15 +24,21 @@ export class HeaderComponent  implements OnInit {
   @Input() color = 'primary';
 
   @Input() transparent = false;
-  
+
   @Input() showNotifications = false;
-  
+
   @Input() showSearch = false;
-  
+
   @Input() showSettings = false;
 
-  constructor() { }
+  constructor(
+    private location: Location
+  ) {}
 
-  ngOnInit() {}
+  goBack() {
+
+    this.location.back();
+
+  }
 
 }

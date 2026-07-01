@@ -1,0 +1,41 @@
+.container{
+
+    padding:20px;
+
+}
+
+h2{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-weight:700;
+
+}
+
+.category{
+
+    text-align:center;
+
+    color:var(--ion-color-primary);
+
+    font-weight:600;
+
+}
+
+ion-chip{
+
+    display:flex;
+
+    width:max-content;
+
+    margin:10px auto 20px;
+
+}
+
+ion-button{
+
+    margin-top:15px;
+
+}

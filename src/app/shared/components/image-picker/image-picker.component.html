@@ -1,3 +1,26 @@
-<p>
-  image-picker works!
-</p>
+<div class="picker">
+
+    <div class="avatar">
+
+        <img
+            [src]="image">
+
+        <label
+            *ngIf="editable"
+            class="camera">
+
+            <ion-icon
+                name="camera">
+            </ion-icon>
+
+            <input
+                hidden
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)">
+
+        </label>
+
+    </div>
+
+</div>

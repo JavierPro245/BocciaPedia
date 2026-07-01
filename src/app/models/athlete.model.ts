@@ -2,40 +2,34 @@ export interface Athlete {
 
   id?: string;
 
+  photo?: string;
+
   firstName: string;
 
   lastName: string;
 
-  rut: string;
+  rut?: string;
 
-  email: string;
+  email?: string;
 
-  phone: string;
+  phone?: string;
 
-  birthDate: Date;
+  birthDate?: Date;
 
-  category: string;
+  category: 'BC1' | 'BC2' | 'BC3' | 'BC4';
 
-  club: string;
+  dominantHand?: 'Derecha' | 'Izquierda' | 'Ambas';
 
-  coach: string;
+  club?: string;
 
-  country: string;
+  trainerId?: string;
 
-  region: string;
+  assistantId?: string;
 
-  city: string;
+  diagnosis?: string;
 
-  address: string;
-
-  photo: string;
-
-  observations: string;
+  observations?: string;
 
   active: boolean;
-
-  createdAt: Date;
-
-  updatedAt?: Date;
 
 }

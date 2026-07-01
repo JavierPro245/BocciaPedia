@@ -63,11 +63,18 @@ const routes: Routes = [
       },
 
       {
-        path: 'athlete-detail',
+        path: 'athlete-detail/:id',
         loadChildren: () =>
-          import('../athletes/athlete-detail/athlete-detail.module')
-            .then(m => m.AthleteDetailPageModule)
+        import('../athletes/athlete-detail/athlete-detail.module')
+        .then(m => m.AthleteDetailPageModule)
       },
+
+      {
+  path: 'evaluations',
+  loadChildren: () =>
+    import('../evaluations/evaluations.module')
+      .then(m => m.EvaluationsPageModule)
+},
 
       {
         path: '',

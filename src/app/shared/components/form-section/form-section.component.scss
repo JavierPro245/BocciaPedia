@@ -1,0 +1,39 @@
+.section{
+
+    margin:28px 0 18px;
+
+}
+
+.header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding-bottom:8px;
+
+    border-bottom:2px solid #E9EEF5;
+
+}
+
+ion-icon{
+
+    color:var(--ion-color-primary);
+
+    font-size:24px;
+
+}
+
+h2{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#1F2937;
+
+}

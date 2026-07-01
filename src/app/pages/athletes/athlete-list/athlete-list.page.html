@@ -44,9 +44,17 @@
 
         <app-athlete-card
 
-          *ngFor="let athlete of athletes"
+            *ngFor="let athlete of athletes"
 
-          [athlete]="athlete">
+            [athlete]="athlete"
+
+            (details)="viewAthlete($event)"
+
+            (edit)="editAthlete($event)"
+
+            (delete)="deleteAthlete($event)"
+
+            (evaluations)="openEvaluations($event)">
 
         </app-athlete-card>
 

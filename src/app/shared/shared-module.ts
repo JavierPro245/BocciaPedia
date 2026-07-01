@@ -16,6 +16,10 @@ import { DashboardCardComponent } from './components/dashboard-card/dashboard-ca
 import { RouterModule } from '@angular/router';
 import { SettingsItemComponent } from './components/settings-item/settings-item.component';
 import { AthleteCardComponent } from './components/athlete-card/athlete-card.component';
+import { ActionMenuComponent } from './components/action-menu/action-menu.component';
+import { FormSectionComponent } from './components/form-section/form-section.component';
+import { SelectInputComponent } from './components/select-input/select-input.component';
+import { CourtComponent } from './components/court/court.component';
 
 
 
@@ -35,6 +39,10 @@ import { AthleteCardComponent } from './components/athlete-card/athlete-card.com
     DashboardCardComponent,
     SettingsItemComponent,
     AthleteCardComponent,
+    ActionMenuComponent,
+    FormSectionComponent,
+    SelectInputComponent,
+    CourtComponent
     
   ],
   exports: [
@@ -53,7 +61,11 @@ import { AthleteCardComponent } from './components/athlete-card/athlete-card.com
     ReactiveFormsModule,
     RouterModule,
     SettingsItemComponent,
-    AthleteCardComponent
+    AthleteCardComponent,
+    ActionMenuComponent,
+    FormSectionComponent,
+    SelectInputComponent,
+    CourtComponent
     
   ],
   imports: [

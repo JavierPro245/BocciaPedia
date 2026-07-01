@@ -115,6 +115,13 @@ const routes: Routes = [
     path: 'statistics',
     loadChildren: () => import('./pages/statistics/statistics.module').then( m => m.StatisticsPageModule)
   },
+
+  {
+  path: 'evaluation-run',
+  loadChildren: () =>
+    import('./pages/evaluations/evaluation-run/evaluation-run.module')
+      .then(m => m.EvaluationRunPageModule)
+},
 ];
 
 @NgModule({
