@@ -1,0 +1,141 @@
+<ion-card class="trainer-card">
+
+  <ion-card-content>
+
+    <div class="menu">
+
+      <ion-button
+        fill="clear"
+        size="small"
+        [id]="'trainer-menu-' + trainer.id">
+
+        <ion-icon
+          name="ellipsis-vertical">
+        </ion-icon>
+
+      </ion-button>
+
+      <ion-popover
+        trigger="trainer-menu-{{trainer.id}}"
+        side="bottom"
+        alignment="end">
+
+        <ng-template>
+
+          <ion-content>
+
+            <ion-list>
+
+              <ion-item
+                button
+                (click)="viewDetails()">
+
+                <ion-icon
+                  slot="start"
+                  name="eye-outline">
+                </ion-icon>
+
+                Ver perfil
+
+              </ion-item>
+
+              <ion-item
+                button
+                (click)="editTrainer()">
+
+                <ion-icon
+                  slot="start"
+                  name="create-outline">
+                </ion-icon>
+
+                Editar
+
+              </ion-item>
+
+              <ion-item
+                button
+                lines="none"
+                (click)="deleteTrainer()">
+
+                <ion-icon
+                  slot="start"
+                  color="danger"
+                  name="trash-outline">
+                </ion-icon>
+
+                Eliminar
+
+              </ion-item>
+
+            </ion-list>
+
+          </ion-content>
+
+        </ng-template>
+
+      </ion-popover>
+
+    </div>
+
+    <div class="photo">
+
+      <ion-avatar>
+
+        <img
+          *ngIf="trainer.photo"
+          [src]="trainer.photo">
+
+        <ion-icon
+          *ngIf="!trainer.photo"
+          name="people-circle">
+        </ion-icon>
+
+      </ion-avatar>
+
+    </div>
+
+    <h2>
+
+      {{trainer.firstName}} {{trainer.lastName}}
+
+    </h2>
+
+    <ion-chip color="primary">
+
+      {{trainer.federation}}
+
+    </ion-chip>
+
+    <p>
+
+      {{trainer.club}}
+
+    </p>
+
+    <ion-item
+      lines="none">
+
+      <ion-icon
+        slot="start"
+        name="mail-outline">
+      </ion-icon>
+
+      {{trainer.email}}
+
+    </ion-item>
+
+    <ion-item
+      lines="none">
+
+      <ion-icon
+        slot="start"
+        name="call-outline">
+      </ion-icon>
+
+      {{trainer.phone}}
+
+    </ion-item>
+
+  </ion-card-content>
+
+</ion-card>

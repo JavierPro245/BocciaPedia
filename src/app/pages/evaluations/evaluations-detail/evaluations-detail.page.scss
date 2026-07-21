@@ -1,0 +1,204 @@
+.container{
+
+  padding:16px;
+
+  max-width:900px;
+
+  margin:auto;
+
+}
+
+ion-card{
+
+  border-radius:18px;
+
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+  margin-bottom:18px;
+
+}
+
+h2{
+
+  font-size:28px;
+
+  font-weight:700;
+
+  margin-bottom:6px;
+
+}
+
+.evaluation{
+
+  color:#666;
+
+  font-size:16px;
+
+  margin-bottom:18px;
+
+}
+
+.chips{
+
+  display:flex;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+}
+
+.stat-row{
+
+  display:grid;
+
+  grid-template-columns:1fr auto auto;
+
+  align-items:center;
+
+  gap:12px;
+
+  margin-top:18px;
+
+  margin-bottom:6px;
+
+  font-size:16px;
+
+}
+
+.stat-row strong{
+
+  font-size:18px;
+
+}
+
+ion-progress-bar{
+
+  height:10px;
+
+  border-radius:20px;
+
+}
+
+.precision-card{
+
+  text-align:center;
+
+}
+
+.precision-card h3{
+
+  color:#666;
+
+  margin-bottom:12px;
+
+}
+
+.precision-value{
+
+  font-size:56px;
+
+  font-weight:700;
+
+  color:var(--ion-color-success);
+
+  margin-bottom:20px;
+
+}
+
+ion-button{
+
+  margin-top:14px;
+
+  height:52px;
+
+  font-size:17px;
+
+  --border-radius:14px;
+
+}
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:14px;
+
+    margin-bottom:20px;
+
+}
+
+.stat-card{
+
+    text-align:center;
+
+    border-radius:20px;
+
+    transition:.2s;
+
+}
+
+.stat-card .emoji{
+
+    font-size:36px;
+
+    margin-bottom:12px;
+
+}
+
+.stat-card .title{
+
+    font-size:17px;
+
+    font-weight:600;
+
+    color:#555;
+
+}
+
+.stat-card .value{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    margin-top:12px;
+
+}
+
+.stat-card .percent{
+
+    margin-top:6px;
+
+    font-size:16px;
+
+    color:#888;
+
+}
+
+.excellent{
+
+    border-top:6px solid #2dd36f;
+
+}
+
+.good{
+
+    border-top:6px solid #3880ff;
+
+}
+
+.regular{
+
+    border-top:6px solid #ffc409;
+
+}
+
+.bad{
+
+    border-top:6px solid #eb445a;
+
+}
+

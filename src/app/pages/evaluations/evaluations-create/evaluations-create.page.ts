@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { EvaluationService } from 'src/app/services/evaluation';
 import { EvaluationSessionService } from 'src/app/services/evaluation-session';
 import { EvaluationType } from 'src/app/models/evaluation.model';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-evaluations-create',
@@ -20,7 +21,9 @@ export class EvaluationsCreatePage {
 
     private evaluationService:EvaluationService,
 
-    private sessionService: EvaluationSessionService
+    private sessionService: EvaluationSessionService,
+
+    private alertController: AlertController
 
   ){}
 

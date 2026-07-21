@@ -133,3 +133,54 @@ ion-button {
         --height: 680px;
     }
 }
+
+/* ===========================================
+   BOCCIAPP - Responsive Layout
+=========================================== */
+
+.page-container{
+
+  width:100%;
+  max-width:700px;
+
+  margin:0 auto;
+
+  padding:16px;
+
+  box-sizing:border-box;
+
+}
+
+.page-card{
+
+  width:100%;
+
+  border-radius:18px;
+
+}
+
+.full-width{
+
+  width:100%;
+
+}
+
+.section-title{
+
+  font-size:24px;
+
+  font-weight:700;
+
+  margin-bottom:20px;
+
+}
+
+@media (max-width:480px){
+
+  .page-container{
+
+    padding:12px;
+
+  }
+
+}

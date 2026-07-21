@@ -8,6 +8,7 @@ import { EvaluationsCreatePageRoutingModule } from './evaluations-create-routing
 
 import { EvaluationsCreatePage } from './evaluations-create.page';
 import { SharedModule } from 'src/app/shared/shared-module';
+import { EvaluationCardComponent } from '../components/evaluation-card/evaluation-card.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { SharedModule } from 'src/app/shared/shared-module';
     FormsModule,
     IonicModule,
     EvaluationsCreatePageRoutingModule,
-    SharedModule
+    SharedModule,
   ],
   declarations: [EvaluationsCreatePage]
 })

@@ -1,13 +1,65 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>evaluationsList</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Evaluaciones"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">evaluationsList</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ion-searchbar
+    [(ngModel)]="search"
+    placeholder="Buscar evaluación..."
+    animated="true">
+  </ion-searchbar>
+
+  <ng-container *ngIf="filteredEvaluations.length > 0; else emptyState">
+
+    <app-evaluation-card
+      *ngFor="let evaluation of filteredEvaluations"
+      [evaluation]="evaluation"
+      (open)="openEvaluation($event)">
+    </app-evaluation-card>
+
+  </ng-container>
+
+  <ng-template #emptyState>
+
+    <div class="empty">
+
+      <ion-icon
+        name="clipboard-outline">
+      </ion-icon>
+
+      <h2>
+
+        No existen evaluaciones
+
+      </h2>
+
+      <p>
+
+        Presione el botón + para crear la primera evaluación.
+
+      </p>
+
+    </div>
+
+  </ng-template>
+
+  <ion-fab
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed">
+
+    <ion-fab-button
+      color="success"
+      (click)="newEvaluation()">
+
+      <ion-icon
+        name="add">
+      </ion-icon>
+
+    </ion-fab-button>
+
+  </ion-fab>
+
 </ion-content>

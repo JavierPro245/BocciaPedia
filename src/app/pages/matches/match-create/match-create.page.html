@@ -1,0 +1,254 @@
+<app-header
+  title="Nuevo Partido"
+  [showBackButton]="true">
+</app-header>
+
+<ion-content>
+
+  <div class="container">
+
+    <!-- JUGADORES -->
+
+    <ion-card>
+
+      <ion-card-header>
+
+        <ion-card-title>
+
+          Jugadores
+
+        </ion-card-title>
+
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-item>
+
+          <ion-label position="stacked">
+
+            Jugador Rojo
+
+          </ion-label>
+
+          <ion-select
+            [(ngModel)]="redPlayer">
+
+            <ion-select-option
+              *ngFor="let player of players"
+              [value]="player.id">
+
+              {{player.name}}
+
+            </ion-select-option>
+
+          </ion-select>
+
+        </ion-item>
+
+        <ion-item>
+
+          <ion-label position="stacked">
+
+            Jugador Azul
+
+          </ion-label>
+
+          <ion-select
+            [(ngModel)]="bluePlayer">
+
+            <ion-select-option
+              *ngFor="let player of players"
+              [value]="player.id">
+
+              {{player.name}}
+
+            </ion-select-option>
+
+          </ion-select>
+
+        </ion-item>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <!-- CONFIGURACIÓN -->
+
+    <ion-card>
+
+      <ion-card-header>
+
+        <ion-card-title>
+
+          Configuración
+
+        </ion-card-title>
+
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <ion-item>
+
+          <ion-label position="stacked">
+
+            Categoría
+
+          </ion-label>
+
+          <ion-select
+            [(ngModel)]="category"
+            (ionChange)="categoryChanged()">
+
+            <ion-select-option value="BC1">
+
+              BC1
+
+            </ion-select-option>
+
+            <ion-select-option value="BC2">
+
+              BC2
+
+            </ion-select-option>
+
+            <ion-select-option value="BC3">
+
+              BC3
+
+            </ion-select-option>
+
+            <ion-select-option value="BC4">
+
+              BC4
+
+            </ion-select-option>
+
+          </ion-select>
+
+        </ion-item>
+
+        <ion-item>
+
+          <ion-label>
+
+            Tiempo por jugador
+
+          </ion-label>
+
+          <ion-item>
+
+    <ion-label position="stacked">
+
+        Tiempo (minutos)
+
+    </ion-label>
+
+    <ion-input
+
+        type="number"
+
+        min="1"
+
+        max="20"
+
+        [(ngModel)]="minutes">
+
+    </ion-input>
+
+</ion-item>
+
+        </ion-item>
+
+        <div class="ends-section">
+
+  <div class="ends-title">
+
+    ENDs
+
+  </div>
+
+  <div class="ends-options">
+
+    <div
+      class="end-card"
+      [class.selected]="totalEnds === 2"
+      (click)="totalEnds = 2">
+
+      <ion-icon
+        *ngIf="totalEnds === 2"
+        name="checkmark-circle">
+      </ion-icon>
+
+      <span>2</span>
+
+    </div>
+
+    <div
+      class="end-card"
+      [class.selected]="totalEnds === 4"
+      (click)="totalEnds = 4">
+
+      <ion-icon
+        *ngIf="totalEnds === 4"
+        name="checkmark-circle">
+      </ion-icon>
+
+      <span>4</span>
+
+    </div>
+
+    <div
+      class="end-card"
+      [class.selected]="totalEnds === 6"
+      (click)="totalEnds = 6">
+
+      <ion-icon
+        *ngIf="totalEnds === 6"
+        name="checkmark-circle">
+      </ion-icon>
+
+      <span>6</span>
+
+    </div>
+
+  </div>
+
+</div>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <ion-button
+
+      expand="block"
+
+      size="large"
+
+      color="success"
+
+      [disabled]="!playersAreValid"
+
+      (click)="startMatch()">
+
+      Iniciar Partido
+
+    </ion-button>
+
+    <p
+  class="error-message"
+  *ngIf="redPlayer && bluePlayer && redPlayer === bluePlayer">
+
+  <ion-icon
+    name="warning-outline">
+  </ion-icon>
+
+  Los jugadores deben ser diferentes.
+
+</p>
+
+  </div>
+
+</ion-content>

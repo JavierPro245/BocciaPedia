@@ -29,13 +29,7 @@ export class MenuService {
         {
           title: 'Entrenadores',
           icon: 'fitness-outline',
-          url: '/administration/trainers'
-        },
-
-        {
-          title: 'Árbitros',
-          icon: 'ribbon-outline',
-          url: '/administration'
+          url: '/main/trainer-list'
         },
 
         {
@@ -56,13 +50,13 @@ export class MenuService {
         {
           title: 'Evaluaciones',
           icon: 'clipboard-outline',
-          url: '/evaluations'
+          url: '/evaluations/evaluations-list'
         },
 
         {
           title: 'Partidos',
           icon: 'football-outline',
-          url: '/main/home'
+          url: '/matches/match-create'
         }
 
       ]
@@ -132,6 +126,12 @@ export class MenuService {
       title: 'Perfil',
       icon: 'person-circle-outline',
       url: '/main/profile'
+    },
+
+    {
+      title: 'Cerrar sesión',
+      icon: 'log-out-outline',
+      url: ''
     }
 
   ];

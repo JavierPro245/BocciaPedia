@@ -1,0 +1,183 @@
+<ion-content
+  class="broadcast"
+  *ngIf="match">
+
+  <!-- END -->
+
+  <div class="end-bar">
+
+    <span class="line"></span>
+
+    <span class="text">
+
+      {{ match.isTieBreak ? 'TB' : ('END ' + match.currentEnd) }}
+
+    </span>
+
+    <span class="line"></span>
+
+  </div>
+
+  <!-- Penalización pendiente -->
+
+  <div
+    class="penalty-warning"
+    *ngIf="match.penalty &&
+           match.penalty.active &&
+           !match.penalty.executed">
+
+    <ion-icon name="warning"></ion-icon>
+
+    Penalización pendiente
+
+    <span>
+
+      {{ match.penalty.team === 'red'
+          ? 'Bocha Roja'
+          : 'Bocha Azul' }}
+
+    </span>
+
+  </div>
+
+  <!-- MARCADOR -->
+
+  <div class="board">
+
+    <!-- ROJO -->
+
+    <div class="side red">
+
+      <div class="player-name">
+
+        {{ match.redPlayer }}
+
+      </div>
+
+      <div class="score">
+
+        {{ match.redScore }}
+
+        <span
+          class="tb-point"
+          *ngIf="match.tieBreakWinner === 'red'">
+
+          ●
+
+        </span>
+
+      </div>
+
+      <div class="timer">
+
+        {{ formatTime(match.redTime) }}
+
+      </div>
+
+      <div class="balls">
+
+        <span
+          *ngFor="let ball of [1,2,3,4,5,6]; let i=index"
+          [class.played]="i < match.redBallsPlayed">
+
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- AZUL -->
+
+    <div class="side blue">
+
+      <div class="player-name">
+
+        {{ match.bluePlayer }}
+
+      </div>
+
+      <div class="score">
+
+        {{ match.blueScore }}
+
+        <span
+          class="tb-point"
+          *ngIf="match.tieBreakWinner === 'blue'">
+
+          ●
+
+        </span>
+
+      </div>
+
+      <div class="timer">
+
+        {{ formatTime(match.blueTime) }}
+
+      </div>
+
+      <div class="balls">
+
+        <span
+          *ngFor="let ball of [1,2,3,4,5,6]; let i=index"
+          [class.played-blue]="i < match.blueBallsPlayed">
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- DESCANSO / PENALIZACIÓN -->
+
+  <div
+    class="rest-overlay"
+    *ngIf="showRest || showPenalty">
+
+    <app-countdown-circle
+      [seconds]="showPenalty ? penaltySeconds : restSeconds"
+      [totalSeconds]="60"
+      [label]="showPenalty ? 'PENALIZACIÓN' : 'DESCANSO'"
+      [subtitle]="showPenalty ? 'Bocha de penalización' : 'Próximo END'"
+      [team]="match.penalty?.team"
+      [penaltyMode]="showPenalty">
+
+    </app-countdown-circle>
+
+  </div>
+
+  <!-- WINNER -->
+
+  <div
+    class="winner-banner"
+    *ngIf="match.state === 'finished'">
+
+    <div
+      class="winner red"
+      [class.active]="match.redScore > match.blueScore">
+
+      <span *ngIf="match.redScore > match.blueScore">
+
+        WINNER
+
+      </span>
+
+    </div>
+
+    <div
+      class="winner blue"
+      [class.active]="match.blueScore > match.redScore">
+
+      <span *ngIf="match.blueScore > match.redScore">
+
+        WINNER
+
+      </span>
+
+    </div>
+
+  </div>
+
+</ion-content>

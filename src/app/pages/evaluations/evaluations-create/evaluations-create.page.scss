@@ -1,0 +1,25 @@
+.distance-buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:12px;
+
+}
+
+.distance-buttons ion-chip{
+
+    cursor:pointer;
+
+}
+
+ion-note{
+
+    display:block;
+
+    margin-top:10px;
+
+}

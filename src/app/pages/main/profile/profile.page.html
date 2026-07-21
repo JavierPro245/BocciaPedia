@@ -7,16 +7,16 @@
 
     <app-profile-avatar
 
-        image="assets/avatars/avatar.png"
+    [image]="user?.photoURL || 'assets/avatars/avatar.png'"
 
-        name="Javier Bastias"
+    [name]="user?.displayName || ''"
 
-        role="Administrador"
+    [role]="role"
 
-        [online]="true"
+    [online]="user?.active ?? false"
 
-        [editable]="true">
+    [editable]="true">
 
-    </app-profile-avatar>
+</app-profile-avatar>
 
 </ion-content>

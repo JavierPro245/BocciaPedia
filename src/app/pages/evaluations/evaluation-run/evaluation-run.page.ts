@@ -1,7 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CourtSelection } from '../models/court-selection.model';
 import { Throw } from '../models/throw.model';
 import { EvaluationSessionService } from 'src/app/services/evaluation-session';
+import { ModalController } from '@ionic/angular';
+import { ThrowResultModalComponent } from 'src/app/shared/components/throw-result-modal/throw-result-modal.component';
+import { Router } from '@angular/router';
+
+import { CourtEngineComponent } from '../components/court-engine/court-engine.component';
 
 @Component({
   selector: 'app-evaluation-run',
@@ -12,8 +17,18 @@ import { EvaluationSessionService } from 'src/app/services/evaluation-session';
 export class EvaluationRunPage implements OnInit {
 
   constructor(
-    private sessionService: EvaluationSessionService
-  ) {}
+
+  private sessionService: EvaluationSessionService,
+
+  private modalController: ModalController,
+
+  private router: Router
+
+) {}
+
+  @ViewChild('courtEngine')
+
+  courtEngine!: CourtEngineComponent;
 
   //==============================
   // DATOS DE LA EVALUACIÓN
@@ -37,11 +52,44 @@ export class EvaluationRunPage implements OnInit {
 
   ballColor: 'red' | 'blue' = 'red';
 
+  lockCourt = false;
+
+  showJackConfirmation = false;
+
+  pendingJack?: {
+
+    x: number;
+
+    y: number;
+
+    quadrant: string;
+
+  };
+
+  showThrowModal = false;
+
+  currentBall?: Throw;
+
+  pendingThrow?: Throw;
+
   @Input() throws: Throw[] = [];
 
   selectedBox = 'No seleccionado';
 
   selectedQuadrant = 'No seleccionado';
+
+  //==========================
+  // Asistente
+  //==========================
+
+  step = 1;
+
+  boxCompleted = false;
+
+  jackCompleted = false;
+
+  instruction =
+  'Seleccione el Box para comenzar la evaluación.';
 
   //==============================
   // INICIO
@@ -72,20 +120,38 @@ export class EvaluationRunPage implements OnInit {
 
   onSelection(selection: CourtSelection): void {
 
-    if (selection.box) {
+  if (selection.box) {
 
-      this.selectedBox = `Box ${selection.box}`;
+    this.selectedBox = 'Box ' + selection.box;
 
-    }
+    this.instruction =
+    'Coloque el Jack en la cancha.';
 
-    if (selection.target) {
+    this.sessionService.setSelectedBox(selection.box);
 
-      this.selectedQuadrant =
-        selection.quadrant ?? 'No seleccionado';
-
-    }
+    return;
 
   }
+
+  if (selection.target) {
+
+    this.selectedQuadrant = selection.quadrant ?? '';
+
+    this.sessionService.setSelectedQuadrant(
+      this.selectedQuadrant
+    );
+
+    this.sessionService.setJack(
+
+      selection.x,
+
+      selection.y
+
+    );
+
+  }
+
+}
 
   //==============================
   // LANZAMIENTOS
@@ -93,13 +159,99 @@ export class EvaluationRunPage implements OnInit {
 
   onThrowRegistered(ball: Throw): void {
 
-  console.log('Nueva bola', ball);
+  if (this.evaluationFinished) {
+    return;
+  }
 
-  this.throws = [...this.throws, ball];
+  this.pendingThrow = ball;
 
-  console.log(this.throws);
+  this.currentBall = ball;
 
-  this.currentThrow = this.throws.length;
+  // Este es el lanzamiento que se está evaluando
+  this.currentThrow = this.throws.length + 1;
+
+  this.lockCourt = true;
+
+  this.showThrowModal = true;
+
+}
+
+saveThrowEvaluation(event: any): void {
+
+  if (!this.pendingThrow) {
+    return;
+  }
+
+  this.pendingThrow.result = event.result;
+
+  this.pendingThrow.observation = event.observation;
+
+  this.throws.push(this.pendingThrow);
+
+  this.sessionService.setThrows(this.throws);
+
+  this.pendingThrow = undefined;
+
+  this.currentBall = undefined;
+
+  this.courtEngine.confirmThrow();
+
+  this.showThrowModal = false;
+
+  this.lockCourt = false;
+
+  if (!this.evaluationFinished) {
+
+    const nextThrow = this.throws.length + 1;
+
+if (nextThrow <= this.totalThrows) {
+
+  this.instruction =
+    `Realice el lanzamiento ${nextThrow} de ${this.totalThrows}.`;
+
+} else {
+
+  this.instruction =
+    'Evaluación finalizada.';
+
+}
+
+  }
+
+}
+
+
+private async showThrowResultModal(ball: Throw): Promise<void> {
+
+  const modal = await this.modalController.create({
+
+    component: ThrowResultModalComponent,
+
+    componentProps: {
+
+      throwNumber: ball.throwNumber
+
+    },
+
+    backdropDismiss: false
+
+  });
+
+  modal.onDidDismiss().then(result => {
+
+    if (!result.data) {
+      return;
+    }
+
+    ball.result = result.data.result;
+
+    ball.observation = result.data.observation;
+
+    this.lockCourt = false;
+
+  });
+
+  await modal.present();
 
 }
 
@@ -120,15 +272,17 @@ export class EvaluationRunPage implements OnInit {
   // FIN EVALUACIÓN
   //==============================
 
-  private finishEvaluation(): void {
+  finishEvaluation(): void {
 
-    console.log('Evaluación finalizada');
+  // Guardamos por última vez los lanzamientos
+  this.sessionService.setThrows(this.throws);
 
-    console.log(this.throws);
+  // Navegamos al resumen
+  this.router.navigate([
+    '/main/evaluations/evaluations-detail'
+  ]);
 
-    // Aquí después guardaremos en Firebase
-
-  }
+}
 
   //==============================
   // GETTERS
@@ -155,5 +309,78 @@ export class EvaluationRunPage implements OnInit {
     return this.totalThrows - this.currentThrow;
 
   }
+
+
+  repositionThrow(): void {
+
+    this.courtEngine.cancelThrow();
+
+  this.pendingThrow = undefined;
+
+  this.currentBall = undefined;
+
+  this.showThrowModal = false;
+
+  this.lockCourt = false;
+
+  this.instruction =
+  'Vuelva a colocar el lanzamiento.';
+
+}
+
+onJackPending(event: any): void {
+
+  console.log('JACK PENDING', event);
+
+  this.pendingJack = event;
+
+  this.lockCourt = true;
+
+  this.showJackConfirmation = true;
+
+}
+
+confirmJack(): void {
+
+  this.courtEngine.confirmJack();
+
+  this.showJackConfirmation = false;
+
+  this.lockCourt = false;
+
+  this.instruction =
+  `Realice el lanzamiento 1 de ${this.totalThrows}.`;
+
+}
+
+repositionJack(): void {
+
+  this.courtEngine.cancelJack();
+
+  this.pendingJack = undefined;
+
+  this.showJackConfirmation = false;
+
+  this.lockCourt = false;
+
+}
+
+get isBoxCompleted(): boolean {
+
+  return this.selectedBox !== 'No seleccionado';
+
+}
+
+get isJackCompleted(): boolean {
+
+  return this.selectedQuadrant !== 'No seleccionado';
+
+}
+
+get isThrowStepActive(): boolean {
+
+  return this.isBoxCompleted && this.isJackCompleted;
+
+}
 
 }

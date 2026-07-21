@@ -6,6 +6,9 @@ export interface Evaluation {
 
   athleteName: string;
 
+  // Opcional por ahora
+  category?: string;
+
   evaluationType: EvaluationType;
 
   throws: number;
@@ -27,17 +30,10 @@ export interface Evaluation {
 }
 
 export type EvaluationType =
-
-'First Ball'
-
-| 'Placement'
-
-| 'Push On'
-
-| 'Push Off'
-
-| 'Ricochet'
-
-| 'Smash'
-
-| 'Bochada';
+  | 'First Ball'
+  | 'Placement'
+  | 'Push On'
+  | 'Push Off'
+  | 'Ricochet'
+  | 'Smash'
+  | 'Bochada';

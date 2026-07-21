@@ -23,6 +23,13 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
 
   @Output() courtSelection = new EventEmitter<CourtSelection>();
 
+  @Output()
+  jackPending = new EventEmitter<{
+    x: number;
+    y: number;
+    quadrant: string;
+  }>();
+
   @Output() throwRegistered = new EventEmitter<Throw>();
 
   @Input() ballColor:'red'|'blue'='red';
@@ -84,6 +91,8 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
 
   selectedBox:number|null=null;
 
+  boxSelected = false;
+
   selectedQuadrant:'Q1'|'Q2'|'Q3'|'Q4'|null=null;
 
   jack={
@@ -95,6 +104,18 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
     y:0
 
   };
+
+  private pendingJack = {
+
+  placed:false,
+
+  x:0,
+
+  y:0
+
+};
+
+  private pendingThrow?: Throw;
 
   //------------------------------------------------
 
@@ -160,6 +181,14 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
 
     const topBoxes=c.y+c.height-c.boxesHeight;
 
+    if (!this.boxSelected && y < topBoxes) {
+
+  alert('Debe seleccionar primero un Box.');
+
+  return;
+
+}
+
     //------------------------------------------------
 
     // BOX
@@ -180,13 +209,23 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
 
     //------------------------------------------------
 
-    if(!this.jack.placed){
+    //------------------------------------------------
+// JACK
+//------------------------------------------------
 
-      this.placeJack(x,y);
+if (!this.jack.placed) {
 
-      return;
+  if (this.pendingJack.placed) {
 
-    }
+    return;
+
+  }
+
+  this.placeJack(x, y);
+
+  return;
+
+}
 
     //------------------------------------------------
 
@@ -217,6 +256,8 @@ private detectBox(x:number,y:number){
 
   this.selectedBox=index+1;
 
+  this.boxSelected = true;
+
   this.courtSelection.emit({
 
     box:this.selectedBox,
@@ -235,11 +276,11 @@ private detectBox(x:number,y:number){
 // COLOCAR JACK
 //------------------------------------------------
 
-private placeJack(x:number,y:number){
+private placeJack(x: number, y: number): void {
 
-  this.jack={
+  this.pendingJack = {
 
-    placed:true,
+    placed: true,
 
     x,
 
@@ -247,35 +288,112 @@ private placeJack(x:number,y:number){
 
   };
 
-  const centerX=this.COURT.x+this.COURT.width/2;
+  const centerX = this.COURT.x + this.COURT.width / 2;
 
-  const centerY=this.COURT.y+this.COURT.height/2;
+  const centerY = this.COURT.y + this.COURT.height / 2;
 
-  if(y<centerY){
+  if (y < centerY) {
 
-    this.selectedQuadrant=
+    this.selectedQuadrant =
+      x < centerX ? 'Q1' : 'Q2';
 
-      x<centerX ? 'Q1' : 'Q2';
+  } else {
 
-  }else{
-
-    this.selectedQuadrant=
-
-      x<centerX ? 'Q4' : 'Q3';
+    this.selectedQuadrant =
+      x < centerX ? 'Q4' : 'Q3';
 
   }
 
-  this.courtSelection.emit({
+  this.render();
 
-    target:true,
+  this.jackPending.emit({
 
     x,
 
     y,
 
-    quadrant:this.selectedQuadrant ?? undefined
+    quadrant: this.selectedQuadrant!
 
   });
+
+}
+
+private getQuadrant(
+  x: number,
+  y: number
+): 'Q1' | 'Q2' | 'Q3' | 'Q4' {
+
+  const centerX =
+    this.COURT.x + this.COURT.width / 2;
+
+  const centerY =
+    this.COURT.y + this.COURT.height / 2;
+
+  if (y < centerY) {
+
+    return x < centerX ? 'Q1' : 'Q2';
+
+  }
+
+  return x < centerX ? 'Q4' : 'Q3';
+
+}
+
+//------------------------------------------------
+
+  public confirmJack(): void {
+
+  if (!this.pendingJack.placed) {
+
+    return;
+
+  }
+
+  this.jack = {
+
+    ...this.pendingJack
+
+  };
+
+  this.pendingJack = {
+
+    placed: false,
+
+    x: 0,
+
+    y: 0
+
+  };
+
+  this.courtSelection.emit({
+
+    target: true,
+
+    x: this.jack.x,
+
+    y: this.jack.y,
+
+    quadrant: this.selectedQuadrant!
+
+  });
+
+  this.render();
+
+}
+
+  public cancelJack(): void {
+
+  this.pendingJack = {
+
+    placed: false,
+
+    x: 0,
+
+    y: 0
+
+  };
+
+  this.selectedQuadrant = null;
 
   this.render();
 
@@ -291,24 +409,27 @@ private addThrow(x: number, y: number): void {
     return;
   }
 
- const ball: Throw = {
+  this.pendingThrow = {
 
-  id: Date.now(),
+    id: Date.now(),
 
-  throwNumber: this.throws.length + 1,
+    throwNumber: this.throws.length + 1,
 
-  x,
+    x,
 
-  y,
+    y,
 
-  color: this.ballColor,
+    color: this.ballColor,
 
-  result: 'good'
+    quadrant: this.getQuadrant(x, y),
 
-};
+    result: 'good'
 
-  // Ya NO se guarda aquí
-  this.throwRegistered.emit(ball);
+  };
+
+  this.render();
+
+  this.throwRegistered.emit(this.pendingThrow);
 
 }
 
@@ -386,8 +507,34 @@ private drawTarget(): void {
 
 private drawJack(): void {
 
+  if (this.pendingJack.placed) {
+
+    this.ctx.beginPath();
+
+    this.ctx.fillStyle = "#FFD54F";
+
+    this.ctx.arc(
+
+      this.pendingJack.x,
+
+      this.pendingJack.y,
+
+      12,
+
+      0,
+
+      Math.PI * 2
+
+    );
+
+    this.ctx.fill();
+
+  }
+
   if (!this.jack.placed) {
+
     return;
+
   }
 
   this.ctx.beginPath();
@@ -395,11 +542,17 @@ private drawJack(): void {
   this.ctx.fillStyle = "#FFFFFF";
 
   this.ctx.arc(
+
     this.jack.x,
+
     this.jack.y,
+
     10,
+
     0,
+
     Math.PI * 2
+
   );
 
   this.ctx.fill();
@@ -411,6 +564,7 @@ private drawJack(): void {
   this.ctx.stroke();
 
 }
+
 private drawThrows(): void {
 
   for (const ball of this.throws) {
@@ -439,6 +593,41 @@ private drawThrows(): void {
     this.ctx.stroke();
 
   }
+
+  //--------------------------------------------------
+// Lanzamiento temporal
+//--------------------------------------------------
+
+if (this.pendingThrow) {
+
+  this.ctx.beginPath();
+
+  this.ctx.fillStyle =
+    this.pendingThrow.color === 'red'
+      ? 'rgba(229,57,53,0.55)'
+      : 'rgba(30,136,229,0.55)';
+
+  this.ctx.arc(
+    this.pendingThrow.x,
+    this.pendingThrow.y,
+    14,
+    0,
+    Math.PI * 2
+  );
+
+  this.ctx.fill();
+
+  this.ctx.strokeStyle = '#FFFFFF';
+
+  this.ctx.lineWidth = 2;
+
+  this.ctx.setLineDash([6,4]);
+
+  this.ctx.stroke();
+
+  this.ctx.setLineDash([]);
+
+}
 
 }
 
@@ -704,6 +893,22 @@ private drawSelectedBox(): void {
     c.boxesHeight
 
   );
+
+}
+
+public confirmThrow(): void {
+
+  this.pendingThrow = undefined;
+
+  this.render();
+
+}
+
+public cancelThrow(): void {
+
+  this.pendingThrow = undefined;
+
+  this.render();
 
 }
 

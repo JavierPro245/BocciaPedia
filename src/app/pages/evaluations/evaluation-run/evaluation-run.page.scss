@@ -57,3 +57,259 @@ margin-bottom:4px;
 font-weight:700;
 
 }
+
+.stepper-card{
+
+    margin-bottom:16px;
+
+}
+
+.stepper{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:center;
+
+}
+
+.step{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    width:90px;
+
+}
+
+.circle{
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:50%;
+
+    border:2px solid #BDBDBD;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:700;
+
+    background:#FFF;
+
+    color:#9E9E9E;
+
+    transition:.25s;
+
+}
+
+.circle.active{
+
+    border-color:#1E88E5;
+
+    background:#1E88E5;
+
+    color:#FFF;
+
+}
+
+.circle.done{
+
+    border-color:#2E7D32;
+
+    background:#2E7D32;
+
+    color:#FFF;
+
+}
+
+.line{
+
+    flex:1;
+
+    height:3px;
+
+    background:#D6D6D6;
+
+    margin-top:18px;
+
+}
+
+.line.done{
+
+    background:#2E7D32;
+
+}
+
+.label{
+
+    margin-top:8px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    text-align:center;
+
+}
+
+.instruction{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#1565C0;
+
+}
+
+.evaluation-info{
+
+    margin-bottom:14px;
+
+}
+
+.evaluation-info ion-card-content{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+.info-chip{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 14px;
+
+    background:#F5F5F5;
+
+    border-radius:25px;
+
+    font-weight:600;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+
+}
+
+.info-chip ion-icon{
+
+    font-size:18px;
+
+}
+
+.athlete-card{
+
+    border-radius:18px;
+
+}
+
+.athlete-name{
+
+    margin-bottom:14px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+.chips{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+}
+
+.assistant-card{
+
+    border-radius:18px;
+
+}
+
+.assistant-status{
+
+    display:flex;
+
+    justify-content:space-around;
+
+    text-align:center;
+
+}
+
+.assistant-status div{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.assistant-status ion-icon{
+
+    font-size:28px;
+
+}
+
+.instruction{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    font-weight:600;
+
+    color:var(--ion-color-primary);
+
+}
+
+.court-card{
+
+    border-radius:20px;
+
+}
+
+.bottom-buttons{
+
+    display:flex;
+
+    gap:14px;
+
+    margin:18px 0 24px;
+
+}
+
+.bottom-buttons ion-button{
+
+    flex:1;
+
+}

@@ -76,6 +76,38 @@ const routes: Routes = [
       .then(m => m.EvaluationsPageModule)
 },
 
+// ======================
+// TRAINERS
+// ======================
+
+{
+  path: 'trainer-list',
+  loadChildren: () =>
+    import('../trainers/trainer-list/trainer-list.module')
+      .then(m => m.TrainerListPageModule)
+},
+
+{
+  path: 'trainer-create',
+  loadChildren: () =>
+    import('../trainers/trainer-create/trainer-create.module')
+      .then(m => m.TrainerCreatePageModule)
+},
+
+{
+  path: 'trainer-edit',
+  loadChildren: () =>
+    import('../trainers/trainer-edit/trainer-edit.module')
+      .then(m => m.TrainerEditPageModule)
+},
+
+{
+  path: 'trainer-detail/:id',
+  loadChildren: () =>
+    import('../trainers/trainer-detail/trainer-detail.module')
+      .then(m => m.TrainerDetailPageModule)
+},
+
       {
         path: '',
         redirectTo: 'home',

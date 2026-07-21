@@ -1,0 +1,67 @@
+.modal-content{
+
+    padding:18px;
+
+}
+
+.title{
+
+    text-align:center;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:18px;
+
+}
+
+ion-item{
+
+    --padding-start:0;
+
+    --inner-padding-end:0;
+
+}
+
+ion-radio{
+
+    margin-right:12px;
+
+}
+
+ion-icon{
+
+    font-size:24px;
+
+    margin-right:10px;
+
+}
+
+.buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:22px;
+
+}
+
+.buttons ion-button{
+
+    flex:1;
+
+    height:48px;
+
+}

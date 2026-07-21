@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { GuestGuard } from './guards/guest.guard';
 
 const routes: Routes = [
   // {
@@ -12,13 +14,17 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'auth',
-    loadChildren: () => import('./pages/auth/auth.module').then( m => m.AuthPageModule)
-  },
+  path: 'auth',
+  canActivate: [GuestGuard],
+  loadChildren: () =>
+    import('./pages/auth/auth.module').then(m => m.AuthPageModule)
+},
   {
-    path: 'main',
-    loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule)
-  },
+  path: 'main',
+  canActivate: [AuthGuard],
+  loadChildren: () =>
+    import('./pages/main/main.module').then(m => m.MainPageModule)
+},
   {
     path: 'athlete-list',
     loadChildren: () => import('./pages/athletes/athlete-list/athlete-list.module').then( m => m.AthleteListPageModule)
@@ -48,10 +54,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/evaluations/evaluations-detail/evaluations-detail.module').then( m => m.EvaluationsDetailPageModule)
   },
   {
-    path: 'evaluations-config',
-    loadChildren: () => import('./pages/evaluations/evaluations-config/evaluations-config.module').then( m => m.EvaluationsConfigPageModule)
-  },
-  {
     path: 'heatmap',
     loadChildren: () => import('./pages/evaluations/heatmap/heatmap.module').then( m => m.HeatmapPageModule)
   },
@@ -77,7 +79,7 @@ const routes: Routes = [
   },
   {
     path: 'trainers',
-    loadChildren: () => import('./pages/administration/trainers/trainers.module').then( m => m.TrainersPageModule)
+    loadChildren: () => import('./pages/trainers/trainers.module').then( m => m.TrainersPageModule)
   },
   {
     path: 'roles',
@@ -122,6 +124,10 @@ const routes: Routes = [
     import('./pages/evaluations/evaluation-run/evaluation-run.module')
       .then(m => m.EvaluationRunPageModule)
 },
+  {
+    path: 'matches',
+    loadChildren: () => import('./pages/matches/matches.module').then( m => m.MatchesPageModule)
+  },
 ];
 
 @NgModule({

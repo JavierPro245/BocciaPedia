@@ -9,10 +9,6 @@ const routes: Routes = [
     component: EvaluationsPage,
     children: [
       {
-        path: 'evaluations-config',
-        loadChildren: () => import('./evaluations-config/evaluations-config.module').then(m => m.EvaluationsConfigPageModule)
-      },
-      {
         path: 'evaluations-create',
         loadChildren: () => import('./evaluations-create/evaluations-create.module').then(m => m.EvaluationsCreatePageModule)
       },
@@ -31,9 +27,15 @@ const routes: Routes = [
       {
         path: 'heatmap',
         loadChildren: () => import('./heatmap/heatmap.module').then(m => m.HeatmapPageModule)
+      },
+
+      {
+        path: 'evaluation-throws',
+        loadChildren: () => import('./evaluation-throws/evaluation-throws.module').then( m => m.EvaluationThrowsPageModule)
       }
     ]
-  }
+  },
+  
 ];
 
 @NgModule({

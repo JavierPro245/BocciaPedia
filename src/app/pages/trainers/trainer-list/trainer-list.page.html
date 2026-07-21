@@ -1,0 +1,58 @@
+<app-header
+    [showMenu]="true"
+    title="Entrenadores">
+</app-header>
+
+<ion-content>
+
+    <div class="page-content">
+
+        <ion-searchbar
+            placeholder="Buscar entrenador"
+            animated="true">
+        </ion-searchbar>
+
+        <ion-button
+            expand="block"
+            routerLink="/trainers/trainer-create">
+
+            <ion-icon
+                slot="start"
+                name="add-circle-outline">
+            </ion-icon>
+
+            Nuevo entrenador
+
+        </ion-button>
+
+        <app-empty-state
+
+            *ngIf="trainers.length===0"
+
+            title="No existen entrenadores"
+
+            subtitle="Presiona el botón para crear uno nuevo">
+
+        </app-empty-state>
+
+        <div class="grid">
+
+    <app-trainer-card
+
+        *ngFor="let trainer of trainers"
+
+        [trainer]="trainer"
+
+        (details)="viewTrainer($event)"
+
+        (edit)="editTrainer($event)"
+
+        (delete)="deleteTrainer($event)">
+
+    </app-trainer-card>
+
+</div>
+
+    </div>
+
+</ion-content>

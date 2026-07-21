@@ -1,0 +1,83 @@
+<ion-card
+  class="evaluation-card"
+  button
+  (click)="openEvaluation()">
+
+  <ion-card-content>
+
+    <div class="card">
+
+      <!-- Icono -->
+
+      <div
+        class="icon"
+        [ngClass]="getColorClass()">
+
+        <ion-icon
+          [name]="getIcon()">
+        </ion-icon>
+
+      </div>
+
+      <!-- Información -->
+
+      <div class="info">
+
+        <div class="title-row">
+
+          <h2>
+
+            {{evaluation.evaluationType}}
+
+          </h2>
+
+          <ion-badge>
+
+            {{evaluation.category || 'BC3'}}
+
+          </ion-badge>
+
+        </div>
+
+        <div class="athlete">
+
+          {{evaluation.athleteName}}
+
+        </div>
+
+        <div class="details">
+
+          <span>
+
+            🎯 {{evaluation.throws}}
+
+          </span>
+
+          <span>
+
+            📏 {{evaluation.distance}} m
+
+          </span>
+
+          <span>
+
+            📅 {{evaluation.date | date:'dd/MM/yyyy'}}
+
+          </span>
+
+        </div>
+
+      </div>
+
+      <!-- Flecha -->
+
+      <ion-icon
+        class="arrow"
+        name="chevron-forward">
+      </ion-icon>
+
+    </div>
+
+  </ion-card-content>
+
+</ion-card>

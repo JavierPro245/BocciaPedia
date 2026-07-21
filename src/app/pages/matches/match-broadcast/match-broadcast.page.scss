@@ -1,0 +1,299 @@
+.broadcast{
+
+    --background:#111;
+
+    min-height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* =========================
+   END
+========================= */
+
+.end-bar{
+
+    height:70px;
+
+    background:#000;
+
+}
+
+.end-bar .line{
+
+    flex:1;
+
+    height:2px;
+
+    background:#444;
+
+}
+
+.end-bar .text{
+
+    font-size:34px;
+
+    font-weight:800;
+
+}
+
+/* =========================
+   TABLERO
+========================= */
+
+.board{
+
+    position:relative;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    flex:1;
+
+    height:calc(100vh - 120px);
+
+}
+
+.side{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+    padding:28px 16px;
+
+}
+
+.red{
+
+    background:linear-gradient(180deg,#e53935,#b71c1c);
+
+}
+
+.blue{
+
+    background:linear-gradient(180deg,#1976d2,#0d47a1);
+
+}
+
+.player-name{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    text-align:center;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    margin-bottom:28px;
+
+}
+
+.score{
+
+    font-size:50px;
+
+    animation:scorePop .35s;
+
+}
+
+@keyframes scorePop{
+
+    0%{
+
+        transform:scale(.8);
+
+        opacity:.5;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+.timer{
+
+    margin-top:28px;
+
+    font-size:60px;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+}
+
+.balls{
+
+    display:flex;
+
+    gap:14px;
+
+    margin-top:28px;
+
+}
+
+.balls span{
+
+    width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    border:3px solid white;
+
+}
+
+.played{
+
+    background:#eb445a;
+
+    border-color:#eb445a;
+
+    box-shadow:0 0 10px rgba(235,68,90,.6);
+
+}
+
+.played-blue{
+
+    background:#3880ff;
+
+    border-color:#3880ff;
+
+    box-shadow:0 0 10px rgba(56,128,255,.6);
+
+}
+
+/* =========================
+   DESCANSO / PENALIZACIÓN
+========================= */
+
+.rest-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:rgba(0,0,0,.55);
+
+    z-index:100;
+
+}
+
+.rest-overlay app-countdown-circle{
+
+    transform:scale(.90);
+
+}
+
+/* =========================
+   PENALIZACIÓN
+========================= */
+
+.penalty-warning{
+
+    margin:10px;
+
+    padding:12px 18px;
+
+    background:#fff3cd;
+
+    color:#8a6d3b;
+
+    border-left:6px solid #ffc107;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-weight:700;
+
+}
+
+.penalty-warning span{
+
+    color:black;
+
+}
+
+/* =========================
+   WINNER
+========================= */
+.winner-banner{
+
+    height:70px;
+
+}
+
+.winner{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:transparent;
+
+}
+
+.winner.active{
+
+    background:#2e7d32;
+
+}
+
+.winner span{
+
+    font-size:34px;
+
+    letter-spacing:4px;
+
+}
+
+/* =========================
+   TIE BREAK
+========================= */
+
+.tb-point{
+
+    margin-left:10px;
+
+    font-size:34px;
+
+    color:white;
+
+}

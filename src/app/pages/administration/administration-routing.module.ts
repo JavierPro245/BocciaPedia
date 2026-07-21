@@ -17,10 +17,6 @@ const routes: Routes = [
         loadChildren: () => import('./system-config/system-config.module').then( m => m.SystemConfigPageModule)
       },
       {
-        path: 'trainers',
-        loadChildren: () => import('./trainers/trainers.module').then( m => m.TrainersPageModule)
-      },
-      {
         path: 'users',
         loadChildren: () => import('./users/users.module').then( m => m.UsersPageModule)
       }

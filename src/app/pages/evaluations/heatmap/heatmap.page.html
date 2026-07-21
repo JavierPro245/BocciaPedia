@@ -1,13 +1,184 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>heatmap</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  [showBackButton]="true"
+  title="HeatMap">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">heatmap</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <div class="container">
+
+    <ion-card class="filters-card">
+
+  <ion-card-content>
+
+    <div class="filter-group">
+
+      <div class="filter-title">
+
+        Modo de análisis
+
+      </div>
+
+      <div class="chips">
+
+        <ion-chip
+          [outline]="heatMode !== 'density'"
+          [color]="heatMode === 'density' ? 'primary' : 'medium'"
+          (click)="selectHeatMode('density')">
+
+          <ion-icon name="flame"></ion-icon>
+
+          <ion-label>
+
+            Concentración
+
+          </ion-label>
+
+        </ion-chip>
+
+        <ion-chip
+          [outline]="heatMode !== 'quality'"
+          [color]="heatMode === 'quality' ? 'success' : 'medium'"
+          (click)="selectHeatMode('quality')">
+
+          <ion-icon name="ribbon"></ion-icon>
+
+          <ion-label>
+
+            Calidad
+
+          </ion-label>
+
+        </ion-chip>
+
+        <ion-chip
+          [outline]="heatMode !== 'precision'"
+          [color]="heatMode === 'precision' ? 'warning' : 'medium'"
+          (click)="selectHeatMode('precision')">
+
+          <ion-icon name="locate"></ion-icon>
+
+          <ion-label>
+
+            Precisión
+
+          </ion-label>
+
+        </ion-chip>
+
+      </div>
+
+    </div>
+
+    <div class="filter-group">
+
+      <div class="filter-title">
+
+        Mostrar
+
+      </div>
+
+      <div class="chips">
+
+        <ion-chip
+          [outline]="filter !== 'all'"
+          [color]="filter === 'all' ? 'primary' : 'medium'"
+          (click)="selectFilter('all')">
+
+          <ion-label>
+
+            Todas
+
+          </ion-label>
+
+        </ion-chip>
+
+        <ion-chip
+          [outline]="filter !== 'red'"
+          [color]="filter === 'red' ? 'danger' : 'medium'"
+          (click)="selectFilter('red')">
+
+          <ion-icon name="ellipse"></ion-icon>
+
+          <ion-label>
+
+            Rojas
+
+          </ion-label>
+
+        </ion-chip>
+
+        <ion-chip
+          [outline]="filter !== 'blue'"
+          [color]="filter === 'blue' ? 'primary' : 'medium'"
+          (click)="selectFilter('blue')">
+
+          <ion-icon name="ellipse"></ion-icon>
+
+          <ion-label>
+
+            Azules
+
+          </ion-label>
+
+        </ion-chip>
+
+      </div>
+
+    </div>
+
+  </ion-card-content>
+
+</ion-card>
+
+    <ion-card class="court-card">
+
+  <ion-card-content class="court-content">
+
+    <canvas
+      #courtCanvas>
+    </canvas>
+
+    <div class="legend-overlay">
+
+      <div class="legend-item">
+
+        <span class="dot green"></span>
+
+        Excelente
+
+      </div>
+
+      <div class="legend-item">
+
+        <span class="dot blue"></span>
+
+        Buena
+
+      </div>
+
+      <div class="legend-item">
+
+        <span class="dot yellow"></span>
+
+        Regular
+
+      </div>
+
+      <div class="legend-item">
+
+        <span class="dot red"></span>
+
+        Baja
+
+      </div>
+
+    </div>
+
+  </ion-card-content>
+
+</ion-card>
+
+  </div>
+
 </ion-content>

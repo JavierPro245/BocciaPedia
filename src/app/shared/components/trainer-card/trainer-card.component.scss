@@ -1,0 +1,99 @@
+.trainer-card{
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    transition:.25s;
+
+}
+
+.trainer-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.menu{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+}
+
+.photo{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin-top:-10px;
+
+    margin-bottom:12px;
+
+}
+
+ion-avatar{
+
+    width:90px;
+
+    height:90px;
+
+}
+
+ion-avatar img{
+
+    object-fit:cover;
+
+}
+
+ion-avatar ion-icon{
+
+    width:90px;
+
+    height:90px;
+
+    color:#1e4ea1;
+
+}
+
+h2{
+
+    text-align:center;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin:8px 0;
+
+}
+
+ion-chip{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin:10px auto;
+
+}
+
+p{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:16px;
+
+}
+
+ion-item{
+
+    --padding-start:0;
+
+    font-size:14px;
+
+}

@@ -35,6 +35,22 @@
 
         </ion-title>
 
+        <ion-buttons slot="end">
+
+  <ion-button
+    *ngIf="showAction"
+    fill="clear"
+    (click)="onAction()">
+
+    <ion-icon
+      slot="icon-only"
+      [name]="actionIcon">
+    </ion-icon>
+
+  </ion-button>
+
+</ion-buttons>
+
     </ion-toolbar>
 
 </ion-header>

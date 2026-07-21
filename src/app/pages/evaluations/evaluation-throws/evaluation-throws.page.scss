@@ -1,0 +1,61 @@
+.container{
+
+    padding:16px;
+
+}
+
+ion-card{
+
+    border-radius:18px;
+
+    margin-bottom:16px;
+
+}
+
+.header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+}
+
+.header h2{
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+.result{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:12px;
+
+}
+
+.result ion-icon{
+
+    font-size:24px;
+
+}
+
+p{
+
+    margin:8px 0;
+
+    color:#555;
+
+}

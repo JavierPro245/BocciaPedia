@@ -7,37 +7,67 @@
 
   <div class="container">
 
-    <ion-card>
+    <ion-card class="athlete-card">
 
   <ion-card-content>
 
-    <h2>{{ athlete }}</h2>
+    <h2 class="athlete-name">
 
-    <p>{{ category }}</p>
+      {{ athlete }}
 
-    <ion-chip color="primary">
+    </h2>
 
-      <ion-icon name="flag-outline"></ion-icon>
+    <div class="chips">
 
-      <ion-label>
+      <ion-chip color="light">
 
-        {{ evaluation }}
+        <ion-label>
 
-      </ion-label>
+          {{ category }}
 
-    </ion-chip>
+        </ion-label>
 
-    <ion-chip color="medium">
+      </ion-chip>
 
-      <ion-icon name="resize-outline"></ion-icon>
+      <ion-chip color="primary">
 
-      <ion-label>
+        <ion-icon name="flag-outline"></ion-icon>
 
-        {{ distance }} m
+        <ion-label>
 
-      </ion-label>
+          {{ evaluation }}
 
-    </ion-chip>
+        </ion-label>
+
+      </ion-chip>
+
+      <ion-chip color="success">
+
+        <ion-icon name="resize-outline"></ion-icon>
+
+        <ion-label>
+
+          {{ distance }} m
+
+        </ion-label>
+
+      </ion-chip>
+
+      <ion-chip
+      *ngIf="selectedBox !== 'No seleccionado'"
+      color="warning">
+
+        <ion-icon name="cube-outline"></ion-icon>
+
+        <ion-label>
+
+          {{ selectedBox }}
+
+        </ion-label>
+
+      </ion-chip>
+
+    </div>
 
   </ion-card-content>
 
@@ -63,17 +93,131 @@
 
     </ion-card>
 
-    <ion-card>
+   <ion-card class="assistant-card">
+
+  <ion-card-content>
+
+    <div class="assistant-status">
+
+      <div>
+
+        <ion-icon
+        color="success"
+        [name]="isBoxCompleted ? 'checkmark-circle' : 'ellipse-outline'">
+        </ion-icon>
+
+        <span>
+
+          Box
+
+        </span>
+
+      </div>
+
+      <div>
+
+        <ion-icon
+        color="success"
+        [name]="isJackCompleted ? 'checkmark-circle' : 'ellipse-outline'">
+        </ion-icon>
+
+        <span>
+
+          Jack
+
+        </span>
+
+      </div>
+
+      <div>
+
+        <ion-badge color="primary">
+
+          {{currentThrow+1}}
+
+        </ion-badge>
+
+        <span>
+
+          Lanzamientos
+
+        </span>
+
+      </div>
+
+    </div>
+
+    <p class="instruction">
+
+      {{ instruction }}
+
+    </p>
+
+  </ion-card-content>
+
+</ion-card>
+    <ion-card class="court-card">
 
       <ion-card-content>
 
         <app-court-engine
+
+        #courtEngine
+
         [throws]="throws"
+
         [ballColor]="ballColor"
-        [locked]="evaluationFinished"
+
+        [locked]="evaluationFinished || lockCourt"
+
         (courtSelection)="onSelection($event)"
+
+        (jackPending)="onJackPending($event)"
+
         (throwRegistered)="onThrowRegistered($event)">
-      </app-court-engine>
+
+        </app-court-engine>
+
+        <ion-card
+        *ngIf="showJackConfirmation"
+        class="jack-confirm-card">
+
+  <ion-card-content>
+
+    <h2>📍 Confirmar Jack</h2>
+
+    <p>
+
+      ¿La posición del Jack es correcta?
+
+    </p>
+
+    <div class="bottom-buttons">
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="repositionJack()">
+
+        Reubicar
+
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        color="success"
+        (click)="confirmJack()">
+
+        Confirmar
+
+        </ion-button>
+
+        </div>
+
+        </ion-card-content>
+
+        </ion-card>
 
         <ion-segment
         [(ngModel)]="ballColor">
@@ -98,59 +242,7 @@
 
     </ion-card>
 
-    <ion-card>
-
-      <ion-item>
-
-        <ion-label>
-
-          Objetivo
-
-        </ion-label>
-
-        <ion-note slot="end">
-
-          {{ selectedQuadrant }}
-
-        </ion-note>
-
-      </ion-item>
-
-      <ion-item>
-
-        <ion-label>
-
-          Box
-
-        </ion-label>
-
-        <ion-note slot="end">
-
-          {{ selectedBox }}
-
-        </ion-note>
-
-      </ion-item>
-
-      <ion-item>
-
-        <ion-label>
-
-          Distancia
-
-        </ion-label>
-
-        <ion-note slot="end">
-
-          {{ distance }} m
-
-        </ion-note>
-
-      </ion-item>
-
-    </ion-card>
-
-    <div class="buttons">
+    <div class="bottom-buttons">
 
       <ion-button
           expand="block"
@@ -161,14 +253,35 @@
       </ion-button>
 
       <ion-button
-          expand="block">
+      expand="block"
+      [disabled]="!evaluationFinished"
+      (click)="finishEvaluation()">
 
-        Continuar
+        Ver resumen
 
       </ion-button>
 
     </div>
 
   </div>
+
+  <ion-modal
+  [isOpen]="showThrowModal"
+  [initialBreakpoint]="0.9"
+  [breakpoints]="[0,0.9]"
+  [backdropDismiss]="false"
+  [handle]="true">
+
+  <ng-template>
+
+    <app-throw-result-modal
+    [throwNumber]="currentThrow"
+    (save)="saveThrowEvaluation($event)"
+    (reposition)="repositionThrow()">
+    </app-throw-result-modal>
+
+  </ng-template>
+
+</ion-modal>
 
 </ion-content>

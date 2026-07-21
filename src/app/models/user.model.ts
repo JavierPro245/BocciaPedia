@@ -1,14 +1,28 @@
+export type UserRole =
+  | 'admin'
+  | 'trainer'
+  | 'athlete'
+  | 'assistant'
+  | 'referee';
+
 export interface User {
+
   uid: string;
-  nombre: string;
-  apellido: string;
+
   email: string;
-  password: string;
 
-  fotoPerfil: string;
+  displayName: string;
 
-  rol: 'Administrador' | 'Entrenador' | 'Deportista' | 'Arbitro';
+  photoURL: string;
 
-  activo: boolean;
-  fechaCreacion: Date;
+  roles: UserRole[];
+
+  approved: boolean;
+
+  active: boolean;
+
+  createdAt: number;
+
+  updatedAt: number;
+
 }

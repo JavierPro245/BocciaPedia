@@ -1,0 +1,152 @@
+<div class="modal-content">
+
+  <h2 class="title">
+
+    Lanzamiento {{ throwNumber }}
+
+  </h2>
+
+  <p class="subtitle">
+
+    ¿Cómo fue este lanzamiento?
+
+  </p>
+
+  <ion-radio-group
+    [(ngModel)]="selectedResult">
+
+    <ion-item
+      lines="none">
+
+      <ion-radio
+        slot="start"
+        value="excellent">
+      </ion-radio>
+
+      <ion-icon
+        slot="start"
+        name="trophy"
+        color="success">
+      </ion-icon>
+
+      <ion-label>
+
+        Excelente
+
+      </ion-label>
+
+    </ion-item>
+
+    <ion-item
+      lines="none">
+
+      <ion-radio
+        slot="start"
+        value="good">
+      </ion-radio>
+
+      <ion-icon
+        slot="start"
+        name="thumbs-up"
+        color="primary">
+      </ion-icon>
+
+      <ion-label>
+
+        Bueno
+
+      </ion-label>
+
+    </ion-item>
+
+    <ion-item
+      lines="none">
+
+      <ion-radio
+        slot="start"
+        value="regular">
+      </ion-radio>
+
+      <ion-icon
+        slot="start"
+        name="remove-circle"
+        color="warning">
+      </ion-icon>
+
+      <ion-label>
+
+        Regular
+
+      </ion-label>
+
+    </ion-item>
+
+    <ion-item
+      lines="none">
+
+      <ion-radio
+        slot="start"
+        value="bad">
+      </ion-radio>
+
+      <ion-icon
+        slot="start"
+        name="close-circle"
+        color="danger">
+      </ion-icon>
+
+      <ion-label>
+
+        Malo
+
+      </ion-label>
+
+    </ion-item>
+
+  </ion-radio-group>
+
+  <ion-item>
+
+    <ion-textarea
+
+      autoGrow="true"
+
+      label="Observación (opcional)"
+
+      labelPlacement="stacked"
+
+      placeholder="Comentario..."
+
+      [(ngModel)]="observation">
+
+    </ion-textarea>
+
+  </ion-item>
+
+  <div class="buttons">
+
+    <ion-button
+
+      fill="outline"
+
+      color="medium"
+
+      (click)="repositionThrow()">
+
+      Reubicar
+
+    </ion-button>
+
+    <ion-button
+
+      color="primary"
+
+      (click)="saveResult()">
+
+      Guardar
+
+    </ion-button>
+
+  </div>
+
+</div>

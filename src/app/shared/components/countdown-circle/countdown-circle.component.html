@@ -1,0 +1,54 @@
+<div
+  class="circle-wrapper"
+  [ngClass]="pulseClass">
+
+  <div
+    class="circle"
+    [ngClass]="colorClass"
+    [ngStyle]="{
+      '--progress': progress + '%'
+    }">
+
+    <div class="content">
+
+  <div class="label">
+
+    {{ label }}
+
+  </div>
+
+  <div
+    class="penalty-team"
+    *ngIf="penaltyMode">
+
+    <div
+      class="ball"
+      [class.red]="team==='red'"
+      [class.blue]="team==='blue'">
+    </div>
+
+    <span>
+
+      {{ team==='red' ? 'ROJA' : 'AZUL' }}
+
+    </span>
+
+  </div>
+
+  <div class="time">
+
+    {{ formatTime() }}
+
+  </div>
+
+  <div class="subtitle">
+
+    {{ subtitle }}
+
+  </div>
+
+</div>
+
+  </div>
+
+</div>

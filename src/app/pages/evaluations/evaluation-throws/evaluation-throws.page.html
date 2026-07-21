@@ -1,0 +1,118 @@
+<app-header
+  title="Detalle de lanzamientos"
+  [showBackButton]="true">
+</app-header>
+
+<ion-content>
+
+<div class="container">
+
+<ion-card
+
+*ngFor="let ball of throws">
+
+<ion-card-content>
+
+<div class="header">
+
+<h2>
+
+Lanzamiento {{ball.throwNumber}}
+
+</h2>
+
+<ion-chip
+[color]="ball.color=='red' ? 'danger':'primary'">
+
+{{ball.color=="red" ? "Roja":"Azul"}}
+
+</ion-chip>
+
+</div>
+
+<div class="result">
+
+<ion-icon
+
+name="checkmark-circle"
+
+color="success"
+
+*ngIf="ball.result=='excellent'">
+
+</ion-icon>
+
+<ion-icon
+
+name="thumbs-up"
+
+color="primary"
+
+*ngIf="ball.result=='good'">
+
+</ion-icon>
+
+<ion-icon
+
+name="remove-circle"
+
+color="warning"
+
+*ngIf="ball.result=='regular'">
+
+</ion-icon>
+
+<ion-icon
+
+name="close-circle"
+
+color="danger"
+
+*ngIf="ball.result=='bad'">
+
+</ion-icon>
+
+<strong>
+
+{{
+
+ball.result === 'excellent'
+? 'Excelente'
+
+: ball.result === 'good'
+? 'Bueno'
+
+: ball.result === 'regular'
+? 'Regular'
+
+: 'Malo'
+
+}}
+
+</strong>
+
+</div>
+
+<p>
+
+<b>Cuadrante:</b>
+
+{{ball.quadrant}}
+
+</p>
+
+<p>
+
+<b>Observación:</b>
+
+{{ball.observation || 'Sin observaciones'}}
+
+</p>
+
+</ion-card-content>
+
+</ion-card>
+
+</div>
+
+</ion-content>

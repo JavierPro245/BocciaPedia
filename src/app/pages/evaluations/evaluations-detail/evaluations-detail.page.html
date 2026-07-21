@@ -1,13 +1,235 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>evaluationsDetail</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  [showBackButton]="true"
+  title="Resumen de evaluación">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">evaluationsDetail</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <div class="container">
+
+    <!-- INFORMACIÓN -->
+
+    <ion-card>
+
+      <ion-card-content>
+
+        <h2>{{ athlete }}</h2>
+
+        <p class="evaluation">
+
+          {{ evaluation }}
+
+        </p>
+
+        <div class="chips">
+
+          <ion-chip color="primary">
+
+            <ion-icon name="resize-outline"></ion-icon>
+
+            <ion-label>
+
+              {{ distance }} m
+
+            </ion-label>
+
+          </ion-chip>
+
+          <ion-chip color="success">
+
+            <ion-icon name="football-outline"></ion-icon>
+
+            <ion-label>
+
+              {{ totalThrows }} lanzamientos
+
+            </ion-label>
+
+          </ion-chip>
+
+        </div>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <!-- RESULTADOS -->
+
+    <!-- DASHBOARD RESULTADOS -->
+
+<div class="stats-grid">
+
+  <ion-card class="stat-card excellent">
+
+    <ion-card-content>
+
+      <div class="emoji">🟢</div>
+
+      <div class="title">
+
+        Excelente
+
+      </div>
+
+      <div class="value">
+
+        {{ excellent }}
+
+      </div>
+
+      <div class="percent">
+
+        {{ excellentPercent }} %
+
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="stat-card good">
+
+    <ion-card-content>
+
+      <div class="emoji">🔵</div>
+
+      <div class="title">
+
+        Bueno
+
+      </div>
+
+      <div class="value">
+
+        {{ good }}
+
+      </div>
+
+      <div class="percent">
+
+        {{ goodPercent }} %
+
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="stat-card regular">
+
+    <ion-card-content>
+
+      <div class="emoji">🟡</div>
+
+      <div class="title">
+
+        Regular
+
+      </div>
+
+      <div class="value">
+
+        {{ regular }}
+
+      </div>
+
+      <div class="percent">
+
+        {{ regularPercent }} %
+
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="stat-card bad">
+
+    <ion-card-content>
+
+      <div class="emoji">🔴</div>
+
+      <div class="title">
+
+        Malo
+
+      </div>
+
+      <div class="value">
+
+        {{ bad }}
+
+      </div>
+
+      <div class="percent">
+
+        {{ badPercent }} %
+
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</div>
+
+    <!-- PRECISIÓN -->
+
+    <ion-card class="precision-card">
+
+      <ion-card-content>
+
+        <h3>
+
+          Precisión General
+
+        </h3>
+
+        <div class="precision-value">
+
+          {{ precision }}%
+
+        </div>
+
+        <ion-progress-bar
+
+          color="success"
+
+          [value]="precision/100">
+
+        </ion-progress-bar>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <!-- ACCIONES -->
+
+    <ion-button
+    expand="block"
+    color="success"
+    (click)="goToHeatMap()">
+
+    HeatMap
+
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      (click)="openThrows()">
+
+      Detalle de lanzamientos
+
+    </ion-button>
+
+    <ion-button
+      expand="block">
+
+      Guardar evaluación
+
+    </ion-button>
+
+  </div>
+
 </ion-content>

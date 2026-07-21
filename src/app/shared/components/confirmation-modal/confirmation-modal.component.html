@@ -1,0 +1,73 @@
+<ion-header>
+
+  <ion-toolbar>
+
+    <ion-title>
+
+      {{ title }}
+
+    </ion-title>
+
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <div class="container">
+
+    <ion-icon
+
+      name="help-circle"
+
+      color="warning">
+
+    </ion-icon>
+
+    <p>
+
+      {{ message }}
+
+    </p>
+
+  </div>
+
+</ion-content>
+
+<ion-footer>
+
+  <ion-toolbar>
+
+    <div class="buttons">
+
+      <ion-button
+
+        expand="block"
+
+        fill="outline"
+
+        color="medium"
+
+        (click)="onCancel()">
+
+        {{ cancelText }}
+
+      </ion-button>
+
+      <ion-button
+
+        expand="block"
+
+        [color]="confirmColor"
+
+        (click)="onConfirm()">
+
+        {{ confirmText }}
+
+      </ion-button>
+
+    </div>
+
+  </ion-toolbar>
+
+</ion-footer>

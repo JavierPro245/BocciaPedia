@@ -9,6 +9,7 @@ import { EvaluationRunPageRoutingModule } from './evaluation-run-routing.module'
 import { EvaluationRunPage } from './evaluation-run.page';
 import { SharedModule } from 'src/app/shared/shared-module';
 import { CourtEngineComponent } from '../components/court-engine/court-engine.component';
+import { ThrowResultModalComponent } from 'src/app/shared/components/throw-result-modal/throw-result-modal.component';
 
 @NgModule({
   imports: [

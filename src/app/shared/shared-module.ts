@@ -20,6 +20,10 @@ import { ActionMenuComponent } from './components/action-menu/action-menu.compon
 import { FormSectionComponent } from './components/form-section/form-section.component';
 import { SelectInputComponent } from './components/select-input/select-input.component';
 import { CourtComponent } from './components/court/court.component';
+import { ThrowResultModalComponent } from './components/throw-result-modal/throw-result-modal.component';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { CountdownCircleComponent } from './components/countdown-circle/countdown-circle.component';
+import { TrainerCardComponent } from './components/trainer-card/trainer-card.component';
 
 
 
@@ -42,7 +46,11 @@ import { CourtComponent } from './components/court/court.component';
     ActionMenuComponent,
     FormSectionComponent,
     SelectInputComponent,
-    CourtComponent
+    CourtComponent,
+    ThrowResultModalComponent,
+    ConfirmationModalComponent,
+    CountdownCircleComponent,
+    TrainerCardComponent
     
   ],
   exports: [
@@ -65,7 +73,11 @@ import { CourtComponent } from './components/court/court.component';
     ActionMenuComponent,
     FormSectionComponent,
     SelectInputComponent,
-    CourtComponent
+    CourtComponent,
+    ThrowResultModalComponent,
+    ConfirmationModalComponent,
+    CountdownCircleComponent,
+    TrainerCardComponent
     
   ],
   imports: [

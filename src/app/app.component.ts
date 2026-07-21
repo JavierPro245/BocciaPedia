@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { SessionService } from './services/session.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +10,45 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor() {}
+
+  constructor(
+  private authService: AuthService,
+  private sessionService: SessionService,
+  private router: Router
+) {
+  this.listenSession();
+}
+
+  private listenSession() {
+
+    this.authService.listenAuthState(user => {
+
+      if (user) {
+
+  this.sessionService.setUser(user);
+
+  console.log('Usuario autenticado');
+
+  console.log(user);
+
+  this.router.navigateByUrl('/main/home', {
+    replaceUrl: true
+  });
+
+} else {
+
+  this.sessionService.clear();
+
+  console.log('No hay usuario autenticado');
+
+  this.router.navigateByUrl('/auth', {
+    replaceUrl: true
+  });
+
+}
+
+    });
+
+  }
+
 }

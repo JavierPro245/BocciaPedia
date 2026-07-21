@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 
 @Component({
@@ -31,6 +31,12 @@ export class HeaderComponent {
 
   @Input() showSettings = false;
 
+  @Input() showAction = false;
+
+@Input() actionIcon = 'tv-outline';
+
+@Output() action = new EventEmitter<void>();
+
   constructor(
     private location: Location
   ) {}
@@ -40,5 +46,11 @@ export class HeaderComponent {
     this.location.back();
 
   }
+
+  onAction(){
+
+    this.action.emit();
+
+}
 
 }

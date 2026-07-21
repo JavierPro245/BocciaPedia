@@ -1,0 +1,137 @@
+.evaluation-card{
+
+  margin:10px 14px;
+
+  border-radius:18px;
+
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+}
+
+.card{
+
+  display:flex;
+
+  align-items:center;
+
+}
+
+.icon{
+
+  width:60px;
+
+  height:60px;
+
+  border-radius:16px;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  margin-right:16px;
+
+}
+
+.icon ion-icon{
+
+  color:white;
+
+  font-size:30px;
+
+}
+
+.green{
+
+  background:#43A047;
+
+}
+
+.blue{
+
+  background:#1E88E5;
+
+}
+
+.orange{
+
+  background:#FB8C00;
+
+}
+
+.red{
+
+  background:#E53935;
+
+}
+
+.purple{
+
+  background:#8E24AA;
+
+}
+
+.gray{
+
+  background:#757575;
+
+}
+
+.info{
+
+  flex:1;
+
+}
+
+.title-row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+}
+
+.title-row h2{
+
+  margin:0;
+
+  font-size:18px;
+
+  font-weight:700;
+
+}
+
+.athlete{
+
+  margin-top:4px;
+
+  color:#555;
+
+}
+
+.details{
+
+  margin-top:10px;
+
+  display:flex;
+
+  gap:14px;
+
+  flex-wrap:wrap;
+
+  font-size:13px;
+
+  color:#757575;
+
+}
+
+.arrow{
+
+  font-size:22px;
+
+  color:#BDBDBD;
+
+}
