@@ -1,0 +1,123 @@
+.container{
+
+  padding:16px;
+
+}
+
+.cards{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:14px;
+
+  margin-bottom:18px;
+
+}
+
+.kpi{
+
+  padding:20px;
+
+  text-align:center;
+
+  border-radius:20px;
+
+}
+
+.kpi ion-icon{
+
+  font-size:34px;
+
+  margin-bottom:10px;
+
+}
+
+.kpi h1{
+
+  margin:0;
+
+  font-size:34px;
+
+  font-weight:700;
+
+}
+
+.kpi p{
+
+  margin-top:8px;
+
+  color:#666;
+
+  font-size:15px;
+
+}
+
+ion-card{
+
+  border-radius:20px;
+
+}
+
+.item{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  padding:14px 0;
+
+  border-bottom:1px solid #ececec;
+
+}
+
+.item:last-child{
+
+  border-bottom:none;
+
+}
+
+strong{
+
+  font-size:18px;
+
+}
+
+.athlete{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:14px 0;
+
+  border-bottom:1px solid #ececec;
+
+}
+
+.athlete:last-child{
+
+  border-bottom:none;
+
+}
+
+.athlete h3{
+
+  margin:0 0 6px;
+
+  font-size:16px;
+
+}
+
+.athlete p{
+
+  margin:2px 0;
+
+  color:#666;
+
+  font-size:13px;
+
+}

@@ -8,12 +8,60 @@
     <div class="page-content">
 
         <ion-searchbar
-
-            placeholder="Buscar deportista"
-
-            animated="true">
-
+        placeholder="Buscar deportista..."
+        [(ngModel)]="searchText"
+        (ionInput)="filterAthletes()"
+        debounce="300">
         </ion-searchbar>
+
+        <div class="category-chips">
+
+  <ion-chip
+      [outline]="selectedCategory !== ''"
+      [color]="selectedCategory === '' ? 'primary' : 'medium'"
+      (click)="selectCategory('')">
+
+    <ion-label>Todas</ion-label>
+
+  </ion-chip>
+
+  <ion-chip
+      [outline]="selectedCategory !== 'BC1'"
+      [color]="selectedCategory === 'BC1' ? 'primary' : 'medium'"
+      (click)="selectCategory('BC1')">
+
+    <ion-label>BC1</ion-label>
+
+  </ion-chip>
+
+  <ion-chip
+      [outline]="selectedCategory !== 'BC2'"
+      [color]="selectedCategory === 'BC2' ? 'primary' : 'medium'"
+      (click)="selectCategory('BC2')">
+
+    <ion-label>BC2</ion-label>
+
+  </ion-chip>
+
+  <ion-chip
+      [outline]="selectedCategory !== 'BC3'"
+      [color]="selectedCategory === 'BC3' ? 'primary' : 'medium'"
+      (click)="selectCategory('BC3')">
+
+    <ion-label>BC3</ion-label>
+
+  </ion-chip>
+
+  <ion-chip
+      [outline]="selectedCategory !== 'BC4'"
+      [color]="selectedCategory === 'BC4' ? 'primary' : 'medium'"
+      (click)="selectCategory('BC4')">
+
+    <ion-label>BC4</ion-label>
+
+  </ion-chip>
+
+</div>
 
         <ion-button
 
@@ -44,7 +92,7 @@
 
         <app-athlete-card
 
-            *ngFor="let athlete of athletes"
+            *ngFor="let athlete of filteredAthletes"
 
             [athlete]="athlete"
 

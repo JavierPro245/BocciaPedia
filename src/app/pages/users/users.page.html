@@ -1,0 +1,63 @@
+<app-header
+    [showMenu]="true"
+    title="Usuarios">
+</app-header>
+
+<ion-content>
+
+    <ion-list *ngIf="!loading">
+
+        <ion-item
+    button
+    *ngFor="let user of users"
+    [routerLink]="[user.uid]">
+
+            <ion-avatar slot="start">
+
+                <img
+                    [src]="user.photoURL || 'assets/avatars/avatar.png'">
+
+            </ion-avatar>
+
+            <ion-label>
+
+                <h2>{{ user.displayName }}</h2>
+
+                <p>{{ user.email }}</p>
+
+                <p>
+
+                    <strong>Rol:</strong>
+
+                    {{ getRole(user) }}
+
+                </p>
+
+            </ion-label>
+
+            <ion-badge
+                color="success"
+                *ngIf="user.approved">
+
+                Aprobado
+
+            </ion-badge>
+
+            <ion-badge
+                color="warning"
+                *ngIf="!user.approved">
+
+                Pendiente
+
+            </ion-badge>
+
+        </ion-item>
+
+    </ion-list>
+
+    <ion-spinner
+        *ngIf="loading"
+        class="ion-margin">
+    </ion-spinner>
+
+</ion-content>

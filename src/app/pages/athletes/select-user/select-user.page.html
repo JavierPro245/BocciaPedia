@@ -1,0 +1,61 @@
+<app-header
+    title="Seleccionar cuenta"
+    [showBackButton]="true">
+</app-header>
+
+<ion-content>
+
+    <div class="container">
+
+        <ion-list>
+
+            <ion-item
+                button
+                *ngFor="let user of users"
+                (click)="selectUser(user)">
+
+                <ion-avatar slot="start">
+
+                    <img
+                        [src]="user.photoURL || 'assets/avatars/user.png'">
+
+                </ion-avatar>
+
+                <ion-label>
+
+                    <h2>
+
+                        {{ user.displayName }}
+
+                    </h2>
+
+                    <p>
+
+                        {{ user.email }}
+
+                    </p>
+
+                </ion-label>
+
+                <ion-icon
+                    slot="end"
+                    name="chevron-forward-outline">
+                </ion-icon>
+
+            </ion-item>
+
+        </ion-list>
+
+        <ion-card *ngIf="users.length === 0">
+
+            <ion-card-content>
+
+                No existen usuarios disponibles para vincular.
+
+            </ion-card-content>
+
+        </ion-card>
+
+    </div>
+
+</ion-content>

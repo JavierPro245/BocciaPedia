@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
+import { RoleGuard } from './guards/role.guard';
 
 const routes: Routes = [
   // {
@@ -27,6 +28,11 @@ const routes: Routes = [
 },
   {
     path: 'athlete-list',
+    canActivate:[RoleGuard],
+
+    data:{
+        roles:['admin','trainer']
+    },
     loadChildren: () => import('./pages/athletes/athlete-list/athlete-list.module').then( m => m.AthleteListPageModule)
   },
   {
@@ -74,9 +80,18 @@ const routes: Routes = [
     loadChildren: () => import('./pages/statistics/reports/reports.module').then( m => m.ReportsPageModule)
   },
   {
-    path: 'users',
-    loadChildren: () => import('./pages/administration/users/users.module').then( m => m.UsersPageModule)
-  },
+    path:'users',
+
+    canActivate:[RoleGuard],
+
+    data:{
+        roles:['admin']
+    },
+
+    loadChildren:()=>
+        import('./pages/users/users.module')
+            .then(m=>m.UsersPageModule)
+},
   {
     path: 'trainers',
     loadChildren: () => import('./pages/trainers/trainers.module').then( m => m.TrainersPageModule)

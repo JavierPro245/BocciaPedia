@@ -1,0 +1,128 @@
+<app-header
+    [showBackButton]="true"
+    title="Detalle del usuario">
+</app-header>
+
+<ion-content>
+
+    <ion-spinner
+        *ngIf="loading"
+        class="ion-margin">
+    </ion-spinner>
+
+    <ng-container
+        *ngIf="!loading && user">
+
+        <app-profile-avatar
+
+            [image]="user.photoURL || 'assets/avatars/avatar.png'"
+
+            [name]="user.displayName"
+
+            [role]="''"
+
+            [online]="user.active"
+
+            [editable]="false">
+
+        </app-profile-avatar>
+
+        <app-user-info-card
+
+            [user]="user">
+
+        </app-user-info-card>
+
+        <ion-card class="app-card" *ngIf="user">
+
+    <ion-card-header>
+
+        <ion-card-title>
+
+            Permisos
+
+        </ion-card-title>
+
+    </ion-card-header>
+
+    <ion-card-content>
+
+        <ion-item>
+
+            <ion-label>
+
+                Rol
+
+            </ion-label>
+
+            <ion-select
+
+                [(ngModel)]="user.roles"
+
+                multiple="true">
+
+                <ion-select-option
+
+                    *ngFor="let role of roles"
+
+                    [value]="role.value">
+
+                    {{role.label}}
+
+                </ion-select-option>
+
+            </ion-select>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                Cuenta activa
+
+            </ion-label>
+
+            <ion-toggle
+
+                [(ngModel)]="user.active">
+
+            </ion-toggle>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                Usuario aprobado
+
+            </ion-label>
+
+            <ion-toggle
+
+                [(ngModel)]="user.approved">
+
+            </ion-toggle>
+
+        </ion-item>
+
+        <ion-button
+
+            expand="block"
+
+            class="ion-margin-top"
+
+            (click)="save()">
+
+            Guardar cambios
+
+        </ion-button>
+
+    </ion-card-content>
+
+</ion-card>
+
+    </ng-container>
+
+</ion-content>

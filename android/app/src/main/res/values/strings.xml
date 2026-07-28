@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BocciaPedia</string>
+    <string name="title_activity_main">BocciaPedia</string>
+    <string name="package_name">BocciaPedia.app</string>
+    <string name="custom_url_scheme">BocciaPedia.app</string>
+</resources>

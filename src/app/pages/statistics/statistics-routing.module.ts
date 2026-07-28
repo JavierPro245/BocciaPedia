@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: StatisticsPage,
-    // children: [
+    children: [
     //   {
     //     path: 'athlete-statistics',
     //     loadChildren: () => import('./athlete-statistics/athlete-statistics.module').then( m => m.AthleteStatisticsPageModule)
@@ -16,15 +16,15 @@ const routes: Routes = [
     //     path: 'comparisions',
     //     loadChildren: () => import('./comparisions/comparisions.module').then( m => m.ComparisionsPageModule)
     //   },
-    //   {
-    //     path: 'dashboard',
-    //     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
-    //   },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+      },
     //   {
     //     path: 'reports',
     //     loadChildren: () => import('./reports/reports.module').then( m => m.ReportsPageModule)
     //   }
-    // ]
+    ]
   },
 
 ];

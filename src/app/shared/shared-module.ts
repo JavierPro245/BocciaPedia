@@ -24,6 +24,10 @@ import { ThrowResultModalComponent } from './components/throw-result-modal/throw
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { CountdownCircleComponent } from './components/countdown-circle/countdown-circle.component';
 import { TrainerCardComponent } from './components/trainer-card/trainer-card.component';
+import { UserInfoCardComponent } from './components/user-info-card/user-info-card.component';
+import { HasRoleDirective } from '../directives/has-role.directive';
+import { QualityChartComponent } from './components/charts/quality-chart/quality-chart.component';
+import { NgApexchartsModule } from "ng-apexcharts";
 
 
 
@@ -50,7 +54,10 @@ import { TrainerCardComponent } from './components/trainer-card/trainer-card.com
     ThrowResultModalComponent,
     ConfirmationModalComponent,
     CountdownCircleComponent,
-    TrainerCardComponent
+    TrainerCardComponent,
+    UserInfoCardComponent,
+    HasRoleDirective,
+    QualityChartComponent,
     
   ],
   exports: [
@@ -77,7 +84,10 @@ import { TrainerCardComponent } from './components/trainer-card/trainer-card.com
     ThrowResultModalComponent,
     ConfirmationModalComponent,
     CountdownCircleComponent,
-    TrainerCardComponent
+    TrainerCardComponent,
+    UserInfoCardComponent,
+    HasRoleDirective,
+    QualityChartComponent,
     
   ],
   imports: [
@@ -85,7 +95,8 @@ import { TrainerCardComponent } from './components/trainer-card/trainer-card.com
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule
+    RouterModule,
+    NgApexchartsModule
   ]
 })
 export class SharedModule { }

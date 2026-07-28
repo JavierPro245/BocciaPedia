@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { SessionService } from './services/session.service';
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,14 @@ export class AppComponent {
   private sessionService: SessionService,
   private router: Router
 ) {
+  this.initializeGoogleSignIn();
   this.listenSession();
+}
+
+  private async initializeGoogleSignIn() {
+  await GoogleSignIn.initialize({
+    clientId: '940484393399-8llae5tt526r9lgvf9668dqh31le42o6.apps.googleusercontent.com'
+  });
 }
 
   private listenSession() {

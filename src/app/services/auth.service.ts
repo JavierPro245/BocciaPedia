@@ -9,14 +9,20 @@ import {
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
-  updateProfile
+  updateProfile,
+  signInWithCredential
 } from 'firebase/auth';
+
+import { Capacitor } from '@capacitor/core';
+
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 
 import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp
+  serverTimestamp,
+  onSnapshot
 } from 'firebase/firestore';
 
 import { auth, firestore } from '../firebase.config';
@@ -45,19 +51,29 @@ export class AuthService {
     });
 
     await setDoc(
-      doc(firestore, 'users', credential.user.uid),
-      {
-        uid: credential.user.uid,
-        displayName: name,
-        email: credential.user.email,
-        photoURL: '',
-        roles: [],
-        approved: false,
-        active: true,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      }
-    );
+  doc(firestore, 'users', credential.user.uid),
+  {
+    uid: credential.user.uid,
+    displayName: name,
+    email: credential.user.email,
+    photoURL: '',
+
+    roles: [],
+
+    approved: false,
+
+    active: true,
+
+    athleteId: null,
+
+    trainerId: null,
+
+    createdAt: serverTimestamp(),
+
+    updatedAt: serverTimestamp()
+
+  }
+);
 
     return credential.user;
 
@@ -79,27 +95,48 @@ export class AuthService {
 
   async loginGoogle() {
 
+  // ANDROID / IOS
+  if (Capacitor.isNativePlatform()) {
+
+    const result = await GoogleSignIn.signIn();
+
+    if (!result.idToken) {
+      throw new Error('Google no devolvió un ID Token.');
+    }
+
+    const credential = GoogleAuthProvider.credential(result.idToken);
+
+    const userCredential = await signInWithCredential(
+      auth,
+      credential
+    );
+
+    return userCredential.user;
+
+  }
+
+  // WEB (localhost)
   const provider = new GoogleAuthProvider();
 
-  console.log('1. Abriendo popup...');
+  const userCredential = await signInWithPopup(
+    auth,
+    provider
+  );
 
-  const credential = await signInWithPopup(auth, provider);
-
-  console.log('2. Login correcto');
-  console.log(credential);
-
-  console.log('3. Usuario autenticado');
-  console.log(auth.currentUser);
-
-  const user = credential.user;
-
-  return user;
+  return userCredential.user;
 
 }
 
   listenAuthState(callback: (user: any) => void) {
 
+  let unsubscribeUser: (() => void) | null = null;
+
   return onAuthStateChanged(auth, async (firebaseUser) => {
+
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
 
     if (!firebaseUser) {
       callback(null);
@@ -110,7 +147,6 @@ export class AuthService {
 
     let userSnap = await getDoc(userRef);
 
-    // Si el documento aún no existe, créalo
     if (!userSnap.exists()) {
 
       await setDoc(userRef, {
@@ -129,20 +165,43 @@ export class AuthService {
 
         active: true,
 
+        athleteId: null,
+
+        trainerId: null,
+
         createdAt: serverTimestamp(),
 
         updatedAt: serverTimestamp()
 
       });
 
-      // Leer nuevamente el documento recién creado
-      userSnap = await getDoc(userRef);
-
     }
 
-    callback(userSnap.data());
+    unsubscribeUser = onSnapshot(userRef, snapshot => {
+
+      if (!snapshot.exists()) {
+
+        callback(null);
+
+        return;
+
+      }
+
+      callback(snapshot.data());
+
+    });
 
   });
+
+}
+
+// =====================================
+// Usuario autenticado
+// =====================================
+
+getCurrentUser() {
+
+  return auth.currentUser;
 
 }
 

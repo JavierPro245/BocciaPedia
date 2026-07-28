@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Athlete } from 'src/app/models/athlete.model';
+import { AthleteService } from 'src/app/services/athlete.service';
 
 @Component({
   selector: 'app-athlete-detail',
@@ -9,49 +10,45 @@ import { Athlete } from 'src/app/models/athlete.model';
   styleUrls: ['./athlete-detail.page.scss'],
   standalone: false
 })
-export class AthleteDetailPage implements OnInit {
+export class AthleteDetailPage implements OnInit, OnDestroy {
 
   athlete!: Athlete;
 
+  private unsubscribe: (() => void) | null = null;
+
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private athleteService: AthleteService
   ) {}
 
   ngOnInit() {
 
-    const id = this.route.snapshot.paramMap.get('id') || '';
+    const id = this.route.snapshot.paramMap.get('id');
 
-    console.log('ID recibido:', id);
+    if (!id) {
+      return;
+    }
 
-    this.athlete = {
-
+    this.unsubscribe = this.athleteService.listenAthlete(
       id,
+      (athlete: Athlete | null) => {
 
-      firstName: 'Javier',
+        if (!athlete) {
+          return;
+        }
 
-      lastName: 'Bastias',
+        this.athlete = athlete;
 
-      rut: '12.345.678-9',
+      }
+    );
 
-      email: 'javier@bocciapp.cl',
+  }
 
-      phone: '+56 9 12345678',
+  ngOnDestroy(): void {
 
-      birthDate: new Date(1998,4,10),
-
-      category: 'BC3',
-
-      dominantHand: 'Derecha',
-
-      club: 'Club Paralímpico Los Ángeles',
-
-      photo: 'assets/avatars/athlete.png',
-
-      observations: 'Deportista de prueba.',
-
-      active: true
-
-    };
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
 
   }
 

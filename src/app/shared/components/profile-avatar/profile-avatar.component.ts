@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-profile-avatar',
@@ -17,5 +18,14 @@ export class ProfileAvatarComponent {
   @Input() online = false;
 
   @Input() editable = false;
+
+  @Output()
+photoChange = new EventEmitter<void>();
+
+changePhoto() {
+
+  this.photoChange.emit();
+
+}
 
 }

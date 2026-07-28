@@ -25,3 +25,21 @@ ion-button{
     gap:16px;
 
 }
+
+.category-chips {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 0 16px 12px;
+  scrollbar-width: none;
+}
+
+.category-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.category-chips ion-chip {
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: 0.2s ease;
+}

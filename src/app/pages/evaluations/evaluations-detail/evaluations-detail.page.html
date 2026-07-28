@@ -224,11 +224,14 @@
     </ion-button>
 
     <ion-button
-      expand="block">
+  *ngIf="viewMode === 'finish'"
+  expand="block"
+  color="primary"
+  (click)="finishEvaluation()">
 
-      Guardar evaluación
+  Finalizar evaluación
 
-    </ion-button>
+</ion-button>
 
   </div>
 

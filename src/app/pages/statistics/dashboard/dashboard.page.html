@@ -1,13 +1,184 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Dashboard"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+<div class="container">
+
+<div class="cards">
+
+  <ion-card class="kpi">
+
+    <ion-icon
+      name="clipboard"
+      color="primary">
+    </ion-icon>
+
+    <h1>
+
+      {{stats.totalEvaluations}}
+
+    </h1>
+
+    <p>
+
+      Evaluaciones
+
+    </p>
+
+  </ion-card>
+
+  <ion-card class="kpi">
+
+    <ion-icon
+      name="locate"
+      color="warning">
+    </ion-icon>
+
+    <h1>
+
+      {{stats.totalThrows}}
+
+    </h1>
+
+    <p>
+
+      Lanzamientos
+
+    </p>
+
+  </ion-card>
+
+  <ion-card class="kpi">
+
+    <ion-icon
+      name="ribbon"
+      color="success">
+    </ion-icon>
+
+    <h1>
+
+      {{stats.excellentPercent | number:'1.0-1'}}%
+
+    </h1>
+
+    <p>
+
+      Excelente
+
+    </p>
+
+  </ion-card>
+
+  <ion-card class="kpi">
+
+    <ion-icon
+      name="checkmark-circle"
+      color="tertiary">
+    </ion-icon>
+
+    <h1>
+
+      {{stats.finishedEvaluations}}
+
+    </h1>
+
+    <p>
+
+      Finalizadas
+
+    </p>
+
+  </ion-card>
+
+</div>
+
+<ion-card>
+
+<ion-card-header>
+
+<ion-card-title>
+
+Calidad de los lanzamientos
+
+</ion-card-title>
+
+</ion-card-header>
+
+<ion-card-content>
+
+<app-quality-chart
+
+[excellent]="stats.excellent"
+
+[good]="stats.good"
+
+[regular]="stats.regular"
+
+[bad]="stats.bad">
+
+</app-quality-chart>
+
+</ion-card-content>
+
+</ion-card>
+
+<ion-card>
+
+  <ion-card-header>
+
+    <ion-card-title>
+
+      Rendimiento por deportista
+
+    </ion-card-title>
+
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <div
+      class="athlete"
+      *ngFor="let athlete of athletes">
+
+      <div>
+
+        <h3>
+
+          {{athlete.athleteName}}
+
+        </h3>
+
+        <p>
+
+          Evaluaciones:
+          {{athlete.evaluations}}
+
+        </p>
+
+        <p>
+
+          Lanzamientos:
+          {{athlete.throws}}
+
+        </p>
+
+      </div>
+
+      <ion-chip color="success">
+
+        {{athlete.excellentPercent | number:'1.0-1'}}%
+
+      </ion-chip>
+
+    </div>
+
+  </ion-card-content>
+
+</ion-card>
+
+</div>
+
 </ion-content>

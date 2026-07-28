@@ -5,221 +5,353 @@
 
 <ion-content>
 
-    <div class="container">
+    <ng-container *ngIf="athlete">
 
-        <app-profile-avatar
-          [image]="athlete.photo || 'assets/avatars/athlete.png'"
-          [editable]="false">
-        </app-profile-avatar>
+        <div class="container">
 
-        <h2>
+            <app-profile-avatar
+                [image]="athlete.photo || 'assets/avatars/athlete.png'"
+                [editable]="false">
+            </app-profile-avatar>
 
-            {{ athlete.firstName }}
+            <h2>
 
-            {{ athlete.lastName }}
+                {{ athlete.firstName }}
 
-        </h2>
+                {{ athlete.lastName }}
 
-        <p class="category">
+            </h2>
 
-            {{ athlete.category }}
+            <p class="category">
 
-        </p>
+                {{ athlete.category }}
 
-        <ion-chip
-            color="success"
-            *ngIf="athlete.active">
+            </p>
 
-            <ion-icon
-                name="checkmark-circle">
-            </ion-icon>
+            <ion-chip
+                color="success"
+                *ngIf="athlete.active">
+
+                <ion-icon
+                    name="checkmark-circle">
+                </ion-icon>
+
+                <ion-label>
+
+                    Activo
+
+                </ion-label>
+
+            </ion-chip>
+
+            <app-form-section
+                title="Información Personal"
+                icon="person-outline">
+            </app-form-section>
+
+            <ion-list>
+
+                <ion-item>
+
+                    <ion-label>
+
+                        RUN
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.rut }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.birthDate">
+
+                    <ion-label>
+
+                        Fecha nacimiento
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.birthDate | date:'dd/MM/yyyy' }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.email">
+
+                    <ion-label>
+
+                        Correo
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.email }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.phone">
+
+                    <ion-label>
+
+                        Teléfono
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.phone }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.city">
+
+                    <ion-label>
+
+                        Ciudad
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.city }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.nationality">
+
+                    <ion-label>
+
+                        Nacionalidad
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.nationality }}
+
+                    </ion-note>
+
+                </ion-item>
+
+            </ion-list>
+
+            <app-form-section
+                title="Información Deportiva"
+                icon="trophy-outline">
+            </app-form-section>
+
+            <ion-list>
+
+                <ion-item>
+
+                    <ion-label>
+
+                        Categoría
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.category }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.club">
+
+                    <ion-label>
+
+                        Club
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.club }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.federation">
+
+                    <ion-label>
+
+                        Federación
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.federation }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.dominantHand">
+
+                    <ion-label>
+
+                        Mano dominante
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.dominantHand }}
+
+                    </ion-note>
+
+                </ion-item>
+
+                <ion-item *ngIf="athlete.ranking !== undefined">
+
+                    <ion-label>
+
+                        Ranking
+
+                    </ion-label>
+
+                    <ion-note slot="end">
+
+                        {{ athlete.ranking }}
+
+                    </ion-note>
+
+                </ion-item>
+
+            </ion-list>
+
+            <app-form-section
+                title="Observaciones"
+                icon="document-text-outline">
+            </app-form-section>
+
+            <ion-card>
+
+                <ion-card-content>
+
+                    {{ athlete.observations || 'Sin observaciones.' }}
+
+                </ion-card-content>
+
+            </ion-card>
+
+            <app-form-section
+    title="Cuenta de acceso"
+    icon="person-circle-outline">
+</app-form-section>
+
+<ion-card>
+
+    <ion-card-content>
+
+        <ion-item lines="none">
 
             <ion-label>
 
-                Activo
+                Estado
 
             </ion-label>
 
-        </ion-chip>
+            <ion-note
+                slot="end"
+                color="success"
+                *ngIf="athlete.linkedUserId">
 
-        <app-form-section
+                🟢 Vinculada
 
-            title="Información Personal"
+            </ion-note>
 
-            icon="person-outline">
+            <ion-note
+                slot="end"
+                color="danger"
+                *ngIf="!athlete.linkedUserId">
 
-        </app-form-section>
+                ❌ Sin vincular
 
-        <ion-list>
+            </ion-note>
 
-            <ion-item>
+        </ion-item>
 
-                <ion-label>
+    </ion-card-content>
 
-                    RUN
+</ion-card>
 
-                </ion-label>
+<ion-button
+    *ngIf="!athlete.linkedUserId"
+    expand="block"
+    color="primary"
+    [routerLink]="['/main/select-user', athlete.id]">
 
-                <ion-note slot="end">
+    <ion-icon
+        slot="start"
+        name="link-outline">
+    </ion-icon>
 
-                    {{ athlete.rut }}
+    Vincular cuenta
 
-                </ion-note>
+</ion-button>
 
-            </ion-item>
+<ion-button
+    *ngIf="athlete.linkedUserId"
+    expand="block"
+    fill="outline"
+    color="medium"
+    [routerLink]="['/main/select-user', athlete.id]">
 
-            <ion-item>
+    <ion-icon
+        slot="start"
+        name="swap-horizontal-outline">
+    </ion-icon>
 
-                <ion-label>
+    Cambiar cuenta
 
-                    Fecha nacimiento
+</ion-button>
 
-                </ion-label>
+            <ion-button
+                expand="block"
+                routerLink="/main/evaluations-list">
 
-                <ion-note slot="end">
+                Evaluaciones
 
-                    {{ athlete.birthDate | date:'dd/MM/yyyy' }}
+            </ion-button>
 
-                </ion-note>
+            <ion-button
+                expand="block"
+                fill="outline">
 
-            </ion-item>
+                Estadísticas
 
-            <ion-item>
+            </ion-button>
 
-                <ion-label>
-
-                    Correo
-
-                </ion-label>
-
-                <ion-note slot="end">
-
-                    {{ athlete.email }}
-
-                </ion-note>
-
-            </ion-item>
-
-            <ion-item>
-
-                <ion-label>
-
-                    Teléfono
-
-                </ion-label>
-
-                <ion-note slot="end">
-
-                    {{ athlete.phone }}
-
-                </ion-note>
-
-            </ion-item>
-
-        </ion-list>
-
-        <app-form-section
-
-            title="Información Deportiva"
-
-            icon="trophy-outline">
-
-        </app-form-section>
-
-        <ion-list>
-
-            <ion-item>
-
-                <ion-label>
-
-                    Categoría
-
-                </ion-label>
-
-                <ion-note slot="end">
-
-                    {{ athlete.category }}
-
-                </ion-note>
-
-            </ion-item>
-
-            <ion-item>
-
-                <ion-label>
-
-                    Club
-
-                </ion-label>
-
-                <ion-note slot="end">
-
-                    {{ athlete.club }}
-
-                </ion-note>
-
-            </ion-item>
-
-            <ion-item>
-
-                <ion-label>
-
-                    Mano dominante
-
-                </ion-label>
-
-                <ion-note slot="end">
-
-                    {{ athlete.dominantHand }}
-
-                </ion-note>
-
-            </ion-item>
-
-        </ion-list>
-
-        <app-form-section
-
-            title="Observaciones"
-
-            icon="document-text-outline">
-
-        </app-form-section>
-
-        <ion-card>
-
-            <ion-card-content>
-
-                {{ athlete.observations }}
-
-            </ion-card-content>
-
-        </ion-card>
-
-        <ion-button
+            <ion-button
             expand="block"
-            routerLink="/main/evaluations-list">
-
-            Evaluaciones
-
-        </ion-button>
-
-        <ion-button
-            expand="block"
-            fill="outline">
-
-            Estadísticas
-
-        </ion-button>
-
-        <ion-button
-            expand="block"
-            color="warning">
+            color="warning"
+            [routerLink]="['/main/athlete-edit', athlete.id]">
 
             Editar Deportista
 
-        </ion-button>
+            </ion-button>
 
-    </div>
+        </div>
+
+    </ng-container>
 
 </ion-content>

@@ -24,15 +24,15 @@
     <app-dashboard-card
       icon="people-outline"
       title="Deportistas"
-      [value]="0"
-      route="/athlete-list">
+      [value]="athleteCount"
+      route="/main/athlete-list">
     </app-dashboard-card>
 
     <app-dashboard-card
       icon="clipboard-outline"
       title="Evaluaciones"
       [value]="0"
-      route="/evaluations-list">
+      route="/evaluations/evaluations-list">
     </app-dashboard-card>
 
     <app-dashboard-card
@@ -46,7 +46,7 @@
       icon="trophy-outline"
       title="Partidos"
       [value]="0"
-      route="/matches">
+      route="/matches/match-create">
     </app-dashboard-card>
 
   </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Throw } from '../models/throw.model';
-import { EvaluationSessionService } from 'src/app/services/evaluation-session';
+import { EvaluationService } from 'src/app/services/evaluation.service';
 
 @Component({
   selector: 'app-evaluation-throws',
@@ -13,14 +13,19 @@ export class EvaluationThrowsPage implements OnInit {
   throws: Throw[] = [];
 
   constructor(
-    private sessionService: EvaluationSessionService
-  ){}
+  private evaluationService: EvaluationService
+){}
 
   ngOnInit(): void {
 
-    this.throws =
-      this.sessionService.getThrows();
+  const evaluation = this.evaluationService.getEvaluation();
+
+  if (evaluation) {
+
+    this.throws = evaluation.throwList ?? [];
 
   }
+
+}
 
 }

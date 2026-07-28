@@ -1,41 +1,52 @@
 import { Injectable } from '@angular/core';
+
 import { Menu } from '../models/menu.model';
+import { PermissionService } from './permission.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
+  constructor(
+    private permissionService: PermissionService
+  ) {}
+
   private readonly menu: Menu[] = [
 
     {
       title: 'Inicio',
       icon: 'home-outline',
-      url: '/main/home'
+      url: '/main/home',
+      order: 1
     },
 
     {
       title: 'Gestión',
       icon: 'people-circle-outline',
+      order: 2,
 
       children: [
 
         {
           title: 'Deportistas',
           icon: 'people-outline',
-          url: '/main/athlete-list'
+          url: '/main/athlete-list',
+          roles: ['admin', 'trainer']
         },
 
         {
           title: 'Entrenadores',
           icon: 'fitness-outline',
-          url: '/main/trainer-list'
+          url: '/main/trainer-list',
+          roles: ['admin']
         },
 
         {
           title: 'Usuarios',
           icon: 'person-add-outline',
-          url: '/administration/users'
+          url: '/main/users',
+          roles: ['admin']
         }
 
       ]
@@ -44,19 +55,22 @@ export class MenuService {
     {
       title: 'Competencia',
       icon: 'trophy-outline',
+      order: 3,
 
       children: [
 
         {
           title: 'Evaluaciones',
           icon: 'clipboard-outline',
-          url: '/evaluations/evaluations-list'
+          url: '/evaluations/evaluations-list',
+          roles: ['admin', 'trainer', 'athlete']
         },
 
         {
           title: 'Partidos',
           icon: 'football-outline',
-          url: '/matches/match-create'
+          url: '/matches/match-create',
+          roles: ['admin', 'trainer', 'referee', 'athlete']
         }
 
       ]
@@ -65,19 +79,22 @@ export class MenuService {
     {
       title: 'Análisis',
       icon: 'analytics-outline',
+      order: 4,
 
       children: [
 
         {
           title: 'Dashboard',
           icon: 'speedometer-outline',
-          url: '/statistics/dashboard'
+          url: '/statistics/dashboard',
+          roles: ['admin', 'trainer']
         },
 
         {
           title: 'Estadísticas',
           icon: 'bar-chart-outline',
-          url: '/statistics'
+          url: '/statistics',
+          roles: ['admin']
         },
 
         {
@@ -89,7 +106,8 @@ export class MenuService {
         {
           title: 'Reportes',
           icon: 'document-text-outline',
-          url: '/statistics/reports'
+          url: '/statistics/reports',
+          roles: ['admin', 'trainer','athlete']
         }
 
       ]
@@ -98,19 +116,22 @@ export class MenuService {
     {
       title: 'Multimedia',
       icon: 'images-outline',
+      order: 5,
 
       children: [
 
         {
           title: 'Fotos',
           icon: 'image-outline',
-          url: '/media/photos'
+          url: '/media/photos',
+          roles: ['admin']
         },
 
         {
           title: 'Videos',
           icon: 'videocam-outline',
-          url: '/media/videos'
+          url: '/media/videos',
+          roles: ['admin']
         }
 
       ]
@@ -119,27 +140,81 @@ export class MenuService {
     {
       title: 'Configuración',
       icon: 'settings-outline',
-      url: '/main/settings'
+      url: '/main/settings',
+      order: 98
     },
 
     {
       title: 'Perfil',
       icon: 'person-circle-outline',
-      url: '/main/profile'
+      url: '/main/profile',
+      order: 99
     },
 
     {
       title: 'Cerrar sesión',
       icon: 'log-out-outline',
-      url: ''
+      order: 100
     }
 
   ];
 
-  constructor() {}
-
   getMenu(): Menu[] {
-    return this.menu;
+
+    return this.filterMenu(this.menu)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  }
+
+  private filterMenu(items: Menu[]): Menu[] {
+
+    return items
+      .filter(item => this.isVisible(item))
+      .map(item => {
+
+        const clone: Menu = {
+          ...item
+        };
+
+        if (clone.children) {
+
+          clone.children = this.filterMenu(clone.children);
+
+        }
+
+        return clone;
+
+      })
+      .filter(item => {
+
+        if (item.children) {
+
+          return item.children.length > 0;
+
+        }
+
+        return true;
+
+      });
+
+  }
+
+  private isVisible(item: Menu): boolean {
+
+    if (item.visible === false) {
+
+      return false;
+
+    }
+
+    if (!item.roles || item.roles.length === 0) {
+
+      return true;
+
+    }
+
+    return this.permissionService.hasAnyRole(item.roles);
+
   }
 
 }

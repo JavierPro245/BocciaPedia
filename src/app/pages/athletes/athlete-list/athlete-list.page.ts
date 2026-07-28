@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
-import { Athlete } from 'src/app/models/athlete.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { Athlete } from 'src/app/models/athlete.model';
+
+import { AthleteService } from 'src/app/services/athlete.service';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-athlete-list',
@@ -8,71 +12,121 @@ import { Router } from '@angular/router';
   styleUrls: ['./athlete-list.page.scss'],
   standalone: false
 })
-export class AthleteListPage {
+export class AthleteListPage implements OnInit, OnDestroy {
+
+  athletes: Athlete[] = [];
+
+  filteredAthletes: Athlete[] = [];
+
+  searchText = '';
+
+  selectedCategory = '';
+
+  private unsubscribe: (() => void) | null = null;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private athleteService: AthleteService,
+    private sessionService: SessionService
   ) {}
 
-  athletes: Athlete[] = [
+  ngOnInit(): void {
 
-    {
-      id: '1',
-      firstName: 'Javier',
-      lastName: 'Bastias',
-      rut: '11111111-1',
-      email: 'javier@bocciapp.cl',
-      phone: '999999999',
-      birthDate: new Date(1998,5,10),
-      category: 'BC2',
-      club: 'Club Paralímpico Los Ángeles',
-      photo: '',
-      observations: '',
-      active: true,
-    
-    },
+    const trainer = this.sessionService.getUser();
 
-    {
-      id: '2',
-      firstName: 'María',
-      lastName: 'Soto',
-      rut: '22222222-2',
-      email: 'maria@bocciapp.cl',
-      phone: '888888888',
-      birthDate: new Date(2000,8,15),
-      category: 'BC2',
-      club: 'Club Santiago',
-      photo: '',
-      observations: '',
-      active: true
+    if (!trainer) {
+      return;
     }
 
-  ];
+    this.unsubscribe = this.athleteService.listenAthletesByTrainer(
+      trainer.uid,
+      athletes => {
+
+        this.athletes = athletes;
+
+        this.filteredAthletes = athletes;
+
+      }
+    );
+
+  }
+
+  ngOnDestroy(): void {
+
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+
+  }
 
   viewAthlete(id: string) {
 
-  this.router.navigate([
-    '/main/athlete-detail',
-    id
-  ]);
+    this.router.navigate([
+      '/main/athlete-detail',
+      id
+    ]);
+
+  }
+
+  editAthlete(id: string) {
+
+    console.log('Editar', id);
+
+  }
+
+  deleteAthlete(id: string) {
+
+    console.log('Eliminar', id);
+
+  }
+
+  openEvaluations(id: string) {
+
+    console.log('Evaluaciones', id);
+
+  }
+
+  filterAthletes() {
+
+  const search = this.searchText
+    .toLowerCase()
+    .trim();
+
+  this.filteredAthletes = this.athletes.filter(athlete => {
+
+    const matchesSearch =
+
+      !search ||
+
+      athlete.fullName?.toLowerCase().includes(search) ||
+
+      athlete.firstName?.toLowerCase().includes(search) ||
+
+      athlete.lastName?.toLowerCase().includes(search) ||
+
+      athlete.rut?.toLowerCase().includes(search) ||
+
+      athlete.category?.toLowerCase().includes(search) ||
+
+      athlete.club?.toLowerCase().includes(search);
+
+    const matchesCategory =
+
+      !this.selectedCategory ||
+
+      athlete.category === this.selectedCategory;
+
+    return matchesSearch && matchesCategory;
+
+  });
 
 }
 
-editAthlete(id: string) {
+selectCategory(category: string) {
 
-  console.log('Editar', id);
+  this.selectedCategory = category;
 
-}
-
-deleteAthlete(id: string) {
-
-  console.log('Eliminar', id);
-
-}
-
-openEvaluations(id: string) {
-
-  console.log('Evaluaciones', id);
+  this.filterAthletes();
 
 }
 

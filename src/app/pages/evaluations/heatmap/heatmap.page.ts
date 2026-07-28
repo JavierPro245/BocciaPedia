@@ -5,7 +5,7 @@ import {
   ElementRef
 } from '@angular/core';
 import { Throw } from '../models/throw.model';
-import { EvaluationSessionService } from 'src/app/services/evaluation-session';
+import { EvaluationService } from 'src/app/services/evaluation.service';
 
 @Component({
   selector: 'app-heatmap',
@@ -23,6 +23,8 @@ export class HeatmapPage implements AfterViewInit {
   heatMode:'density'|'quality'|'precision'='density';
 
   throws: Throw[] = [];
+
+  selectedBox?: number;
 
   private readonly CELL_SIZE = 10;
 
@@ -67,14 +69,25 @@ export class HeatmapPage implements AfterViewInit {
   };
 
   constructor(
-    private sessionService: EvaluationSessionService
-  ) {}
+    private evaluationService: EvaluationService
+) {}
 
-  ngAfterViewInit(){
+  ngAfterViewInit(): void {
 
-  this.throws = this.sessionService.getThrows();
+  const evaluation = this.evaluationService.getEvaluation();
 
-  this.jack = this.sessionService.getJack();
+  console.log('EVALUATION', evaluation);
+console.log('SELECTED BOX', evaluation?.selectedBox);
+
+  if (evaluation) {
+
+    this.throws = evaluation.throwList ?? [];
+
+    this.jack = evaluation.jack;
+
+    this.selectedBox = evaluation.selectedBox;
+
+  }
 
   this.initializeCanvas();
 
@@ -138,17 +151,19 @@ refresh(): void {
 
     this.drawBorder();
 
-    this.drawCenterLine();
+this.drawCenterLine();
 
-    this.drawTarget();
+this.drawTarget();
 
-    this.drawV();
+this.drawV();
 
-    this.drawBoxes();
+this.drawBoxes();
 
-    this.drawJack();
+this.drawSelectedBox();
 
-    this.drawThrows();
+this.drawJack();
+
+this.drawThrows();
 
 }
 
@@ -909,6 +924,34 @@ refresh(): void {
     }
 
   }
+
+  private drawSelectedBox(): void {
+
+  if (this.selectedBox == null) {
+    return;
+  }
+
+  const c = this.COURT;
+
+  const width = c.width / 6;
+
+  const top = c.y + c.height - c.boxesHeight;
+
+  this.ctx.fillStyle = "rgba(33,150,243,0.35)";
+
+  this.ctx.fillRect(
+
+    c.x + (this.selectedBox - 1) * width,
+
+    top,
+
+    width,
+
+    c.boxesHeight
+
+  );
+
+}
 
   selectHeatMode(
   mode: 'density' | 'quality' | 'precision'

@@ -7,6 +7,7 @@ import { ThrowResultModalComponent } from 'src/app/shared/components/throw-resul
 import { Router } from '@angular/router';
 
 import { CourtEngineComponent } from '../components/court-engine/court-engine.component';
+import { EvaluationService } from 'src/app/services/evaluation.service';
 
 @Component({
   selector: 'app-evaluation-run',
@@ -16,9 +17,12 @@ import { CourtEngineComponent } from '../components/court-engine/court-engine.co
 })
 export class EvaluationRunPage implements OnInit {
 
+  viewMode: 'preview' | 'finish' = 'preview';
+
   constructor(
 
   private sessionService: EvaluationSessionService,
+  private evaluationService: EvaluationService,
 
   private modalController: ModalController,
 
@@ -45,6 +49,8 @@ export class EvaluationRunPage implements OnInit {
   totalThrows = 0;
 
   currentThrow = 0;
+
+  evaluationId = '';
 
   //==============================
   // ESTADO
@@ -112,26 +118,52 @@ export class EvaluationRunPage implements OnInit {
     this.throws = [];
     this.ballColor = 'red';
 
+    const evaluation =
+  this.evaluationService.getEvaluation();
+
+if (evaluation?.id) {
+
+  this.evaluationId = evaluation.id;
+
+}
+
   }
 
   //==============================
   // BOX / JACK
   //==============================
 
-  onSelection(selection: CourtSelection): void {
+  async onSelection(selection: CourtSelection): Promise<void> {
 
   if (selection.box) {
 
-    this.selectedBox = 'Box ' + selection.box;
+  this.selectedBox = 'Box ' + selection.box;
 
-    this.instruction =
+  this.instruction =
     'Coloque el Jack en la cancha.';
 
-    this.sessionService.setSelectedBox(selection.box);
+  this.sessionService.setSelectedBox(selection.box);
 
-    return;
+  if (this.evaluationId) {
+
+    await this.evaluationService.updateEvaluationFields(
+  this.evaluationId,
+  {
+    selectedQuadrant: this.selectedQuadrant,
+    jack: {
+      x: selection.x,
+      y: selection.y,
+      quadrant: selection.quadrant as 'Q1' | 'Q2' | 'Q3' | 'Q4'
+    },
+    lastUpdatedStep: 'jack'
+  }
+);
 
   }
+
+  return;
+
+}
 
   if (selection.target) {
 
@@ -150,6 +182,22 @@ export class EvaluationRunPage implements OnInit {
     );
 
   }
+
+  if (this.evaluationId) {
+
+  await this.evaluationService.updateEvaluationFields(
+    this.evaluationId,
+    {
+      selectedQuadrant: this.selectedQuadrant,
+      jack: {
+        x: selection.x,
+        y: selection.y,
+        quadrant: this.selectedQuadrant as 'Q1' | 'Q2' | 'Q3' | 'Q4'
+      }
+    }
+  );
+
+}
 
 }
 
@@ -176,7 +224,7 @@ export class EvaluationRunPage implements OnInit {
 
 }
 
-saveThrowEvaluation(event: any): void {
+async saveThrowEvaluation(event: any): Promise<void> {
 
   if (!this.pendingThrow) {
     return;
@@ -188,7 +236,25 @@ saveThrowEvaluation(event: any): void {
 
   this.throws.push(this.pendingThrow);
 
-  this.sessionService.setThrows(this.throws);
+this.sessionService.setThrows(this.throws);
+
+if (this.evaluationId) {
+
+  await this.evaluationService.saveThrows(
+  this.evaluationId,
+  this.throws
+);
+
+await this.evaluationService.updateEvaluationFields(
+  this.evaluationId,
+  {
+    currentThrow: this.throws.length,
+    currentBallColor: this.ballColor,
+    lastUpdatedStep: 'throw'
+  }
+);
+
+}
 
   this.pendingThrow = undefined;
 
@@ -272,11 +338,23 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
   // FIN EVALUACIÓN
   //==============================
 
-  finishEvaluation(): void {
+ async finishEvaluation(): Promise<void> {
 
   // Guardamos por última vez los lanzamientos
   this.sessionService.setThrows(this.throws);
 
+  if (this.evaluationId) {
+
+  await this.evaluationService.updateEvaluationFields(
+    this.evaluationId,
+    {
+      status: 'finished'
+    }
+  );
+
+}
+  this.evaluationService.setDetailViewMode('finish');
+  this.viewMode = this.evaluationService.getDetailViewMode();
   // Navegamos al resumen
   this.router.navigate([
     '/main/evaluations/evaluations-detail'

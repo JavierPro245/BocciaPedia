@@ -5,6 +5,20 @@ export type UserRole =
   | 'assistant'
   | 'referee';
 
+export interface TrainerProfile {
+
+  phone?: string;
+
+  club?: string;
+
+  federation?: string;
+
+  city?: string;
+
+  specialization?: string;
+
+}
+
 export interface User {
 
   uid: string;
@@ -21,8 +35,15 @@ export interface User {
 
   active: boolean;
 
+  athleteId: string | null;
+
+  trainerId: string | null;
+
   createdAt: number;
 
   updatedAt: number;
+
+  // Perfil específico del entrenador
+  trainerProfile?: TrainerProfile;
 
 }

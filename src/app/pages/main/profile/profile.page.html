@@ -15,8 +15,22 @@
 
     [online]="user?.active ?? false"
 
-    [editable]="true">
+    [editable]="true"
 
-</app-profile-avatar>
+    (photoChange)="changePhoto()">
+
+    </app-profile-avatar>
+
+<ion-card
+    *ngIf="isAdmin()"
+    class="app-card">
+
+    <ion-card-content>
+
+        Esta cuenta es Administrador.
+
+    </ion-card-content>
+
+</ion-card>
 
 </ion-content>

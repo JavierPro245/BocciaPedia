@@ -46,9 +46,10 @@
   </ng-template>
 
   <ion-fab
-    vertical="bottom"
-    horizontal="end"
-    slot="fixed">
+  *ngIf="userRole === 'trainer'"
+  vertical="bottom"
+  horizontal="end"
+  slot="fixed">
 
     <ion-fab-button
       color="success"

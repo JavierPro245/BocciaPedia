@@ -16,10 +16,6 @@ const routes: Routes = [
         path: 'system-config',
         loadChildren: () => import('./system-config/system-config.module').then( m => m.SystemConfigPageModule)
       },
-      {
-        path: 'users',
-        loadChildren: () => import('./users/users.module').then( m => m.UsersPageModule)
-      }
     ]
   },
   

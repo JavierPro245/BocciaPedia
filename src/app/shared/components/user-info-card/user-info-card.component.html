@@ -1,0 +1,75 @@
+<ion-card class="app-card">
+
+    <ion-list lines="none">
+
+        <ion-item>
+
+            <ion-label>
+
+                <h3>Correo</h3>
+
+                <p>{{ user.email }}</p>
+
+            </ion-label>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                <h3>Rol</h3>
+
+                <p>{{ role }}</p>
+
+            </ion-label>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                <h3>Estado</h3>
+
+                <p>
+
+                    {{ user.active ? 'Activa' : 'Desactivada' }}
+
+                </p>
+
+            </ion-label>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                <h3>Aprobación</h3>
+
+                <p>
+
+                    {{ user.approved ? 'Aprobado' : 'Pendiente' }}
+
+                </p>
+
+            </ion-label>
+
+        </ion-item>
+
+        <ion-item>
+
+            <ion-label>
+
+                <h3>UID</h3>
+
+                <p>{{ user.uid }}</p>
+
+            </ion-label>
+
+        </ion-item>
+
+    </ion-list>
+
+</ion-card>

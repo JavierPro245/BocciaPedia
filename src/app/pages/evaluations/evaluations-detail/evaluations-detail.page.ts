@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EvaluationSessionService } from 'src/app/services/evaluation-session';
 import { Throw } from '../models/throw.model';
+import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { EvaluationService } from 'src/app/services/evaluation.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-evaluations-detail',
@@ -31,33 +34,44 @@ export class EvaluationsDetailPage implements OnInit {
 
   selectedQuadrant?: string;
 
+  viewMode: 'preview' | 'finish' = 'preview';
+
   constructor(
-    private sessionService: EvaluationSessionService,
-    private router: Router
-  ) {}
+
+  private evaluationService: EvaluationService,
+  
+  private sessionService: SessionService,
+
+  private toastController: ToastController,
+
+  private router: Router
+
+) {}
   ngOnInit(): void {
 
-    const config = this.sessionService.getConfig();
+    this.viewMode = this.evaluationService.getDetailViewMode();
 
-    if (config) {
+  const evaluation = this.evaluationService.getEvaluation();
 
-      this.athlete = config.athleteName;
-
-      this.evaluation = config.evaluationType;
-
-      this.distance = config.distance;
-
-    }
-
-    this.throws = this.sessionService.getThrows();
-
-    this.selectedBox = this.sessionService.getSelectedBox();
-
-    this.selectedQuadrant = this.sessionService.getSelectedQuadrant();
-
-    this.calculateStatistics();
-
+  if (!evaluation) {
+    return;
   }
+
+  this.athlete = evaluation.athleteName;
+
+  this.evaluation = evaluation.evaluationType;
+
+  this.distance = evaluation.distance;
+
+  this.throws = evaluation.throwList ?? [];
+
+  this.selectedBox = evaluation.selectedBox;
+
+  this.selectedQuadrant = evaluation.selectedQuadrant;
+
+  this.calculateStatistics();
+
+}
 
   private calculateStatistics(): void {
 
@@ -158,6 +172,51 @@ this.router.navigate([
 '/main/evaluations/evaluation-throws'
 
 ]);
+
+}
+
+async finishEvaluation(): Promise<void> {
+
+  const evaluation =
+    this.evaluationService.getEvaluation();
+
+  if (evaluation?.id) {
+
+    await this.evaluationService.updateEvaluationFields(
+
+      evaluation.id,
+
+      {
+
+        status: 'finished'
+
+      }
+
+    );
+
+  }
+
+  const toast =
+    await this.toastController.create({
+
+      message:
+        'Evaluación finalizada correctamente.',
+
+      duration: 2000,
+
+      color: 'success',
+
+      position: 'bottom'
+
+    });
+
+  await toast.present();
+
+  await this.router.navigate([
+
+    '/main/evaluations'
+
+  ]);
 
 }
 

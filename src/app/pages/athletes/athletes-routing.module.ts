@@ -23,9 +23,17 @@ const routes: Routes = [
       {
         path: 'athlete-list',
         loadChildren: () => import('./athlete-list/athlete-list.module').then( m => m.AthleteListPageModule)
+      },
+      {
+        path: 'select-user/:athleteId',
+        loadChildren: () =>
+        import('./select-user/select-user.module').then(
+          m => m.SelectUserPageModule
+        )
       }
     ]
   },
+  
 
 ];
 

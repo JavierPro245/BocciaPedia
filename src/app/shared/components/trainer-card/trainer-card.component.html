@@ -7,7 +7,7 @@
       <ion-button
         fill="clear"
         size="small"
-        [id]="'trainer-menu-' + trainer.id">
+        [id]="'trainer-menu-' + trainer.uid">
 
         <ion-icon
           name="ellipsis-vertical">
@@ -16,7 +16,7 @@
       </ion-button>
 
       <ion-popover
-        trigger="trainer-menu-{{trainer.id}}"
+        [trigger]="'trainer-menu-' + trainer.uid"
         side="bottom"
         alignment="end">
 
@@ -82,12 +82,12 @@
       <ion-avatar>
 
         <img
-          *ngIf="trainer.photo"
-          [src]="trainer.photo">
+          *ngIf="trainer.photoURL"
+          [src]="trainer.photoURL">
 
         <ion-icon
-          *ngIf="!trainer.photo"
-          name="people-circle">
+          *ngIf="!trainer.photoURL"
+          name="person-circle">
         </ion-icon>
 
       </ion-avatar>
@@ -96,43 +96,45 @@
 
     <h2>
 
-      {{trainer.firstName}} {{trainer.lastName}}
+      {{ trainer.displayName }}
 
     </h2>
 
-    <ion-chip color="primary">
+    <ion-chip
+      color="primary"
+      *ngIf="trainer.roles?.includes('trainer')">
 
-      {{trainer.federation}}
+      Entrenador
 
     </ion-chip>
 
-    <p>
+    <p *ngIf="trainer.trainerProfile?.club">
 
-      {{trainer.club}}
+      {{ trainer.trainerProfile?.club }}
 
     </p>
 
-    <ion-item
-      lines="none">
+    <ion-item lines="none">
 
       <ion-icon
         slot="start"
         name="mail-outline">
       </ion-icon>
 
-      {{trainer.email}}
+      {{ trainer.email }}
 
     </ion-item>
 
     <ion-item
-      lines="none">
+      lines="none"
+      *ngIf="trainer.trainerProfile?.phone">
 
       <ion-icon
         slot="start"
         name="call-outline">
       </ion-icon>
 
-      {{trainer.phone}}
+      {{ trainer.trainerProfile?.phone }}
 
     </ion-item>
 

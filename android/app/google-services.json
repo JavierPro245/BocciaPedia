@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "940484393399",
+    "project_id": "bocciapedia-c730f",
+    "storage_bucket": "bocciapedia-c730f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940484393399:android:ab4881272275187ebc1032",
+        "android_client_info": {
+          "package_name": "BocciaPedia.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940484393399-ddmno54q8b8mk2kkgkjijerc9cga3j2s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "BocciaPedia.app",
+            "certificate_hash": "e8f341dc56ac5a6fd88eefda54daf82c44a8b4b6"
+          }
+        },
+        {
+          "client_id": "940484393399-8llae5tt526r9lgvf9668dqh31le42o6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeGxWnDAi5YOzBmwAh7LgWBlFQHVbJVxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940484393399-8llae5tt526r9lgvf9668dqh31le42o6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

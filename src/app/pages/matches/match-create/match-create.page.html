@@ -31,18 +31,34 @@
 
           </ion-label>
 
-          <ion-select
-            [(ngModel)]="redPlayer">
+          <ion-select [(ngModel)]="redPlayer">
 
-            <ion-select-option
-              *ngFor="let player of players"
-              [value]="player.id">
+  <ion-select-option value="manual">
+    ✍️ Escribir nombre...
+  </ion-select-option>
 
-              {{player.name}}
+  <ion-select-option
+    *ngFor="let player of players"
+    [value]="player.id">
 
-            </ion-select-option>
+    {{ player.fullName }}
 
-          </ion-select>
+  </ion-select-option>
+
+</ion-select>
+
+<ion-item *ngIf="redPlayer === 'manual'">
+
+  <ion-label position="stacked">
+    Nombre del jugador
+  </ion-label>
+
+  <ion-input
+    [(ngModel)]="manualRedPlayer"
+    placeholder="Ingrese el nombre">
+  </ion-input>
+
+</ion-item>
 
         </ion-item>
 
@@ -56,16 +72,31 @@
 
           <ion-select
             [(ngModel)]="bluePlayer">
-
+            <ion-select-option value="manual">
+    ✍️ Escribir nombre...
+  </ion-select-option>
             <ion-select-option
               *ngFor="let player of players"
               [value]="player.id">
 
-              {{player.name}}
+              {{player.fullName}}
 
             </ion-select-option>
 
           </ion-select>
+
+          <ion-item *ngIf="bluePlayer === 'manual'">
+
+  <ion-label position="stacked">
+    Nombre del jugador
+  </ion-label>
+
+  <ion-input
+    [(ngModel)]="manualBluePlayer"
+    placeholder="Ingrese el nombre">
+  </ion-input>
+
+</ion-item>
 
         </ion-item>
 
@@ -239,11 +270,9 @@
 
     <p
   class="error-message"
-  *ngIf="redPlayer && bluePlayer && redPlayer === bluePlayer">
+  *ngIf="playersAreEqual">
 
-  <ion-icon
-    name="warning-outline">
-  </ion-icon>
+  <ion-icon name="warning-outline"></ion-icon>
 
   Los jugadores deben ser diferentes.
 

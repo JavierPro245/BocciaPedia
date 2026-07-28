@@ -1,3 +1,5 @@
+import { UserRole } from './user.model';
+
 export interface Menu {
 
   title: string;
@@ -7,5 +9,13 @@ export interface Menu {
   url?: string;
 
   children?: Menu[];
+
+  roles?: UserRole[];
+
+  visible?: boolean;
+
+  badge?: number;
+
+  order?: number;
 
 }

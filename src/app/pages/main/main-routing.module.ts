@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { MainPage } from './main.page';
+import { RoleGuard } from 'src/app/guards/role.guard';
 
 const routes: Routes = [
 
@@ -43,6 +44,11 @@ const routes: Routes = [
 
       {
         path: 'athlete-list',
+        canActivate:[RoleGuard],
+
+    data:{
+        roles:['admin','trainer']
+    },
         loadChildren: () =>
           import('../athletes/athlete-list/athlete-list.module')
             .then(m => m.AthleteListPageModule)
@@ -56,7 +62,7 @@ const routes: Routes = [
       },
 
       {
-        path: 'athlete-edit',
+        path: 'athlete-edit/:id',
         loadChildren: () =>
           import('../athletes/athlete-edit/athlete-edit.module')
             .then(m => m.AthleteEditPageModule)
@@ -68,6 +74,13 @@ const routes: Routes = [
         import('../athletes/athlete-detail/athlete-detail.module')
         .then(m => m.AthleteDetailPageModule)
       },
+
+      {
+  path: 'select-user/:athleteId',
+  loadChildren: () =>
+    import('../athletes/select-user/select-user.module')
+      .then(m => m.SelectUserPageModule)
+},
 
       {
   path: 'evaluations',
@@ -99,6 +112,20 @@ const routes: Routes = [
   loadChildren: () =>
     import('../trainers/trainer-edit/trainer-edit.module')
       .then(m => m.TrainerEditPageModule)
+},
+
+{
+  path: 'users',
+
+  canActivate: [RoleGuard],
+
+  data: {
+    roles: ['admin']
+  },
+
+  loadChildren: () =>
+    import('../users/users.module')
+      .then(m => m.UsersPageModule)
 },
 
 {

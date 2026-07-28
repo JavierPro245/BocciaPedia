@@ -4,6 +4,11 @@ import { Router } from '@angular/router';
 
 import { MatchService } from '../services/match.service';
 
+import { OnInit } from '@angular/core';
+import { AthleteService } from 'src/app/services/athlete.service';
+import { SessionService } from 'src/app/services/session.service';
+import { Athlete } from 'src/app/models/athlete.model';
+
 @Component({
 
 selector:'app-match-create',
@@ -16,45 +21,114 @@ standalone:false
 
 })
 
-export class MatchCreatePage{
+export class MatchCreatePage implements OnInit {
 
-players=[
-
-{id:'1',name:'Javier Bastias'},
-
-{id:'2',name:'Carlos Pérez'},
-
-{id:'3',name:'Felipe Soto'}
-
-];
+players: any[] = [];
 
 redPlayer = '';
 
 bluePlayer = '';
 
-category = 'BC3';
+manualRedPlayer = '';
+manualBluePlayer = '';
+
+category = 'BC2';
 
 totalEnds = 4;
 
 // Tiempo editable por el usuario (en minutos)
-minutes = 6;
+minutes = 3.5;
 
 // Tiempo en segundos que se enviará al partido
 secondsPerPlayer = 360;
 
 constructor(
 
-private service:MatchService,
+  private service: MatchService,
 
-private router:Router
+  private router: Router,
+
+  private athleteService: AthleteService,
+
+  private sessionService: SessionService
 
 ){}
 
+ngOnInit() {
+
+  this.sessionService.currentUser$
+    .subscribe(user => {
+
+      if (!user) {
+        return;
+      }
+
+      this.athleteService.listenAthletesByTrainer(
+
+        user.uid,
+
+        athletes => {
+
+          this.players = athletes;
+
+        }
+
+      );
+
+    });
+
+}
 get playersAreValid(): boolean {
 
-  return !!this.redPlayer &&
-         !!this.bluePlayer &&
-         this.redPlayer !== this.bluePlayer;
+  const redValid =
+    this.redPlayer === 'manual'
+      ? this.manualRedPlayer.trim().length > 0
+      : !!this.redPlayer;
+
+  const blueValid =
+    this.bluePlayer === 'manual'
+      ? this.manualBluePlayer.trim().length > 0
+      : !!this.bluePlayer;
+
+  if (!redValid || !blueValid) {
+    return false;
+  }
+
+  const redName =
+    this.redPlayer === 'manual'
+      ? this.manualRedPlayer.trim().toLowerCase()
+      : this.redPlayer;
+
+  const blueName =
+    this.bluePlayer === 'manual'
+      ? this.manualBluePlayer.trim().toLowerCase()
+      : this.bluePlayer;
+
+  return redName !== blueName;
+
+}
+
+get playersAreEqual(): boolean {
+
+  if (!this.playersAreValid) {
+
+    const redName =
+      this.redPlayer === 'manual'
+        ? this.manualRedPlayer.trim().toLowerCase()
+        : this.redPlayer;
+
+    const blueName =
+      this.bluePlayer === 'manual'
+        ? this.manualBluePlayer.trim().toLowerCase()
+        : this.bluePlayer;
+
+    return !!redName &&
+           !!blueName &&
+           redName === blueName;
+
+  }
+
+  return false;
 
 }
 
@@ -63,7 +137,7 @@ categoryChanged(): void {
   switch (this.category) {
 
     case 'BC1':
-      this.minutes = 5;
+      this.minutes = 4.5;
       break;
 
     case 'BC2':
@@ -84,82 +158,112 @@ categoryChanged(): void {
 
 }
 
-startMatch(){
+startMatch() {
 
-this.secondsPerPlayer = Math.round(this.minutes * 60);
+  this.secondsPerPlayer = Math.round(this.minutes * 60);
 
-const red=this.players.find(x=>x.id===this.redPlayer);
+  let redId = '';
+  let redName = '';
 
-const blue=this.players.find(x=>x.id===this.bluePlayer);
+  let blueId = '';
+  let blueName = '';
 
-if(!red||!blue){
+  // Jugador rojo
+  if (this.redPlayer === 'manual') {
 
-return;
+    redName = this.manualRedPlayer.trim();
 
-}
+  } else {
 
-this.service.createMatch({
+    const red = this.players.find(x => x.id === this.redPlayer);
 
-id:Date.now().toString(),
+    if (!red) {
+      return;
+    }
 
-redPlayerId:red.id,
+    redId = red.id!;
+    redName = red.fullName;
 
-redPlayer:red.name,
+  }
 
-bluePlayerId:blue.id,
+  // Jugador azul
+  if (this.bluePlayer === 'manual') {
 
-bluePlayer:blue.name,
+    blueName = this.manualBluePlayer.trim();
 
-category:this.category as any,
+  } else {
 
-totalEnds:this.totalEnds,
+    const blue = this.players.find(x => x.id === this.bluePlayer);
 
-currentEnd:1,
+    if (!blue) {
+      return;
+    }
 
-secondsPerPlayer:this.secondsPerPlayer,
+    blueId = blue.id!;
+    blueName = blue.fullName;
 
-redTime:this.secondsPerPlayer,
+  }
+  this.service.createMatch({
 
-blueTime:this.secondsPerPlayer,
+  id: Date.now().toString(),
 
-redScore:0,
+  redPlayerId: redId,
 
-blueScore:0,
+  redPlayer: redName,
 
-currentEndRedScore:0,
+  bluePlayerId: blueId,
 
-currentEndBlueScore:0,
+  bluePlayer: blueName,
 
-redBallsPlayed:0,
+  category: this.category as any,
 
-blueBallsPlayed:0,
+  totalEnds: this.totalEnds,
 
-startingColor:'red',
+  currentEnd: 1,
 
-jackPlayed:false,
+  secondsPerPlayer: this.secondsPerPlayer,
 
-turn:null,
+  redTime: this.secondsPerPlayer,
 
-timerRunning:false,
+  blueTime: this.secondsPerPlayer,
 
-isTieBreak:false,
+  redScore: 0,
 
-tieBreakWinner:null,
+  blueScore: 0,
 
-ends: [],
+  currentEndRedScore: 0,
 
-penalty: null,
+  currentEndBlueScore: 0,
 
-state:'waiting'
+  redBallsPlayed: 0,
+
+  blueBallsPlayed: 0,
+
+  startingColor: 'red',
+
+  jackPlayed: false,
+
+  turn: null,
+
+  timerRunning: false,
+
+  isTieBreak: false,
+
+  tieBreakWinner: null,
+
+  ends: [],
+
+  penalty: null,
+
+  state: 'waiting'
 
 });
 
 this.router.navigate([
-
-'/matches/match-run'
-
+  '/matches/match-run'
 ]);
 
 }
 
 }
+

@@ -17,6 +17,7 @@ export class EvaluationsPage {
     {
       id:'1',
       athleteId:'1',
+      trainerId: '1',
       athleteName:'Javier Bastias',
       category:'BC3',
       evaluationType:'First Ball',
@@ -30,6 +31,7 @@ export class EvaluationsPage {
     {
       id:'2',
       athleteId:'2',
+      trainerId: '1',
       athleteName:'Carlos Pérez',
       category:'BC2',
       evaluationType:'Placement',
@@ -43,6 +45,7 @@ export class EvaluationsPage {
     {
       id:'3',
       athleteId:'3',
+      trainerId: '1',
       athleteName:'Felipe Soto',
       category:'BC4',
       evaluationType:'Push On',

@@ -2,10 +2,13 @@ import { Component } from '@angular/core';
 import { EvaluationConfig } from '../models/evaluation-config.model';
 import { Router } from '@angular/router';
 
-import { EvaluationService } from 'src/app/services/evaluation';
+import { EvaluationService } from 'src/app/services/evaluation.service';
 import { EvaluationSessionService } from 'src/app/services/evaluation-session';
-import { EvaluationType } from 'src/app/models/evaluation.model';
+import { Evaluation, EvaluationType } from 'src/app/models/evaluation.model';
 import { AlertController } from '@ionic/angular';
+import { Athlete } from 'src/app/models/athlete.model';
+import { AthleteService } from 'src/app/services/athlete.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-evaluations-create',
@@ -17,15 +20,19 @@ export class EvaluationsCreatePage {
 
   constructor(
 
-    private router:Router,
+  private router: Router,
 
-    private evaluationService:EvaluationService,
+  private evaluationService: EvaluationService,
 
-    private sessionService: EvaluationSessionService,
+  private sessionService: EvaluationSessionService,
 
-    private alertController: AlertController
+  private alertController: AlertController,
 
-  ){}
+  private athleteService: AthleteService,
+
+  private authService: AuthService
+
+){}
 
   config: EvaluationConfig = {
 
@@ -43,19 +50,7 @@ export class EvaluationsCreatePage {
 
 };
 
-  athletes = [
-
-    {
-      id: '1',
-      name: 'Javier Bastias'
-    },
-
-    {
-      id: '2',
-      name: 'María Soto'
-    }
-
-  ];
+  athletes: Athlete[] = [];
 
   evaluations: EvaluationType[] = [
 
@@ -77,6 +72,30 @@ export class EvaluationsCreatePage {
 
   distances = [3,5,7,9];
 
+  ngOnInit() {
+
+  this.authService.listenAuthState(user => {
+
+    if (!user) {
+      return;
+    }
+
+    this.athleteService.listenAthletesByTrainer(
+
+      user.uid,
+
+      athletes => {
+
+        this.athletes = athletes;
+
+      }
+
+    );
+
+  });
+
+}
+
   increaseThrows(){
 
     this.config.throws++;
@@ -93,41 +112,85 @@ export class EvaluationsCreatePage {
 
   }
 
-  continue() {
+  async continue() {
 
   const athlete = this.athletes.find(
     a => a.id === this.config.athleteId
   );
 
-  this.config.athleteName = athlete?.name ?? '';
+  if (!athlete) {
+    return;
+  }
 
-  this.evaluationService.setEvaluation({
+  this.config.athleteName = athlete.fullName;
 
-    athleteId: this.config.athleteId,
+  const currentUser = this.authService.getCurrentUser();
 
-    athleteName: this.config.athleteName,
+  if (!currentUser) {
+    return;
+  }
 
-    evaluationType: this.config.evaluationType,
+  const evaluation: Evaluation = {
 
-    throws: this.config.throws,
+  trainerId: currentUser.uid,
 
-    currentThrow: 1,
+  athleteId: this.config.athleteId,
 
-    distance: this.config.distance,
+  athleteName: this.config.athleteName,
 
-    date: new Date(),
+  evaluationType: this.config.evaluationType,
 
-    status: 'config',
+  category: athlete.category,
 
-    notes: this.config.notes
+  throws: this.config.throws,
 
-  });
+  currentThrow: 0,
 
-  this.sessionService.setConfig(this.config);
+  distance: this.config.distance,
 
-  this.router.navigate([
-    '/main/evaluations/evaluation-run'
-  ]);
+  notes: this.config.notes,
+
+  date: new Date(),
+
+  status: 'config',
+
+  throwList: [],
+
+  statistics: {
+
+    excellent: 0,
+
+    good: 0,
+
+    regular: 0,
+
+    bad: 0
+
+  }
+
+};
+
+  try {
+
+    const evaluationId =
+  await this.evaluationService.createEvaluation(evaluation);
+
+this.evaluationService.setEvaluation({
+  id: evaluationId,
+  ...evaluation
+});
+
+    this.sessionService.setConfig(this.config);
+
+    this.router.navigate([
+      '/main/evaluations/evaluation-run'
+    ]);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
 
 }
 

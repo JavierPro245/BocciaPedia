@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Trainer } from 'src/app/models/trainer.model';
+
+import { User } from 'src/app/models/user.model';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-trainer-list',
@@ -8,60 +10,63 @@ import { Trainer } from 'src/app/models/trainer.model';
   styleUrls: ['./trainer-list.page.scss'],
   standalone: false
 })
-export class TrainerListPage {
+export class TrainerListPage implements OnInit {
+
+  trainers: User[] = [];
+
+  loading = true;
 
   constructor(
+    private userService: UserService,
     private router: Router
   ) {}
 
-  trainers: Trainer[] = [
+  async ngOnInit() {
+    await this.loadTrainers();
+  }
 
-    {
-      id:'1',
-      firstName:'Carlos',
-      lastName:'Pérez',
-      email:'carlos@bocciapedia.cl',
-      phone:'999999999',
-      federation:'Comité Paralímpico de Chile',
-      club:'Club Paralímpico Los Ángeles',
-      photo:'',
-      observations:'',
-      active:true
-    },
+  async ionViewWillEnter() {
+    await this.loadTrainers();
+  }
 
-    {
-      id:'2',
-      firstName:'María',
-      lastName:'González',
-      email:'maria@bocciapedia.cl',
-      phone:'888888888',
-      federation:'Federación Colombiana',
-      club:'Bogotá Boccia',
-      photo:'',
-      observations:'',
-      active:true
-    }
+  async loadTrainers() {
 
-  ];
+    this.loading = true;
 
-  viewTrainer(id:string){
+    const users = await this.userService.getUsers();
+
+    this.trainers = users.filter((user: User) =>
+      (user.roles ?? []).includes('trainer')
+    );
+
+    this.loading = false;
+
+  }
+
+  viewTrainer(uid: string) {
 
     this.router.navigate([
-      '/main/trainer-detail',
-      id
+      '/trainers/trainer-detail',
+      uid
     ]);
 
   }
 
-  editTrainer(id:string){
+  editTrainer(uid: string) {
 
-    console.log('Editar',id);
+    this.router.navigate([
+      '/trainers/trainer-edit',
+      uid
+    ]);
 
   }
 
-  deleteTrainer(id:string){
+  deleteTrainer(uid: string) {
 
-    console.log('Eliminar',id);
+    console.log('Eliminar entrenador:', uid);
+
+    // Lo implementaremos cuando construyamos la pantalla de eliminación
+    // o la opción de quitar el rol trainer.
 
   }
 

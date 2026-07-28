@@ -1,13 +1,153 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>athleteEdit</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+    title="Editar Deportista"
+    [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">athleteEdit</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+    <form
+        class="form"
+        [formGroup]="form">
+
+        <!-- FOTO -->
+
+        <app-image-picker
+
+        [image]="athlete?.photo || 'assets/avatars/avatar.png'"
+
+        (imageChange)="onPhotoSelected($event)">
+
+        </app-image-picker>
+
+        <!-- PERSONAL -->
+
+        <app-form-section
+            title="Datos personales"
+            icon="person-outline">
+        </app-form-section>
+
+        <app-login-input
+            label="Nombres"
+            placeholder="Ingrese los nombres"
+            icon="person-outline"
+            [control]="form.controls.firstName">
+        </app-login-input>
+
+        <app-login-input
+            label="Apellidos"
+            placeholder="Ingrese los apellidos"
+            icon="person-outline"
+            [control]="form.controls.lastName">
+        </app-login-input>
+
+        <app-login-input
+            label="RUN"
+            placeholder="12.345.678-9"
+            icon="card-outline"
+            [control]="form.controls.rut">
+        </app-login-input>
+
+        <!-- DEPORTIVO -->
+
+        <app-form-section
+            title="Datos deportivos"
+            icon="trophy-outline">
+        </app-form-section>
+
+        <app-select-input
+            label="Categoría"
+            placeholder="Seleccione"
+            [options]="categories"
+            [control]="form.controls.category">
+        </app-select-input>
+
+        <app-login-input
+            label="Club"
+            placeholder="Club"
+            icon="business-outline"
+            [control]="form.controls.club">
+        </app-login-input>
+
+        <app-select-input
+            label="Mano dominante"
+            placeholder="Seleccione"
+            [options]="hands"
+            [control]="form.controls.dominantHand">
+        </app-select-input>
+
+        <!-- CONTACTO -->
+
+        <app-form-section
+            title="Contacto"
+            icon="mail-outline">
+        </app-form-section>
+
+        <app-login-input
+            label="Correo"
+            placeholder="correo@correo.cl"
+            type="email"
+            icon="mail-outline"
+            [control]="form.controls.email">
+        </app-login-input>
+
+        <app-login-input
+            label="Teléfono"
+            placeholder="+56 9"
+            type="tel"
+            icon="call-outline"
+            [control]="form.controls.phone">
+        </app-login-input>
+
+        <!-- OBSERVACIONES -->
+
+        <app-form-section
+            title="Información"
+            icon="document-text-outline">
+        </app-form-section>
+
+        <ion-item>
+
+            <ion-label position="stacked">
+                Observaciones
+            </ion-label>
+
+            <ion-textarea
+                rows="5"
+                formControlName="observations">
+            </ion-textarea>
+
+        </ion-item>
+
+        <!-- ESTADO -->
+
+        <app-form-section
+            title="Estado"
+            icon="checkmark-circle-outline">
+        </app-form-section>
+
+        <ion-item>
+
+            <ion-label>
+                Deportista activo
+            </ion-label>
+
+            <ion-toggle
+                formControlName="active">
+            </ion-toggle>
+
+        </ion-item>
+
+        <ion-button
+            expand="block"
+            color="warning"
+            class="save-btn"
+            [disabled]="form.invalid"
+            (click)="save()">
+
+            Actualizar Deportista
+
+        </ion-button>
+
+    </form>
+
 </ion-content>

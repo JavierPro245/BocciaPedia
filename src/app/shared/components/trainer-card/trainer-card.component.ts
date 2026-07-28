@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Trainer } from 'src/app/models/trainer.model';
+
+import { User } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-trainer-card',
@@ -9,7 +10,7 @@ import { Trainer } from 'src/app/models/trainer.model';
 })
 export class TrainerCardComponent {
 
-  @Input() trainer!: Trainer;
+  @Input() trainer!: User;
 
   @Output() details = new EventEmitter<string>();
 
@@ -20,21 +21,15 @@ export class TrainerCardComponent {
   constructor() {}
 
   viewDetails() {
-
-    this.details.emit(this.trainer.id);
-
+    this.details.emit(this.trainer.uid);
   }
 
   editTrainer() {
-
-    this.edit.emit(this.trainer.id);
-
+    this.edit.emit(this.trainer.uid);
   }
 
   deleteTrainer() {
-
-    this.delete.emit(this.trainer.id);
-
+    this.delete.emit(this.trainer.uid);
   }
 
 }
