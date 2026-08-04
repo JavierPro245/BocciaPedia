@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Match } from '../models/match.model';
-import { MatchService } from '../services/match.service';
+import { ActivatedRoute } from '@angular/router';
+import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 
 @Component({
   selector: 'app-match-broadcast',
@@ -21,34 +22,55 @@ penaltyInterval: any;
   showRest = false;
 
   restSeconds = 60;
+  private unsubscribe?: () => void;
+
+  matchId = '';
 
   constructor(
-    private matchService: MatchService
-  ) {}
+
+  private repository: MatchRepositoryService,
+
+  private route: ActivatedRoute
+
+) {}
 
   ngOnInit() {
 
-    this.loadMatch();
+  this.matchId =
+    this.route.snapshot.paramMap.get('id') ?? '';
 
-    setInterval(() => {
+  if (!this.matchId) {
 
-      this.loadMatch();
+    console.error('No se recibió el ID del partido');
 
-    },300);
+    return;
 
   }
 
-  private loadMatch(){
+  this.unsubscribe = this.repository.listenMatch(
 
-    const match=this.matchService.getMatch();
+    this.matchId,
 
-    if(match){
+    match => {
 
-      this.match=match;
+      if (!match) {
+        return;
+      }
+
+      this.match = match;
 
     }
 
-  }
+  );
+
+}
+
+ngOnDestroy() {
+
+  this.unsubscribe?.();
+
+}
+
 
   formatTime(seconds: number): string {
 
@@ -74,34 +96,10 @@ finishTieBreak(winner:'red'|'blue'): void {
 
   this.match.turn = null;
 
-  this.matchService.updateMatch(this.match);
-
-  // Recargar el partido para refrescar la vista
-  this.match = this.matchService.getMatch()!;
-
-}
-
-assignPenalty(team: 'red' | 'blue') {
-
-  console.log('Botón presionado:', team);
-
-  this.matchService.startPenalty(team);
-
-  this.match = this.matchService.getMatch()!;
-
-  console.log(this.match);
-
-}
-
-finishPenalty(success: boolean) {
-
-    clearInterval(this.penaltyInterval);
-
-    this.match.penalty!.success = success;
-
-    this.match.penalty!.executed = true;
-
-    this.showPenalty = false;
+  this.repository.updateMatch(
+  this.match.id,
+  this.match
+);
 
 }
 

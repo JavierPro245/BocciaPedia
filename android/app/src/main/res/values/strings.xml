@@ -4,4 +4,5 @@
     <string name="title_activity_main">BocciaPedia</string>
     <string name="package_name">BocciaPedia.app</string>
     <string name="custom_url_scheme">BocciaPedia.app</string>
+    <string name="cast_app_id">7B9440C4</string>
 </resources>

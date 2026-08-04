@@ -39,7 +39,7 @@
 
     <app-trainer-card
 
-        *ngFor="let trainer of trainers"
+        *ngFor="let trainer of trainers; trackBy: trackByUid"
 
         [trainer]="trainer"
 

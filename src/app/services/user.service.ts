@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 
 import { firestore } from '../firebase.config';
-import { User } from '../models/user.model';
+import { User, UserRole } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -103,6 +103,16 @@ export class UserService {
   }
 
   // =====================================
+// Obtener entrenador
+// =====================================
+
+async getTrainer(uid: string): Promise<User | null> {
+
+  return await this.getUser(uid);
+
+}
+
+  // =====================================
   // Actualizar
   // =====================================
 
@@ -117,6 +127,25 @@ export class UserService {
     );
 
   }
+
+  // =====================================
+// Actualizar perfil entrenador
+// =====================================
+
+async updateTrainerProfile(
+  uid: string,
+  trainerProfile: User['trainerProfile']
+) {
+
+  await updateDoc(
+    doc(firestore, 'users', uid),
+    {
+      trainerProfile,
+      updatedAt: serverTimestamp()
+    }
+  );
+
+}
 
   // =====================================
   // Guardar cambios
@@ -173,6 +202,58 @@ async unlinkAthlete(uid: string) {
     doc(firestore, 'users', uid),
     {
       athleteId: null,
+      updatedAt: serverTimestamp()
+    }
+  );
+
+}
+
+// =====================================
+// Agregar rol
+// =====================================
+
+async addRole(uid: string, role: UserRole) {
+
+  const user = await this.getUser(uid);
+
+  if (!user) {
+    return;
+  }
+
+  const roles = [...(user.roles ?? [])];
+
+  if (!roles.includes(role)) {
+    roles.push(role);
+  }
+
+  await updateDoc(
+    doc(firestore, 'users', uid),
+    {
+      roles,
+      updatedAt: serverTimestamp()
+    }
+  );
+
+}
+
+// =====================================
+// Quitar rol
+// =====================================
+
+async removeRole(uid: string, role: UserRole) {
+
+  const user = await this.getUser(uid);
+
+  if (!user) {
+    return;
+  }
+
+  const roles = (user.roles ?? []).filter(r => r !== role);
+
+  await updateDoc(
+    doc(firestore, 'users', uid),
+    {
+      roles,
       updatedAt: serverTimestamp()
     }
   );

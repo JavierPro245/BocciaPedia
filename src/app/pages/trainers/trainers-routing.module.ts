@@ -13,12 +13,12 @@ const routes: Routes = [
     loadChildren: () => import('./trainer-create/trainer-create.module').then( m => m.TrainerCreatePageModule)
   },
   {
-    path: 'trainer-detail',
-    loadChildren: () => import('./trainer-detail/trainer-detail.module').then( m => m.TrainerDetailPageModule)
+  path: 'trainer-detail/:uid',
+  loadChildren: () => import('./trainer-detail/trainer-detail.module').then(m => m.TrainerDetailPageModule)
   },
   {
-    path: 'trainer-edit',
-    loadChildren: () => import('./trainer-edit/trainer-edit.module').then( m => m.TrainerEditPageModule)
+    path: 'trainer-edit/:uid',
+    loadChildren: () => import('./trainer-edit/trainer-edit.module').then(m => m.TrainerEditPageModule)
   },
   {
     path: 'trainer-list',

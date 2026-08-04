@@ -15,6 +15,7 @@ export class EvaluationsPage {
   evaluations: Evaluation[] = [
 
     {
+      title: 'Entrenamiento técnico',
       id:'1',
       athleteId:'1',
       trainerId: '1',
@@ -29,6 +30,7 @@ export class EvaluationsPage {
     },
 
     {
+      title:'Preparación torneo',
       id:'2',
       athleteId:'2',
       trainerId: '1',
@@ -43,6 +45,7 @@ export class EvaluationsPage {
     },
 
     {
+      title:'Control semanal',
       id:'3',
       athleteId:'3',
       trainerId: '1',

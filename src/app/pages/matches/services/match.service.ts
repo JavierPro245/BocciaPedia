@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Match } from '../models/match.model';
+import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,49 @@ import { Match } from '../models/match.model';
 export class MatchService {
 
   private match?: Match;
+  private autoSync = true;
+
+  constructor(
+  private repository: MatchRepositoryService
+) {}
+
+private async notifyChanges() {
+
+  if (!this.autoSync) {
+    return;
+  }
+
+  if (!this.match) {
+    return;
+  }
+
+  if (!this.match.id) {
+    return;
+  }
+
+  try {
+
+    await this.repository.updateMatch(
+
+      this.match.id,
+
+      this.match
+
+    );
+
+  } catch (error) {
+
+    console.error(
+
+      'Error sincronizando partido',
+
+      error
+
+    );
+
+  }
+
+}
 
   // Crear un nuevo partido
   createMatch(match: Match): void {
@@ -50,6 +94,8 @@ export class MatchService {
 
     }
 
+    this.notifyChanges();
+
 }
   // Restar punto
   removePoint(team:'red'|'blue'):void{
@@ -80,6 +126,8 @@ export class MatchService {
 
     }
 
+    this.notifyChanges();
+
 }
 
   // Consumir una bocha
@@ -105,6 +153,8 @@ export class MatchService {
 
     }
 
+    this.notifyChanges();
+
   }
 
   useTurn(team:'red'|'blue'):void{
@@ -114,6 +164,15 @@ export class MatchService {
         return;
 
     }
+
+    // Si el mismo jugador ya tiene el reloj corriendo,
+// ignorar un segundo clic.
+if (
+    this.match.timerRunning &&
+    this.match.turn === team
+) {
+    return;
+}
 
     // Si es el jugador que inicia el END
     // y todavía no lanzó el Jack
@@ -148,6 +207,8 @@ this.useBall(team);
     this.match.redBallsPlayed = 0;
     this.match.blueBallsPlayed = 0;
 
+    this.notifyChanges();
+
   }
 
   // Turno rojo
@@ -157,6 +218,8 @@ this.useBall(team);
 
     this.match.turn = 'red';
     this.match.state = 'red-turn';
+
+    this.notifyChanges();
 
   }
 
@@ -168,6 +231,8 @@ this.useBall(team);
     this.match.turn = 'blue';
     this.match.state = 'blue-turn';
 
+    this.notifyChanges();
+
   }
 
   // Pausar partido
@@ -178,12 +243,15 @@ this.useBall(team);
     this.match.turn = null;
     this.match.state = 'waiting';
 
+    this.notifyChanges();
+
   }
 
   // Siguiente END
   nextEnd(): void {
 
     if (!this.match) {
+      this.notifyChanges();
   return;
 }
 
@@ -192,6 +260,7 @@ this.useBall(team);
 if (this.match.currentEnd >= this.match.totalEnds) {
 
   this.match.state = 'finished';
+  this.notifyChanges();
 
   return;
 
@@ -227,6 +296,14 @@ if (this.match.currentEnd >= this.match.totalEnds) {
 
   this.match.jackPlayed = false;
 
+  this.match.showRest = false;
+this.match.restSeconds = 0;
+
+this.match.showPenalty = false;
+this.match.penaltySeconds = 0;
+
+  this.notifyChanges();
+
 }
 
   confirmEnd(): void {
@@ -236,6 +313,8 @@ if (this.match.currentEnd >= this.match.totalEnds) {
   }
 
   // Determinar ganador del END
+
+  this.notifyChanges();
 
   let winner: 'red' | 'blue' | 'tie' = 'tie';
 
@@ -250,6 +329,9 @@ if (this.match.currentEnd >= this.match.totalEnds) {
   }
 
   // Guardar END
+
+
+  this.notifyChanges();
 
   this.match.ends.push({
 
@@ -272,6 +354,8 @@ if (this.match.currentEnd >= this.match.totalEnds) {
   this.match.currentEndRedScore = 0;
 
   this.match.currentEndBlueScore = 0;
+
+  this.notifyChanges();
 
 }
 
@@ -302,6 +386,8 @@ private calculateScore(): void {
 
     this.match.state = 'finished';
 
+    this.notifyChanges();
+
   }
 
   // Eliminar partido
@@ -311,23 +397,41 @@ private calculateScore(): void {
 
   }
 
-  startRedTimer(){
+  startRedTimer(): void {
 
-    if(!this.match)return;
+    if (!this.match) {
+        return;
+    }
 
-    this.match.turn='red';
+    // Ya está corriendo el reloj rojo
+    if (this.match.timerRunning && this.match.turn === 'red') {
+      this.notifyChanges();
+        return;
+    }
 
-    this.match.timerRunning=true;
+    this.match.turn = 'red';
+    this.match.timerRunning = true;
+
+    this.notifyChanges();
 
 }
 
-startBlueTimer(){
+startBlueTimer(): void {
 
-    if(!this.match)return;
+    if (!this.match) {
+        return;
+    }
 
-    this.match.turn='blue';
+    // Ya está corriendo el reloj azul
+    if (this.match.timerRunning && this.match.turn === 'blue') {
+      this.notifyChanges();
+        return;
+    }
 
-    this.match.timerRunning=true;
+    this.match.turn = 'blue';
+    this.match.timerRunning = true;
+
+    this.notifyChanges();
 
 }
 
@@ -338,6 +442,8 @@ pauseTimers(){
     this.match.timerRunning=false;
 
     this.match.turn=null;
+
+    this.notifyChanges();
 
 }
 
@@ -353,6 +459,8 @@ startPenalty(team: 'red' | 'blue') {
     success: null
 };
 
+this.notifyChanges();
+
 }
 
 updatePenaltyTime(seconds: number) {
@@ -360,6 +468,8 @@ updatePenaltyTime(seconds: number) {
   if (!this.match?.penalty) return;
 
   this.match.penalty.timeRemaining = seconds;
+
+  this.notifyChanges();
 
 }
 
@@ -382,6 +492,24 @@ finishPenalty(scored: boolean) {
   }
 
   this.match.penalty = null;
+  this.notifyChanges();
+
+}
+
+updateBroadcastState(
+  data: Partial<Match>
+): void {
+
+  if (!this.match) {
+    return;
+  }
+
+  this.match = {
+    ...this.match,
+    ...data
+  };
+
+  this.notifyChanges();
 
 }
 

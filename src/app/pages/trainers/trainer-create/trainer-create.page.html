@@ -1,4 +1,90 @@
 <app-header
-    title="Nuevo Entrenador"
-    [showBackButton]="true">
+  title="Nuevo Entrenador"
+  [showBackButton]="true">
 </app-header>
+
+<ion-content fullscreen>
+
+  <ion-searchbar
+    placeholder="Buscar usuario..."
+    [(ngModel)]="searchText"
+    (ionInput)="filterUsers()">
+  </ion-searchbar>
+
+  <div
+    class="ion-padding ion-text-center"
+    *ngIf="loading">
+
+    <ion-spinner name="crescent"></ion-spinner>
+
+  </div>
+
+  <app-empty-state
+    *ngIf="!loading && filteredUsers.length === 0"
+    icon="people-outline"
+    title="No hay usuarios disponibles"
+    message="Todos los usuarios ya son entrenadores o no existen usuarios registrados.">
+  </app-empty-state>
+
+  <ion-list *ngIf="!loading && filteredUsers.length > 0">
+
+    <ion-item
+      *ngFor="let user of filteredUsers">
+
+      <ion-avatar slot="start">
+
+        <img
+          *ngIf="user.photoURL"
+          [src]="user.photoURL">
+
+        <ion-icon
+          *ngIf="!user.photoURL"
+          name="person-circle"
+          style="font-size:48px">
+        </ion-icon>
+
+      </ion-avatar>
+
+      <ion-label>
+
+        <h2>{{ user.displayName }}</h2>
+
+        <p>{{ user.email }}</p>
+
+        <div style="margin-top:8px;">
+
+          <ion-chip
+            *ngFor="let role of user.roles"
+            color="medium">
+
+            <ion-label>
+
+              {{ role }}
+
+            </ion-label>
+
+          </ion-chip>
+
+        </div>
+
+      </ion-label>
+
+      <ion-button
+        slot="end"
+        color="success"
+        (click)="convertToTrainer(user)">
+
+        <ion-icon
+          slot="start"
+          name="person-add">
+        </ion-icon>
+
+        Convertir
+
+      </ion-button>
+
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>

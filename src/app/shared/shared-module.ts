@@ -28,7 +28,8 @@ import { UserInfoCardComponent } from './components/user-info-card/user-info-car
 import { HasRoleDirective } from '../directives/has-role.directive';
 import { QualityChartComponent } from './components/charts/quality-chart/quality-chart.component';
 import { NgApexchartsModule } from "ng-apexcharts";
-
+import { RoleChipComponent } from './components/role-chip/role-chip.component';
+import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 
 
 
@@ -58,7 +59,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     UserInfoCardComponent,
     HasRoleDirective,
     QualityChartComponent,
-    
+    RoleChipComponent,
+    UserAvatarComponent,
   ],
   exports: [
     HeaderComponent,
@@ -88,7 +90,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     UserInfoCardComponent,
     HasRoleDirective,
     QualityChartComponent,
-    
+    RoleChipComponent,
+    UserAvatarComponent,
   ],
   imports: [
     CommonModule,

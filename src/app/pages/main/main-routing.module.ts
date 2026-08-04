@@ -143,8 +143,12 @@ const routes: Routes = [
 
     ]
 
-  }
+  },
 
+  {
+    path: 'match-broadcast/:id',
+    loadChildren: () => import('../matches/match-broadcast/match-broadcast.module').then( m => m.MatchBroadcastPageModule)
+  },
 ];
 
 @NgModule({

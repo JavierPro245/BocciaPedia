@@ -3,6 +3,8 @@ import { Throw } from "../pages/evaluations/models/throw.model";
 export interface Evaluation {
 
   id?: string;
+  
+  title: string;
 
   trainerId: string;
 

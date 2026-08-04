@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationStart} from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { SessionService } from './services/session.service';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
@@ -19,6 +19,21 @@ export class AppComponent {
 ) {
   this.initializeGoogleSignIn();
   this.listenSession();
+  this.router.events.subscribe(event => {
+
+  if (event instanceof NavigationStart) {
+
+    console.log('====================');
+
+    console.log('NAVEGANDO A');
+
+    console.log(event.url);
+
+    console.trace();
+
+  }
+
+});
 }
 
   private async initializeGoogleSignIn() {
@@ -29,9 +44,9 @@ export class AppComponent {
 
   private listenSession() {
 
-    this.authService.listenAuthState(user => {
+  this.authService.listenAuthState(user => {
 
-      if (user) {
+    if (user) {
 
   this.sessionService.setUser(user);
 
@@ -39,9 +54,26 @@ export class AppComponent {
 
   console.log(user);
 
-  this.router.navigateByUrl('/main/home', {
-    replaceUrl: true
-  });
+  // Solo navegar automáticamente
+  // cuando la aplicación se abre desde la raíz.
+
+  const currentUrl = this.router.url;
+
+  console.log('URL actual:', currentUrl);
+
+  if (
+    currentUrl === '/' ||
+    currentUrl === '/auth'
+  ) {
+
+    this.router.navigateByUrl(
+      '/main/home',
+      {
+        replaceUrl: true
+      }
+    );
+
+  }
 
 } else {
 
@@ -49,14 +81,17 @@ export class AppComponent {
 
   console.log('No hay usuario autenticado');
 
-  this.router.navigateByUrl('/auth', {
-    replaceUrl: true
-  });
+  this.router.navigateByUrl(
+    '/auth',
+    {
+      replaceUrl: true
+    }
+  );
 
 }
 
-    });
+  });
 
-  }
+}
 
 }

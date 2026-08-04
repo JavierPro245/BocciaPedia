@@ -3,6 +3,10 @@ import { Router } from '@angular/router';
 
 import { MatchService } from '../services/match.service';
 import { Match } from '../models/match.model';
+import { MatchRepositoryService } from 'src/app/services/match-repository.service';
+import { Capacitor } from '@capacitor/core';
+import { AlertController } from '@ionic/angular';
+import { BocciaCast } from 'bocciapedia-cast';
 
 @Component({
   selector: 'app-match-run',
@@ -32,7 +36,13 @@ penaltyInterval: any;
 
     private matchService: MatchService,
 
-    private router: Router
+    private matchRepository: MatchRepositoryService,
+
+    private alertController: AlertController,
+
+    private router: Router,
+
+  
 
   ){}
 
@@ -70,21 +80,35 @@ penaltyInterval: any;
 
     this.penaltySeconds = 60;
 
+    this.match.showPenalty = true;
+
+    this.match.penaltySeconds = 60;
+
+    this.syncMatch();
+
     this.penaltyInterval = setInterval(() => {
 
-      this.penaltySeconds--;
+  this.penaltySeconds--;
 
-      if (this.match.penalty) {
-        this.match.penalty.timeRemaining = this.penaltySeconds;
-      }
+  // Variable local
+  this.match.penaltySeconds = this.penaltySeconds;
 
-      if (this.penaltySeconds <= 0) {
+  // Variable del objeto penalty
+  if (this.match.penalty) {
 
-        clearInterval(this.penaltyInterval);
+    this.match.penalty.timeRemaining = this.penaltySeconds;
 
-      }
+  }
 
-    }, 1000);
+  this.syncMatch();
+
+  if (this.penaltySeconds <= 0) {
+
+    clearInterval(this.penaltyInterval);
+
+  }
+
+}, 1000);
 
     return;
 
@@ -134,6 +158,8 @@ penaltyInterval: any;
 
       this.matchService.updateMatch(this.match);
 
+      this.syncMatch();
+
       return;
 
     }
@@ -141,7 +167,7 @@ penaltyInterval: any;
     this.match.state = 'finished';
 
     this.matchService.updateMatch(this.match);
-
+    this.syncMatch();
     return;
 
   }
@@ -149,29 +175,31 @@ penaltyInterval: any;
   this.startRestCountdown();
 
 }
-  addRedPoint(): void {
-    if(this.match.isTieBreak){
+  async addRedPoint(): Promise<void> {
 
+  if (this.match.isTieBreak) {
     return;
-
-}
+  }
 
   this.matchService.addPoint('red');
 
   this.match = this.matchService.getMatch()!;
 
+  await this.syncMatch();
+
 }
 
-addBluePoint(): void {
-  if(this.match.isTieBreak){
+async addBluePoint(): Promise<void> {
 
+  if (this.match.isTieBreak) {
     return;
-
-}
+  }
 
   this.matchService.addPoint('blue');
 
   this.match = this.matchService.getMatch()!;
+
+  await this.syncMatch();
 
 }
 
@@ -241,27 +269,39 @@ private startGameClock(): void {
       return;
     }
 
-    if (this.match.turn === 'red') {
+    let changed = false;
 
-      if (this.match.redTime > 0) {
+    if (
+      this.match.turn === 'red' &&
+      this.match.redTime > 0
+    ) {
 
-        this.match.redTime--;
+      this.match.redTime--;
 
-      }
-
-    }
-
-    if (this.match.turn === 'blue') {
-
-      if (this.match.blueTime > 0) {
-
-        this.match.blueTime--;
-
-      }
+      changed = true;
 
     }
 
-  }, 1000);
+    if (
+      this.match.turn === 'blue' &&
+      this.match.blueTime > 0
+    ) {
+
+      this.match.blueTime--;
+
+      changed = true;
+
+    }
+
+    if (changed) {
+
+      this.matchService.updateMatch(this.match);
+
+      this.syncMatch();
+
+    }
+
+  },1000);
 
 }
 
@@ -292,7 +332,7 @@ get winner(): 'red' | 'blue' | 'tie' {
 
 }
 
-finishTieBreak(winner:'red'|'blue'): void {
+async finishTieBreak(winner:'red'|'blue'): Promise<void> {
 
   this.match.tieBreakWinner = winner;
 
@@ -303,6 +343,8 @@ finishTieBreak(winner:'red'|'blue'): void {
   this.match.turn = null;
 
   this.matchService.updateMatch(this.match);
+
+  await this.syncMatch()
 
   // Recargar el partido para refrescar la vista
   this.match = this.matchService.getMatch()!;
@@ -331,26 +373,49 @@ finishPenalty(success: boolean) {
 
     this.showPenalty = false;
 
+    this.match.showPenalty = false;
+
+    this.match.penaltySeconds = 0;
+
+    this.syncMatch();
+
 }
-startRestCountdown() {
+async startRestCountdown() {
 
   this.showRest = true;
 
   this.restSeconds = 60;
 
+  this.match.showRest = true;
+  this.match.restSeconds = 60;
+
+  await this.syncMatch();
+
   this.interval = setInterval(() => {
 
     this.restSeconds--;
+
+    this.match.restSeconds = this.restSeconds;
+
+    this.syncMatch();
 
     if (this.restSeconds <= 0) {
 
       clearInterval(this.interval);
 
+      // Ocultar descanso
       this.showRest = false;
 
+      this.match.showRest = false;
+      this.match.restSeconds = 0;
+
+      // Pasar al siguiente END
       this.matchService.nextEnd();
 
       this.match = this.matchService.getMatch()!;
+
+      // Asegurar que el Broadcast reciba el cambio
+      this.syncMatch();
 
     }
 
@@ -374,10 +439,55 @@ goHome(){
 
 }
 
-openBroadcast(){
+async openBroadcast() {
 
-    this.router.navigate(['/matches/match-broadcast']);
+  try {
+
+    console.log("ANTES");
+
+    await BocciaCast.initialize();
+
+    console.log("DESPUÉS");
+
+  } catch (e: any) {
+
+    console.error(e);
+
+    const error = await this.alertController.create({
+      header: 'ERROR',
+      message: JSON.stringify(e),
+      buttons: ['OK']
+    });
+
+    await error.present();
+
+  }
 
 }
+
+private async syncMatch() {
+
+  if (!this.match.id) {
+    return;
+  }
+
+  try {
+
+    await this.matchRepository.updateMatch(
+      this.match.id,
+      this.match
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Error sincronizando partido:',
+      error
+    );
+
+  }
+
+}
+
 
 }

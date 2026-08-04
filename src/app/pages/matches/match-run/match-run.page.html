@@ -295,7 +295,8 @@
 
   <button
     class="fault-btn red"
-    (click)="assignPenalty('blue')">
+    (click)="assignPenalty('blue')"
+    [disabled]="showRest || showPenalty">
 
     ⚠ Falta Roja
 
@@ -303,7 +304,8 @@
 
   <button
     class="fault-btn blue"
-    (click)="assignPenalty('red')">
+    (click)="assignPenalty('red')"
+    [disabled]="showRest || showPenalty">
 
     ⚠ Falta Azul
 
@@ -316,38 +318,35 @@
   <div class="timer-actions">
 
     <ion-button
-      fill="solid"
-      color="danger"
-      class="round-btn"
-      (click)="startRedTimer()">
+    fill="solid"
+    color="danger"
+    class="round-btn"
+    (click)="startRedTimer()"
+    [disabled]="showRest || match.timerRunning && match.turn === 'red'">
 
-      <ion-icon
-        name="play">
-      </ion-icon>
-
-    </ion-button>
-
-    <ion-button
-      fill="solid"
-      color="medium"
-      class="round-btn"
-      (click)="pauseTimers()">
-
-      <ion-icon
-        name="pause">
-      </ion-icon>
+    <ion-icon name="play"></ion-icon>
 
     </ion-button>
 
     <ion-button
-      fill="solid"
-      color="primary"
-      class="round-btn"
-      (click)="startBlueTimer()">
+    fill="solid"
+    color="medium"
+    class="round-btn"
+    (click)="pauseTimers()"
+    [disabled]="showRest || !match.timerRunning">
 
-      <ion-icon
-        name="play">
-      </ion-icon>
+    <ion-icon name="pause"></ion-icon>
+
+    </ion-button>
+
+    <ion-button
+    fill="solid"
+    color="primary"
+    class="round-btn"
+    (click)="startBlueTimer()"
+    [disabled]="showRest || match.timerRunning && match.turn === 'blue'">
+
+    <ion-icon name="play"></ion-icon>
 
     </ion-button>
 

@@ -20,6 +20,18 @@ const routes: Routes = [
   loadChildren: () =>
     import('./pages/auth/auth.module').then(m => m.AuthPageModule)
 },
+
+  {
+  path:'public',
+
+  loadChildren:()=>
+
+    import('./pages/public/public.module')
+
+    .then(m=>m.PublicPageModule)
+
+},
+
   {
   path: 'main',
   canActivate: [AuthGuard],
@@ -142,6 +154,10 @@ const routes: Routes = [
   {
     path: 'matches',
     loadChildren: () => import('./pages/matches/matches.module').then( m => m.MatchesPageModule)
+  },
+  {
+    path: 'broadcast',
+    loadChildren: () => import('./pages/public/broadcast/broadcast.module').then( m => m.BroadcastPageModule)
   },
 ];
 

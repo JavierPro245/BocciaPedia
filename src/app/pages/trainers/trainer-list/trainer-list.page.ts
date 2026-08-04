@@ -70,4 +70,8 @@ export class TrainerListPage implements OnInit {
 
   }
 
+  trackByUid(index: number, trainer: User): string {
+  return trainer.uid;
+}
+
 }

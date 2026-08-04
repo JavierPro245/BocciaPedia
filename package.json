@@ -30,6 +30,7 @@
     "@capacitor/status-bar": "8.0.2",
     "@capawesome/capacitor-file-picker": "^8.0.3",
     "@capawesome/capacitor-google-sign-in": "^0.1.2",
+    "bocciapedia-cast": "file:plugins/bocciapedia-cast",
     "@ionic/angular": "^8.0.0",
     "apexcharts": "^5.16.0",
     "firebase": "^11.10.0",

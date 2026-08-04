@@ -1,0 +1,7 @@
+<div class="avatar" [style.width.px]="size" [style.height.px]="size">
+  <img *ngIf="photoURL; else noPhoto" [src]="photoURL" alt="Avatar">
+
+  <ng-template #noPhoto>
+    <ion-icon name="person-circle"></ion-icon>
+  </ng-template>
+</div>

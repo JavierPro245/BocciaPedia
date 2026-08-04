@@ -2,6 +2,8 @@ import { EvaluationType } from 'src/app/models/evaluation.model';
 
 export interface EvaluationConfig {
 
+  title: string;
+
   athleteId: string;
 
   athleteName: string;

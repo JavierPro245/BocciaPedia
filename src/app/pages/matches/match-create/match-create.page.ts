@@ -9,6 +9,10 @@ import { AthleteService } from 'src/app/services/athlete.service';
 import { SessionService } from 'src/app/services/session.service';
 import { Athlete } from 'src/app/models/athlete.model';
 
+import { MatchRepositoryService } from 'src/app/services/match-repository.service';
+
+import { Match } from '../models/match.model';
+
 @Component({
 
 selector:'app-match-create',
@@ -45,6 +49,8 @@ secondsPerPlayer = 360;
 constructor(
 
   private service: MatchService,
+
+  private repository: MatchRepositoryService,
 
   private router: Router,
 
@@ -158,7 +164,7 @@ categoryChanged(): void {
 
 }
 
-startMatch() {
+async startMatch() {
 
   this.secondsPerPlayer = Math.round(this.minutes * 60);
 
@@ -168,14 +174,19 @@ startMatch() {
   let blueId = '';
   let blueName = '';
 
+  // ==========================
   // Jugador rojo
+  // ==========================
+
   if (this.redPlayer === 'manual') {
 
     redName = this.manualRedPlayer.trim();
 
   } else {
 
-    const red = this.players.find(x => x.id === this.redPlayer);
+    const red = this.players.find(
+      x => x.id === this.redPlayer
+    );
 
     if (!red) {
       return;
@@ -186,14 +197,19 @@ startMatch() {
 
   }
 
+  // ==========================
   // Jugador azul
+  // ==========================
+
   if (this.bluePlayer === 'manual') {
 
     blueName = this.manualBluePlayer.trim();
 
   } else {
 
-    const blue = this.players.find(x => x.id === this.bluePlayer);
+    const blue = this.players.find(
+      x => x.id === this.bluePlayer
+    );
 
     if (!blue) {
       return;
@@ -203,65 +219,112 @@ startMatch() {
     blueName = blue.fullName;
 
   }
-  this.service.createMatch({
 
-  id: Date.now().toString(),
+  // ==========================
+  // Crear objeto Match
+  // ==========================
 
-  redPlayerId: redId,
+  const match: Match = {
 
-  redPlayer: redName,
+    id: '',
 
-  bluePlayerId: blueId,
+    redPlayerId: redId,
 
-  bluePlayer: blueName,
+    redPlayer: redName,
 
-  category: this.category as any,
+    bluePlayerId: blueId,
 
-  totalEnds: this.totalEnds,
+    bluePlayer: blueName,
 
-  currentEnd: 1,
+    category: this.category as any,
 
-  secondsPerPlayer: this.secondsPerPlayer,
+    totalEnds: this.totalEnds,
 
-  redTime: this.secondsPerPlayer,
+    currentEnd: 1,
 
-  blueTime: this.secondsPerPlayer,
+    secondsPerPlayer: this.secondsPerPlayer,
 
-  redScore: 0,
+    redTime: this.secondsPerPlayer,
 
-  blueScore: 0,
+    blueTime: this.secondsPerPlayer,
 
-  currentEndRedScore: 0,
+    redScore: 0,
 
-  currentEndBlueScore: 0,
+    blueScore: 0,
 
-  redBallsPlayed: 0,
+    currentEndRedScore: 0,
 
-  blueBallsPlayed: 0,
+    currentEndBlueScore: 0,
 
-  startingColor: 'red',
+    redBallsPlayed: 0,
 
-  jackPlayed: false,
+    blueBallsPlayed: 0,
 
-  turn: null,
+    startingColor: 'red',
 
-  timerRunning: false,
+    jackPlayed: false,
 
-  isTieBreak: false,
+    turn: null,
 
-  tieBreakWinner: null,
+    timerRunning: false,
 
-  ends: [],
+    isTieBreak: false,
 
-  penalty: null,
+    tieBreakWinner: null,
 
-  state: 'waiting'
+    ends: [],
 
-});
+    penalty: null,
 
-this.router.navigate([
-  '/matches/match-run'
-]);
+    showRest:false,
+
+restSeconds:0,
+
+showPenalty:false,
+
+penaltySeconds:0,
+
+broadcastState:'playing',
+
+    state: 'waiting'
+
+  };
+
+  // ==========================
+  // Guardar en Firestore
+  // ==========================
+
+  try {
+
+    const matchId =
+      await this.repository.createMatch(match);
+
+    match.id = matchId;
+
+  } catch (error) {
+
+    console.error(
+      'Error creando partido:',
+      error
+    );
+
+    return;
+
+  }
+
+  // ==========================
+  // Guardar en memoria
+  // ==========================
+
+  this.service.createMatch(match);
+
+  // ==========================
+  // Ir al partido
+  // ==========================
+
+  this.router.navigate([
+    '/matches/match-run'
+  ]);
 
 }
 

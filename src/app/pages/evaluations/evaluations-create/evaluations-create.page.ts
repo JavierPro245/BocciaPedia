@@ -36,6 +36,8 @@ export class EvaluationsCreatePage {
 
   config: EvaluationConfig = {
 
+  title: '',
+
   athleteId: '',
 
   athleteName: '',
@@ -114,6 +116,24 @@ export class EvaluationsCreatePage {
 
   async continue() {
 
+    if (this.config.distance > 10) {
+
+  const alert = await this.alertController.create({
+
+    header: 'Distancia inválida',
+
+    message: 'La distancia máxima permitida para una evaluación es de 10 metros.',
+
+    buttons: ['Aceptar']
+
+  });
+
+  await alert.present();
+
+  return;
+
+}
+
   const athlete = this.athletes.find(
     a => a.id === this.config.athleteId
   );
@@ -131,6 +151,8 @@ export class EvaluationsCreatePage {
   }
 
   const evaluation: Evaluation = {
+
+    title: this.config.title,
 
   trainerId: currentUser.uid,
 

@@ -1,0 +1,298 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #111;
+}
+
+/* ===========================
+   END
+=========================== */
+
+.end-bar{
+
+  height:70px;
+
+  background:#111;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:20px;
+
+}
+
+.end-bar .line{
+
+  flex:1;
+
+  height:2px;
+
+  background:#5b5b5b;
+
+  margin:0 25px;
+
+}
+
+.end-bar .text{
+
+  color:white;
+
+  font-size:34px;
+
+  font-weight:700;
+
+  letter-spacing:2px;
+
+}
+
+/* ===========================
+   TABLERO
+=========================== */
+
+.board{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  height:calc(100vh - 70px);
+
+}
+
+/* ===========================
+   LADOS
+=========================== */
+
+.side{
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:flex-start;
+
+  color:white;
+
+  padding-top:40px;
+
+}
+
+.red{
+
+  background:#d80c46;
+
+}
+
+.blue{
+
+  background:#2c6dbc;
+
+}
+
+/* ===========================
+   NOMBRE
+=========================== */
+
+.player-name{
+
+  font-size:34px;
+
+  font-weight:700;
+
+  text-transform: capitalize;
+
+}
+
+/* ===========================
+   MARCADOR
+=========================== */
+
+.score{
+
+  margin-top:40px;
+
+  font-size:140px;
+
+  font-weight:800;
+
+  line-height:1;
+
+}
+
+/* ===========================
+   TIEMPO
+=========================== */
+
+.timer{
+
+  margin-top:25px;
+
+  font-size:64px;
+
+  font-weight:700;
+
+}
+
+/* ===========================
+   BOCHAS
+=========================== */
+
+.balls{
+
+  margin-top:35px;
+
+  display:flex;
+
+  gap:14px;
+
+}
+
+.balls span{
+
+  width:18px;
+
+  height:18px;
+
+  border-radius:50%;
+
+  border:3px solid white;
+
+}
+
+.played{
+
+  background:white;
+
+}
+
+.played-blue{
+
+  background:white;
+
+}
+
+/* ===========================
+   TIE BREAK
+=========================== */
+
+.tb-point{
+
+  font-size:35px;
+
+  margin-left:10px;
+
+}
+
+/* ===========================
+   PENALIZACIÓN
+=========================== */
+
+.penalty-warning{
+
+  position:absolute;
+
+  top:80px;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  background:#ffc107;
+
+  color:#111;
+
+  padding:12px 24px;
+
+  border-radius:12px;
+
+  font-size:20px;
+
+  font-weight:700;
+
+  z-index:50;
+
+}
+
+/* ===========================
+   DESCANSO
+=========================== */
+
+.rest-overlay{
+
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  background:rgba(0,0,0,.55);
+
+  z-index:100;
+
+}
+
+/* ===========================
+   WINNER
+=========================== */
+
+.winner-banner{
+
+  position:absolute;
+
+  bottom:0;
+
+  left:0;
+
+  width:100%;
+
+  height:70px;
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  z-index:200;
+
+}
+
+.winner{
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  background:#111;
+
+}
+
+.winner.active{
+
+  background:#2e7d32;
+
+}
+
+.winner span{
+
+  color:white;
+
+  font-size:34px;
+
+  font-weight:700;
+
+  letter-spacing:2px;
+
+}

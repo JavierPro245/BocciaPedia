@@ -27,9 +27,17 @@
 
           <h2>
 
-            {{evaluation.evaluationType}}
+  {{ evaluation.title || evaluation.evaluationType }}
 
-          </h2>
+</h2>
+
+<p
+  class="evaluation-type"
+  *ngIf="evaluation.title">
+
+  {{ evaluation.evaluationType }}
+
+</p>
 
           <ion-badge>
 

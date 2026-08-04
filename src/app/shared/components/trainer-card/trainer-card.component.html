@@ -16,9 +16,10 @@
       </ion-button>
 
       <ion-popover
-        [trigger]="'trainer-menu-' + trainer.uid"
-        side="bottom"
-        alignment="end">
+  #popover
+  [trigger]="'trainer-menu-' + trainer.uid"
+  side="bottom"
+  alignment="end">
 
         <ng-template>
 
@@ -79,18 +80,10 @@
 
     <div class="photo">
 
-      <ion-avatar>
-
-        <img
-          *ngIf="trainer.photoURL"
-          [src]="trainer.photoURL">
-
-        <ion-icon
-          *ngIf="!trainer.photoURL"
-          name="person-circle">
-        </ion-icon>
-
-      </ion-avatar>
+      <app-user-avatar
+    [photoURL]="trainer.photoURL"
+    [size]="90">
+</app-user-avatar>
 
     </div>
 

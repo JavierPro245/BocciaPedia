@@ -66,6 +66,20 @@ tieBreakWinner: 'red' | 'blue' | null;
     success: boolean | null;
 } | null;
 
+showRest:boolean;
+
+restSeconds:number;
+
+showPenalty:boolean;
+
+penaltySeconds:number;
+
+broadcastState:
+'playing'
+|'rest'
+|'penalty'
+|'finished';
+
   state:MatchState;
 
 }
