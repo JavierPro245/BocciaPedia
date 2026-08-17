@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>BocciaPedia Broadcast</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #0b1220;
+    color: #fff;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap {
+    text-align: center;
+  }
+
+  .title {
+    font-size: 3vw;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .subtitle {
+    margin-top: 1.5vw;
+    font-size: 1.4vw;
+    opacity: 0.7;
+  }
+
+  .spinner {
+    margin: 3vw auto 0;
+    width: 4vw;
+    height: 4vw;
+    border: 0.4vw solid rgba(255, 255, 255, 0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="title">BocciaPedia</div>
+    <div class="subtitle">Esperando partido desde el celular del árbitro...</div>
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+
+    var NAMESPACE = 'urn:x-cast:cl.bocciapedia.match';
+
+    var castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
+
+    var messageBus = castReceiverManager.getCastMessageBus(NAMESPACE);
+
+    messageBus.onMessage = function (event) {
+
+      try {
+
+        var data = JSON.parse(event.data);
+
+        if (data && data.matchId) {
+
+          window.location.href = '/public/broadcast/' + data.matchId;
+
+        }
+
+      } catch (e) {
+
+        console.error('Mensaje de cast inválido:', e);
+
+      }
+
+    };
+
+    castReceiverManager.onSenderDisconnected = function () {
+
+      // Si no queda ningún remitente conectado, cerramos el receptor.
+      if (castReceiverManager.getSenders().length === 0) {
+
+        window.close();
+
+      }
+
+    };
+
+    castReceiverManager.start();
+
+  </script>
+
+</body>
+</html>

@@ -51,26 +51,37 @@ export class EvaluationsDetailPage implements OnInit {
 
     this.viewMode = this.evaluationService.getDetailViewMode();
 
-  const evaluation = this.evaluationService.getEvaluation();
+ const evaluation = this.evaluationService.getEvaluation();
 
-  if (!evaluation) {
-    return;
+if (!evaluation?.id) {
+  return;
+}
+
+this.evaluationService.listenEvaluation(
+  evaluation.id,
+  currentEvaluation => {
+
+    if (!currentEvaluation) {
+      return;
+    }
+
+    this.athlete = currentEvaluation.athleteName;
+
+    this.evaluation = currentEvaluation.evaluationType;
+
+    this.distance = currentEvaluation.distance;
+
+    this.throws = currentEvaluation.throwList ?? [];
+
+    this.selectedBox = currentEvaluation.selectedBox;
+
+    this.selectedQuadrant =
+      currentEvaluation.selectedQuadrant;
+
+    this.calculateStatistics();
+
   }
-
-  this.athlete = evaluation.athleteName;
-
-  this.evaluation = evaluation.evaluationType;
-
-  this.distance = evaluation.distance;
-
-  this.throws = evaluation.throwList ?? [];
-
-  this.selectedBox = evaluation.selectedBox;
-
-  this.selectedQuadrant = evaluation.selectedQuadrant;
-
-  this.calculateStatistics();
-
+)
 }
 
   private calculateStatistics(): void {
@@ -216,6 +227,24 @@ async finishEvaluation(): Promise<void> {
 
     '/main/evaluations'
 
+  ]);
+
+}
+
+goBack(): void {
+
+  if (this.viewMode === 'finish') {
+
+    this.router.navigate([
+      '/main/evaluations'
+    ]);
+
+    return;
+
+  }
+
+  this.router.navigate([
+    '/main/evaluations'
   ]);
 
 }

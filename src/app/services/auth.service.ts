@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { onAuthStateChanged } from 'firebase/auth';
+import { reload } from 'firebase/auth';
 
 import {
   createUserWithEmailAndPassword,
@@ -10,7 +11,11 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
-  signInWithCredential
+  signInWithCredential,
+  EmailAuthProvider,
+  linkWithCredential,
+  fetchSignInMethodsForEmail,
+  linkWithPopup
 } from 'firebase/auth';
 
 import { Capacitor } from '@capacitor/core';
@@ -202,6 +207,126 @@ export class AuthService {
 getCurrentUser() {
 
   return auth.currentUser;
+
+}
+
+// =====================================
+// Proveedores vinculados
+// =====================================
+
+getProviders(): string[] {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+
+    return [];
+
+  }
+
+  return user.providerData.map(
+    provider => provider.providerId
+  );
+
+}
+
+// =====================================
+// ¿Tiene Google?
+// =====================================
+
+hasGoogleProvider(): boolean {
+
+  return this.getProviders().includes('google.com');
+
+}
+
+// =====================================
+// ¿Tiene contraseña?
+// =====================================
+
+hasPasswordProvider(): boolean {
+
+  return this.getProviders().includes('password');
+
+}
+
+// =====================================
+// Vincular correo + contraseña
+// =====================================
+
+async linkEmailPassword(
+  email: string,
+  password: string
+) {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+
+    throw new Error('No hay un usuario autenticado.');
+
+  }
+
+  const methods =
+    await fetchSignInMethodsForEmail(
+      auth,
+      email
+    );
+
+  if (
+    methods.length &&
+    !methods.includes('password')
+  ) {
+
+    throw new Error(
+      'Este correo ya pertenece a otra cuenta.'
+    );
+
+  }
+
+  const credential =
+    EmailAuthProvider.credential(
+      email,
+      password
+    );
+
+  await linkWithCredential(
+    user,
+    credential
+  );
+
+}
+
+// =====================================
+// Vincular Google
+// =====================================
+
+async linkGoogle() {
+
+  const user = auth.currentUser;
+
+  if (!user) {
+
+    throw new Error('No hay un usuario autenticado.');
+
+  }
+
+  const provider = new GoogleAuthProvider();
+
+  await linkWithPopup(
+    user,
+    provider
+  );
+
+  }
+
+  async reloadCurrentUser() {
+
+  if (!auth.currentUser) {
+    return;
+  }
+
+  await reload(auth.currentUser);
 
 }
 

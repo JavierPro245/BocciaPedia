@@ -312,4 +312,10 @@ getDetailViewMode(): 'preview' | 'finish' {
   return this.detailViewMode;
 }
 
+clearEvaluation() {
+
+  this.evaluation = undefined as any;
+
+}
+
 }

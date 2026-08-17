@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Evaluation } from 'src/app/models/evaluation.model';
 import { SessionService } from 'src/app/services/session.service';
 import { EvaluationService } from 'src/app/services/evaluation.service';
+import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-evaluations-list',
@@ -16,6 +18,8 @@ export class EvaluationsListPage implements OnInit {
 
   userRole = '';
 
+  currentUserId = '';
+
   evaluations: Evaluation[] = [];
 
   constructor(
@@ -24,7 +28,11 @@ export class EvaluationsListPage implements OnInit {
 
   private evaluationService: EvaluationService,
 
-  private sessionService: SessionService
+  private sessionService: SessionService,
+
+  private alertController: AlertController,
+
+  private toastController: ToastController
 
 ){}
   
@@ -35,6 +43,8 @@ export class EvaluationsListPage implements OnInit {
   if (!user) {
     return;
   }
+
+  this.currentUserId = user.uid;
 
   if (user.roles.includes('trainer')) {
 
@@ -122,6 +132,100 @@ else if (user.roles.includes('athlete')) {
   this.router.navigate([
     '/main/evaluations/evaluations-detail'
   ]);
+
+}
+
+//====================================
+// Editar
+//====================================
+
+editEvaluation(evaluation: Evaluation) {
+
+  this.evaluationService.setEvaluation(evaluation);
+
+  this.router.navigate([
+    '/main/evaluations/evaluations-create'
+  ]);
+
+}
+
+//====================================
+// Confirmar eliminación
+//====================================
+
+async confirmDelete(
+  evaluation: Evaluation
+) {
+
+  const alert = await this.alertController.create({
+
+    header: 'Eliminar evaluación',
+
+    message:
+      '¿Está seguro de eliminar esta evaluación?',
+
+    buttons: [
+
+      {
+        text: 'Cancelar',
+        role: 'cancel'
+      },
+
+      {
+
+        text: 'Eliminar',
+
+        role: 'destructive',
+
+        handler: async () => {
+
+          await this.deleteEvaluation(
+            evaluation
+          );
+
+        }
+
+      }
+
+    ]
+
+  });
+
+  await alert.present();
+
+}
+
+//====================================
+// Eliminar
+//====================================
+
+async deleteEvaluation(
+  evaluation: Evaluation
+) {
+
+  if (!evaluation.id) {
+    return;
+  }
+
+  await this.evaluationService.deleteEvaluation(
+    evaluation.id
+  );
+
+  const toast =
+    await this.toastController.create({
+
+      message:
+        'Evaluación eliminada.',
+
+      duration: 2000,
+
+      color: 'success',
+
+      position: 'bottom'
+
+    });
+
+  await toast.present();
 
 }
 

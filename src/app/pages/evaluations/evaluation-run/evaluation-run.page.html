@@ -162,21 +162,23 @@
 
         <app-court-engine
 
-        #courtEngine
+  #courtEngine
 
-        [throws]="throws"
+  [mode]="courtMode"
 
-        [ballColor]="ballColor"
+  [throws]="throws"
 
-        [locked]="evaluationFinished || lockCourt"
+  [ballColor]="ballColor"
 
-        (courtSelection)="onSelection($event)"
+  [locked]="evaluationFinished || lockCourt"
 
-        (jackPending)="onJackPending($event)"
+  (courtSelection)="onSelection($event)"
 
-        (throwRegistered)="onThrowRegistered($event)">
+  (jackPending)="onJackPending($event)"
 
-        </app-court-engine>
+  (throwRegistered)="onThrowRegistered($event)">
+
+</app-court-engine>
 
         <ion-card
         *ngIf="showJackConfirmation"

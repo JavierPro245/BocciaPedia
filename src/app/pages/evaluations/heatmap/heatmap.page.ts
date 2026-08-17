@@ -81,13 +81,11 @@ console.log('SELECTED BOX', evaluation?.selectedBox);
 
   if (evaluation) {
 
-    this.throws = evaluation.throwList ?? [];
+  this.throws = evaluation.throwList ?? [];
 
-    this.jack = evaluation.jack;
+  this.selectedBox = evaluation.selectedBox;
 
-    this.selectedBox = evaluation.selectedBox;
-
-  }
+}
 
   this.initializeCanvas();
 
@@ -119,51 +117,64 @@ refresh(): void {
 
   }
 
-  private render(){
+  private render(): void {
 
-    this.clear();
+  this.clear();
 
-    this.drawBackground();
+  //==============================
+  // Cancha
+  //==============================
 
-    switch(this.heatMode){
+  this.drawBackground();
 
-  case 'density':
+  this.drawBorder();
 
-    this.buildHeatMatrix();
+  this.drawCenterLine();
 
-    this.drawHeatCells();
+  this.drawTarget();
 
-    break;
+  this.drawV();
 
-  case 'quality':
+  this.drawBoxes();
 
-    this.drawQualityMap();
+  this.drawSelectedBox();
 
-    break;
+  //==============================
+  // Modo de visualización
+  //==============================
 
-  case 'precision':
+  switch (this.heatMode) {
 
-    this.drawPrecisionMap();
+    case 'density':
 
-    break;
+      this.buildHeatMatrix();
 
-}
+      this.drawHeatCells();
 
-    this.drawBorder();
+      this.drawJack();
 
-this.drawCenterLine();
+      this.drawThrows();
 
-this.drawTarget();
+      break;
 
-this.drawV();
+    case 'quality':
 
-this.drawBoxes();
+      this.drawQualityMap();
 
-this.drawSelectedBox();
+      this.drawJack();
 
-this.drawJack();
+      this.drawThrows();
 
-this.drawThrows();
+      break;
+
+    case 'precision':
+
+      // Este modo dibuja TODO él solo
+      this.drawPrecisionMap();
+
+      break;
+
+  }
 
 }
 
@@ -303,37 +314,52 @@ this.drawThrows();
 
   //------------------------------------------------
 
-  private drawJack(){
+  private drawJack(): void {
 
-  if(!this.jack){
-    return;
+  const drawn = new Set<string>();
+
+  for (const ball of this.throws) {
+
+    if (!ball.jack) {
+      continue;
+    }
+
+    const key =
+      `${Math.round(ball.jack.x)}-${Math.round(ball.jack.y)}`;
+
+    if (drawn.has(key)) {
+      continue;
+    }
+
+    drawn.add(key);
+
+    this.ctx.beginPath();
+
+    this.ctx.fillStyle = "#FFFFFF";
+
+    this.ctx.arc(
+
+      ball.jack.x,
+
+      ball.jack.y,
+
+      11,
+
+      0,
+
+      Math.PI * 2
+
+    );
+
+    this.ctx.fill();
+
+    this.ctx.strokeStyle = "#777";
+
+    this.ctx.lineWidth = 2;
+
+    this.ctx.stroke();
+
   }
-
-  this.ctx.beginPath();
-
-  this.ctx.fillStyle="#FFFFFF";
-
-  this.ctx.arc(
-
-    this.jack.x,
-
-    this.jack.y,
-
-    11,
-
-    0,
-
-    Math.PI*2
-
-  );
-
-  this.ctx.fill();
-
-  this.ctx.strokeStyle="#777";
-
-  this.ctx.lineWidth=2;
-
-  this.ctx.stroke();
 
 }
 
@@ -740,11 +766,13 @@ this.drawThrows();
 
   private drawPrecisionMap(): void {
 
-  if (!this.jack) {
-    return;
-  }
+  const drawnJacks = new Set<string>();
 
   for (const ball of this.throws) {
+
+    //-----------------------------------------
+    // Filtros
+    //-----------------------------------------
 
     if (
       this.filter === 'red' &&
@@ -760,56 +788,168 @@ this.drawThrows();
       continue;
     }
 
-    const dx = ball.x - this.jack.x;
+    if (!ball.jack) {
+      continue;
+    }
 
-    const dy = ball.y - this.jack.y;
+    //-----------------------------------------
+    // Dibujar Jack (solo una vez)
+    //-----------------------------------------
+
+    const key =
+      `${Math.round(ball.jack.x)}-${Math.round(ball.jack.y)}`;
+
+    if (!drawnJacks.has(key)) {
+
+      drawnJacks.add(key);
+
+      this.ctx.beginPath();
+
+      this.ctx.fillStyle = "#FFFFFF";
+
+      this.ctx.arc(
+        ball.jack.x,
+        ball.jack.y,
+        10,
+        0,
+        Math.PI * 2
+      );
+
+      this.ctx.fill();
+
+      this.ctx.strokeStyle = "#666";
+
+      this.ctx.lineWidth = 2;
+
+      this.ctx.stroke();
+
+    }
+
+    //-----------------------------------------
+    // Distancia
+    //-----------------------------------------
+
+    const dx = ball.x - ball.jack.x;
+
+    const dy = ball.y - ball.jack.y;
 
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    let color = '';
+    //-----------------------------------------
+    // Color según RESULTADO
+    //-----------------------------------------
 
-    if (distance <= 50) {
+    let color = "#999";
 
-      color = '#2dd36f';
+    switch (ball.result) {
+
+      case 'excellent':
+
+        color = "#2dd36f";
+
+        break;
+
+      case 'good':
+
+        color = "#3880ff";
+
+        break;
+
+      case 'regular':
+
+        color = "#ffc409";
+
+        break;
+
+      case 'bad':
+
+        color = "#eb445a";
+
+        break;
 
     }
-    else if (distance <= 100) {
 
-      color = '#3880ff';
+    //-----------------------------------------
+    // Línea
+    //-----------------------------------------
 
-    }
-    else if (distance <= 150) {
+    this.ctx.beginPath();
 
-      color = '#ffc409';
+    this.ctx.moveTo(
+      ball.jack.x,
+      ball.jack.y
+    );
 
-    }
-    else {
-
-      color = '#eb445a';
-
-    }
-
-    const gradient = this.ctx.createRadialGradient(
-
+    this.ctx.lineTo(
       ball.x,
+      ball.y
+    );
 
-      ball.y,
+    this.ctx.strokeStyle = color;
 
-      0,
+    this.ctx.lineWidth = 4;
 
-      ball.x,
+    this.ctx.stroke();
 
-      ball.y,
+    //-----------------------------------------
+    // Texto distancia
+    //-----------------------------------------
 
-      70
+    const mx = (ball.x + ball.jack.x) / 2;
+
+    const my = (ball.y + ball.jack.y) / 2;
+
+    this.ctx.fillStyle = "#FFFFFF";
+
+    this.ctx.font = "bold 15px Arial";
+
+    this.ctx.textAlign = "center";
+
+    this.ctx.fillText(
+
+      `${Math.round(distance)} px`,
+
+      mx,
+
+      my - 8
 
     );
 
-    gradient.addColorStop(0, color + 'AA');
+    //-----------------------------------------
+    // Halo
+    //-----------------------------------------
 
-    gradient.addColorStop(0.5, color + '55');
+    const gradient =
+      this.ctx.createRadialGradient(
 
-    gradient.addColorStop(1, color + '00');
+        ball.x,
+
+        ball.y,
+
+        0,
+
+        ball.x,
+
+        ball.y,
+
+        55
+
+      );
+
+    gradient.addColorStop(
+      0,
+      color + "AA"
+    );
+
+    gradient.addColorStop(
+      0.5,
+      color + "55"
+    );
+
+    gradient.addColorStop(
+      1,
+      color + "00"
+    );
 
     this.ctx.beginPath();
 
@@ -821,7 +961,7 @@ this.drawThrows();
 
       ball.y,
 
-      70,
+      55,
 
       0,
 
@@ -830,6 +970,39 @@ this.drawThrows();
     );
 
     this.ctx.fill();
+
+    //-----------------------------------------
+    // Bocha
+    //-----------------------------------------
+
+    this.ctx.beginPath();
+
+    this.ctx.fillStyle =
+      ball.color === "red"
+        ? "#E53935"
+        : "#1E88E5";
+
+    this.ctx.arc(
+
+      ball.x,
+
+      ball.y,
+
+      14,
+
+      0,
+
+      Math.PI * 2
+
+    );
+
+    this.ctx.fill();
+
+    this.ctx.strokeStyle = "#FFFFFF";
+
+    this.ctx.lineWidth = 3;
+
+    this.ctx.stroke();
 
   }
 

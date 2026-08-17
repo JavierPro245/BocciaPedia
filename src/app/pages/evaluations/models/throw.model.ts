@@ -20,6 +20,17 @@ export interface Throw {
 
   quadrant?: 'Q1' | 'Q2' | 'Q3' | 'Q4';
 
+  // Jack correspondiente a este lanzamiento
+  jack?: {
+
+    x: number;
+
+    y: number;
+
+    quadrant: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+
+  };
+
   result?: ThrowResult;
 
   observation?: string;

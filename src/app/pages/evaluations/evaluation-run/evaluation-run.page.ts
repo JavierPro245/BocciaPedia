@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
 
 import { CourtEngineComponent } from '../components/court-engine/court-engine.component';
 import { EvaluationService } from 'src/app/services/evaluation.service';
+import { EvaluationFlow } from
+'../engine/evaluation-flow';
+import { CourtMode } from '../models/court-mode.model';
 
 @Component({
   selector: 'app-evaluation-run',
@@ -18,6 +21,10 @@ import { EvaluationService } from 'src/app/services/evaluation.service';
 export class EvaluationRunPage implements OnInit {
 
   viewMode: 'preview' | 'finish' = 'preview';
+
+  flow!: EvaluationFlow;
+
+  courtMode: CourtMode = 'placement';
 
   constructor(
 
@@ -94,8 +101,7 @@ export class EvaluationRunPage implements OnInit {
 
   jackCompleted = false;
 
-  instruction =
-  'Seleccione el Box para comenzar la evaluación.';
+  instruction = '';
 
   //==============================
   // INICIO
@@ -103,31 +109,119 @@ export class EvaluationRunPage implements OnInit {
 
   ngOnInit(): void {
 
-    const config = this.sessionService.getConfig();
-    console.log('CONFIG:', config);
-    if (!config) {
-      return;
-    }
+  const config = this.sessionService.getConfig();
 
-    this.athlete = config.athleteName;
-    this.evaluation = config.evaluationType;
-    this.distance = config.distance;
-    this.totalThrows = config.throws;
+  console.log('CONFIG:', config);
 
-    this.currentThrow = 0;
-    this.throws = [];
-    this.ballColor = 'red';
+  if (!config) {
 
-    const evaluation =
-  this.evaluationService.getEvaluation();
+    return;
 
-if (evaluation?.id) {
+  }
 
-  this.evaluationId = evaluation.id;
+  this.athlete = config.athleteName;
+
+  this.evaluation = config.evaluationType;
+
+  this.distance = config.distance;
+
+  this.totalThrows = config.throws;
+
+  this.currentThrow = 0;
+
+  this.throws = [];
+
+  this.ballColor = 'red';
+
+  //------------------------------------------------
+  // MODO DE LA CANCHA
+  //------------------------------------------------
+
+  switch (config.evaluationType) {
+
+    case 'First Ball':
+
+      this.courtMode = 'first-ball';
+
+      break;
+
+    case 'Placement':
+
+      this.courtMode = 'placement';
+
+      break;
+
+    case 'Smash':
+
+      this.courtMode = 'smash';
+
+      break;
+
+    case 'Push On':
+
+      this.courtMode = 'push-on';
+
+      break;
+
+    case 'Push Off':
+
+      this.courtMode = 'push-off';
+
+      break;
+
+    case 'Ricochet':
+
+      this.courtMode = 'ricochet';
+
+      break;
+
+    case 'Bochada':
+
+      this.courtMode = 'bochada';
+
+      break;
+
+    default:
+
+      this.courtMode = 'placement';
+
+      break;
+
+  }
+
+  //------------------------------------------------
+
+  const evaluation =
+
+    this.evaluationService.getEvaluation();
+
+  if (evaluation?.id) {
+
+    this.evaluationId = evaluation.id;
+
+  }
+
+  this.flow = new EvaluationFlow(
+
+    config.evaluationType
+
+  );
+
+  this.updateInstruction();
 
 }
 
+
+  private updateInstruction(): void {
+
+  if (!this.flow) {
+    return;
   }
+
+  this.instruction =
+    this.flow.getInstruction();
+
+}
 
   //==============================
   // BOX / JACK
@@ -230,31 +324,48 @@ async saveThrowEvaluation(event: any): Promise<void> {
     return;
   }
 
+  //==============================
+  // Guardar resultado
+  //==============================
+
   this.pendingThrow.result = event.result;
 
   this.pendingThrow.observation = event.observation;
 
   this.throws.push(this.pendingThrow);
 
-this.sessionService.setThrows(this.throws);
+  // Actualizar lanzamiento actual
+this.currentThrow = this.throws.length;
 
-if (this.evaluationId) {
+  this.sessionService.setThrows(this.throws);
 
-  await this.evaluationService.saveThrows(
-  this.evaluationId,
-  this.throws
-);
+  if (this.evaluationId) {
 
-await this.evaluationService.updateEvaluationFields(
-  this.evaluationId,
-  {
-    currentThrow: this.throws.length,
-    currentBallColor: this.ballColor,
-    lastUpdatedStep: 'throw'
-  }
-);
+    await this.evaluationService.saveThrows(
+      this.evaluationId,
+      this.throws
+    );
+
+    const evaluation = this.evaluationService.getEvaluation();
+
+if (evaluation) {
+
+  evaluation.throwList = [...this.throws];
+
+  this.evaluationService.setEvaluation(evaluation);
 
 }
+
+    await this.evaluationService.updateEvaluationFields(
+      this.evaluationId,
+      {
+        currentThrow: this.throws.length,
+        currentBallColor: this.ballColor,
+        lastUpdatedStep: 'throw'
+      }
+    );
+
+  }
 
   this.pendingThrow = undefined;
 
@@ -266,26 +377,53 @@ await this.evaluationService.updateEvaluationFields(
 
   this.lockCourt = false;
 
-  if (!this.evaluationFinished) {
+  this.flow.next();
 
-    const nextThrow = this.throws.length + 1;
+  this.updateInstruction();
 
-if (nextThrow <= this.totalThrows) {
+  //==============================
+  // ¿Terminó la evaluación?
+  //==============================
+
+  if (this.evaluationFinished) {
+
+    this.instruction =
+      'Evaluación finalizada.';
+
+    return;
+
+  }
+
+  const nextThrow = this.throws.length + 1;
+
+  //==============================
+  // FIRST BALL
+  //==============================
+
+  if (this.evaluation === 'First Ball') {
+
+    // Reiniciar solamente el intento
+    this.courtEngine.resetAttempt();
+
+    // Limpiar el cuadrante seleccionado
+    this.selectedQuadrant = 'No seleccionado';
+
+    // Mantener el mismo Box
+    this.instruction =
+      `Intento ${nextThrow} de ${this.totalThrows}: coloque nuevamente el Jack.`;
+
+    return;
+
+  }
+
+  //==============================
+  // RESTO DE EVALUACIONES
+  //==============================
 
   this.instruction =
     `Realice el lanzamiento ${nextThrow} de ${this.totalThrows}.`;
 
-} else {
-
-  this.instruction =
-    'Evaluación finalizada.';
-
 }
-
-  }
-
-}
-
 
 private async showThrowResultModal(ball: Throw): Promise<void> {
 
@@ -355,6 +493,9 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
 }
   this.evaluationService.setDetailViewMode('finish');
   this.viewMode = this.evaluationService.getDetailViewMode();
+  this.flow.next();
+
+  this.updateInstruction();
   // Navegamos al resumen
   this.router.navigate([
     '/main/evaluations/evaluations-detail'
@@ -426,8 +567,9 @@ confirmJack(): void {
 
   this.lockCourt = false;
 
-  this.instruction =
-  `Realice el lanzamiento 1 de ${this.totalThrows}.`;
+  this.flow.next();
+
+  this.updateInstruction();
 
 }
 

@@ -3,7 +3,23 @@ import { Throw } from "../pages/evaluations/models/throw.model";
 export interface Evaluation {
 
   id?: string;
-  
+
+  //====================================
+  // Nuevo motor de evaluación
+  //====================================
+
+  currentAttempt?: number;
+
+  phase?:
+    | 'box'
+    | 'jack'
+    | 'throw'
+    | 'evaluate'
+    | 'reset'
+    | 'finished';
+
+  //====================================
+
   title: string;
 
   trainerId: string;

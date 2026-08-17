@@ -74,6 +74,8 @@ export class EvaluationsCreatePage {
 
   distances = [3,5,7,9];
 
+  editingEvaluation: Evaluation | null = null;
+
   ngOnInit() {
 
   this.authService.listenAuthState(user => {
@@ -95,6 +97,30 @@ export class EvaluationsCreatePage {
     );
 
   });
+
+  this.editingEvaluation = this.evaluationService.getEvaluation();
+
+if (this.editingEvaluation) {
+
+  this.config = {
+
+    title: this.editingEvaluation.title,
+
+    athleteId: this.editingEvaluation.athleteId,
+
+    athleteName: this.editingEvaluation.athleteName,
+
+    evaluationType: this.editingEvaluation.evaluationType,
+
+    throws: this.editingEvaluation.throws,
+
+    distance: this.editingEvaluation.distance,
+
+    notes: this.editingEvaluation.notes
+
+  };
+
+}
 
 }
 
@@ -194,19 +220,53 @@ export class EvaluationsCreatePage {
 
   try {
 
-    const evaluationId =
-  await this.evaluationService.createEvaluation(evaluation);
+    let evaluationId: string;
+
+if (this.editingEvaluation?.id) {
+
+  evaluationId = this.editingEvaluation.id;
+
+  await this.evaluationService.updateEvaluation(
+    evaluationId,
+    evaluation
+  );
+
+} else {
+
+  evaluationId =
+    await this.evaluationService.createEvaluation(
+      evaluation
+    );
+
+}
 
 this.evaluationService.setEvaluation({
+
   id: evaluationId,
+
   ...evaluation
+
 });
 
     this.sessionService.setConfig(this.config);
 
-    this.router.navigate([
-      '/main/evaluations/evaluation-run'
-    ]);
+    if (this.editingEvaluation) {
+
+      this.evaluationService.clearEvaluation();
+
+  this.router.navigate([
+    '/main/evaluations/evaluations-detail'
+  ]);
+
+} else {
+
+  this.sessionService.setConfig(this.config);
+
+  this.router.navigate([
+    '/main/evaluations/evaluation-run'
+  ]);
+
+}
 
   } catch (error) {
 

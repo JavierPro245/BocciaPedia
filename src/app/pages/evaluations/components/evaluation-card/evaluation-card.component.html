@@ -25,23 +25,27 @@
 
         <div class="title-row">
 
-          <h2>
+          <div>
 
-  {{ evaluation.title || evaluation.evaluationType }}
+            <h2>
 
-</h2>
+              {{ evaluation.title || evaluation.evaluationType }}
 
-<p
-  class="evaluation-type"
-  *ngIf="evaluation.title">
+            </h2>
 
-  {{ evaluation.evaluationType }}
+            <p
+              class="evaluation-type"
+              *ngIf="evaluation.title">
 
-</p>
+              {{ evaluation.evaluationType }}
+
+            </p>
+
+          </div>
 
           <ion-badge>
 
-            {{evaluation.category || 'BC3'}}
+            {{ evaluation.category || 'BC3' }}
 
           </ion-badge>
 
@@ -49,7 +53,7 @@
 
         <div class="athlete">
 
-          {{evaluation.athleteName}}
+          {{ evaluation.athleteName }}
 
         </div>
 
@@ -57,25 +61,40 @@
 
           <span>
 
-            🎯 {{evaluation.throws}}
+            🎯 {{ evaluation.throws }}
 
           </span>
 
           <span>
 
-            📏 {{evaluation.distance}} m
+            📏 {{ evaluation.distance }} m
 
           </span>
 
           <span>
 
-            📅 {{evaluation.date | date:'dd/MM/yyyy'}}
+            📅 {{ evaluation.date | date:'dd/MM/yyyy' }}
 
           </span>
 
         </div>
 
       </div>
+
+      <!-- Acciones -->
+
+      <ion-button
+  *ngIf="canManage"
+  fill="clear"
+  color="medium"
+  (click)="showMenu($event)">
+
+  <ion-icon
+    slot="icon-only"
+    name="ellipsis-vertical">
+  </ion-icon>
+
+</ion-button>
 
       <!-- Flecha -->
 

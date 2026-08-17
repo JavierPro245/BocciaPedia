@@ -21,6 +21,80 @@
 
     </app-profile-avatar>
 
+    <ion-card>
+
+  <ion-card-header>
+
+    <ion-card-title>
+
+      Seguridad
+
+    </ion-card-title>
+
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <ion-item>
+
+      <ion-icon
+        slot="start"
+        name="logo-google"
+        color="danger">
+      </ion-icon>
+
+      <ion-label>
+
+        Google
+
+      </ion-label>
+
+      <ion-badge
+        [color]="hasGoogle ? 'success' : 'medium'">
+
+        {{ hasGoogle ? 'Vinculado' : 'No vinculado' }}
+
+      </ion-badge>
+
+    </ion-item>
+
+    <ion-item>
+
+      <ion-icon
+        slot="start"
+        name="mail"
+        color="primary">
+      </ion-icon>
+
+      <ion-label>
+
+        Correo y contraseña
+
+      </ion-label>
+
+      <ion-badge
+        [color]="hasPassword ? 'success' : 'medium'">
+
+        {{ hasPassword ? 'Vinculado' : 'No vinculado' }}
+
+      </ion-badge>
+
+    </ion-item>
+
+    <ion-button
+      *ngIf="!hasPassword"
+      expand="block"
+      color="primary"
+      (click)="linkPassword()">
+
+      Agregar contraseña
+
+    </ion-button>
+
+  </ion-card-content>
+
+</ion-card>
+
 <ion-card
     *ngIf="isAdmin()"
     class="app-card">

@@ -16,7 +16,10 @@
     <app-evaluation-card
       *ngFor="let evaluation of filteredEvaluations"
       [evaluation]="evaluation"
-      (open)="openEvaluation($event)">
+      [currentUserId]="currentUserId"
+      (open)="openEvaluation($event)"
+      (edit)="editEvaluation($event)"
+      (delete)="deleteEvaluation($event)">
     </app-evaluation-card>
 
   </ng-container>

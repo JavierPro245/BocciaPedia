@@ -62,6 +62,41 @@ penaltyInterval: any;
 
     this.startGameClock();
 
+    if (Capacitor.getPlatform() === 'android') {
+
+      BocciaCast.addListener('sessionStarted', () => this.sendMatchToCast());
+
+      BocciaCast.addListener('sessionResumed', () => this.sendMatchToCast());
+
+    }
+
+  }
+
+  private readonly castNamespace = 'urn:x-cast:cl.bocciapedia.match';
+
+  private async sendMatchToCast(): Promise<void> {
+
+    if (!this.match?.id) {
+      return;
+    }
+
+    try {
+
+      await BocciaCast.registerNamespace({
+        namespace: this.castNamespace
+      });
+
+      await BocciaCast.sendMessage({
+        namespace: this.castNamespace,
+        message: JSON.stringify({ matchId: this.match.id })
+      });
+
+    } catch (e) {
+
+      console.error('Error enviando matchId al receptor Cast:', e);
+
+    }
+
   }
 
  finishEnd(): void {
@@ -443,20 +478,43 @@ async openBroadcast() {
 
   try {
 
-    console.log("ANTES");
+    // ANDROID -> Chromecast
+    if (Capacitor.getPlatform() === 'android') {
 
-    await BocciaCast.initialize();
+      await BocciaCast.initialize({
 
-    console.log("DESPUÉS");
+        appId: '7B9440C4'
+
+      });
+
+      await BocciaCast.requestSession();
+
+      return;
+
+    }
+
+    // WEB / PC -> Broadcast
+    const url =
+      `${window.location.origin}/public/broadcast/${this.match.id}`;
+
+    window.open(
+
+      url,
+
+      '_blank'
+
+    );
 
   } catch (e: any) {
 
-    console.error(e);
-
     const error = await this.alertController.create({
+
       header: 'ERROR',
+
       message: JSON.stringify(e),
+
       buttons: ['OK']
+
     });
 
     await error.present();

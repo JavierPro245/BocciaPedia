@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -33,19 +34,33 @@ export class HeaderComponent {
 
   @Input() showAction = false;
 
+  @Input()
+backRoute?: string;
+
 @Input() actionIcon = 'tv-outline';
 
 @Output() action = new EventEmitter<void>();
 
+@Output() back = new EventEmitter<void>();
+
   constructor(
-    private location: Location
+    private location: Location,
+     private router: Router
   ) {}
 
   goBack() {
 
-    this.location.back();
+  if (this.backRoute) {
+
+    this.router.navigate([this.backRoute]);
+
+    return;
 
   }
+
+  this.location.back();
+
+}
 
   onAction(){
 

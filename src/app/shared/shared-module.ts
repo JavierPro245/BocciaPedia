@@ -30,6 +30,7 @@ import { QualityChartComponent } from './components/charts/quality-chart/quality
 import { NgApexchartsModule } from "ng-apexcharts";
 import { RoleChipComponent } from './components/role-chip/role-chip.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
+import { LinkPasswordModalComponent } from './components/link-password-modal/link-password-modal.component';
 
 
 
@@ -61,6 +62,8 @@ import { UserAvatarComponent } from './components/user-avatar/user-avatar.compon
     QualityChartComponent,
     RoleChipComponent,
     UserAvatarComponent,
+    LinkPasswordModalComponent,
+
   ],
   exports: [
     HeaderComponent,
@@ -92,6 +95,8 @@ import { UserAvatarComponent } from './components/user-avatar/user-avatar.compon
     QualityChartComponent,
     RoleChipComponent,
     UserAvatarComponent,
+    LinkPasswordModalComponent,
+    
   ],
   imports: [
     CommonModule,

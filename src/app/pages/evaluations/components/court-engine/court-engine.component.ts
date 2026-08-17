@@ -12,6 +12,7 @@ import {
 
 import { CourtSelection } from '../../models/court-selection.model';
 import { Throw } from '../../models/throw.model';
+import { CourtMode } from '../../models/court-mode.model';
 
 @Component({
   selector: 'app-court-engine',
@@ -35,6 +36,10 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
   @Input() ballColor:'red'|'blue'='red';
 
   @Input() locked = false;
+
+  @Input()
+
+mode: CourtMode = 'placement';
 
 /**
  * Los lanzamientos ahora los controla EvaluationRun.
@@ -70,6 +75,30 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
 
   };
 
+  //------------------------------------------------
+  // ANIMACIÓN
+  //------------------------------------------------
+
+  private animationRunning = false;
+
+  private animationProgress = 0;
+
+  private animationFrame?: number;
+
+  //------------------------------------------------
+  // BOCHA ANIMADA
+  //------------------------------------------------
+
+  private animatedThrow?: Throw;
+
+  //------------------------------------------------
+  // VECTOR DE IMPACTO
+  //------------------------------------------------
+
+  private impactDX = 0;
+
+  private impactDY = 0;
+
   ngOnChanges(changes: SimpleChanges): void {
 
   if (!this.ctx) {
@@ -104,6 +133,30 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
     y:0
 
   };
+
+  opponentBall = {
+
+  x: 0,
+
+  y: 0,
+
+  color: 'blue' as 'red' | 'blue',
+
+  placed: false
+
+};
+
+private currentStep:
+
+'box'
+
+|'jack'
+
+|'opponent'
+
+|'throw'
+
+='box';
 
   private pendingJack = {
 
@@ -204,16 +257,10 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
     }
 
     //------------------------------------------------
-
-    // JACK
-
-    //------------------------------------------------
-
-    //------------------------------------------------
 // JACK
 //------------------------------------------------
 
-if (!this.jack.placed) {
+if (this.currentStep === 'jack') {
 
   if (this.pendingJack.placed) {
 
@@ -227,13 +274,25 @@ if (!this.jack.placed) {
 
 }
 
-    //------------------------------------------------
+//------------------------------------------------
+// BOCHA RIVAL
+//------------------------------------------------
 
-    // THROW
+if (this.currentStep === 'opponent') {
 
-    //------------------------------------------------
+  this.placeOpponentBall(x, y);
 
-    this.addThrow(x,y);
+  this.currentStep = 'throw';
+
+  return;
+
+}
+
+//------------------------------------------------
+// LANZAMIENTO
+//------------------------------------------------
+
+this.addThrow(x, y);
 
   }
 //------------------------------------------------
@@ -269,6 +328,17 @@ private detectBox(x:number,y:number){
   });
 
   this.render();
+
+  if (this.mode === 'smash') {
+
+    this.currentStep = 'jack';
+
+}
+else{
+
+    this.currentStep = 'jack';
+
+}
 
 }
 
@@ -315,6 +385,34 @@ private placeJack(x: number, y: number): void {
     quadrant: this.selectedQuadrant!
 
   });
+
+}
+
+//------------------------------------------------
+// COLOCAR BOCHA RIVAL
+//------------------------------------------------
+
+private placeOpponentBall(
+  x: number,
+  y: number
+): void {
+
+  this.opponentBall = {
+
+    x,
+
+    y,
+
+    // Color contrario al jugador
+    color: this.ballColor === 'red'
+      ? 'blue'
+      : 'red',
+
+    placed: true
+
+  };
+
+  this.render();
 
 }
 
@@ -377,6 +475,20 @@ private getQuadrant(
 
   });
 
+  //------------------------------------------------
+  // CAMBIAR EL PASO SEGÚN LA EVALUACIÓN
+  //------------------------------------------------
+
+  if (this.mode === 'smash') {
+
+    this.currentStep = 'opponent';
+
+  } else {
+
+    this.currentStep = 'throw';
+
+  }
+
   this.render();
 
 }
@@ -421,11 +533,53 @@ private addThrow(x: number, y: number): void {
 
     color: this.ballColor,
 
+    box: this.selectedBox ?? undefined,
+
     quadrant: this.getQuadrant(x, y),
+
+    jack: {
+
+      x: this.jack.x,
+
+      y: this.jack.y,
+
+      quadrant: this.selectedQuadrant!
+
+    },
 
     result: 'good'
 
   };
+
+  //------------------------------------------------
+  // MODO SMASH
+  //------------------------------------------------
+
+  if (this.mode === 'smash') {
+
+    this.animateImpact(
+
+      x,
+
+      y,
+
+      () => {
+
+        this.render();
+
+        this.throwRegistered.emit(this.pendingThrow!);
+
+      }
+
+    );
+
+    return;
+
+  }
+
+  //------------------------------------------------
+  // RESTO DE EVALUACIONES
+  //------------------------------------------------
 
   this.render();
 
@@ -452,6 +606,9 @@ private render(){
   this.drawSelectedBox();
 
   this.drawJack();
+
+  // NUEVO
+  this.drawOpponentBall();
 
   this.drawThrows();
 
@@ -505,15 +662,116 @@ private drawTarget(): void {
 
 }
 
+private drawOpponentBall(): void {
+
+  if (!this.opponentBall.placed) {
+    return;
+  }
+
+  let x = this.opponentBall.x;
+
+  let y = this.opponentBall.y;
+
+  if (this.animationRunning) {
+
+    const distance = 45;
+
+x += this.impactDX
+    * distance
+    * this.animationProgress;
+
+y += this.impactDY
+    * distance
+    * this.animationProgress;
+
+  }
+
+  this.drawBall(
+
+    x,
+
+    y,
+
+    14,
+
+    this.opponentBall.color === 'red'
+      ? '#E53935'
+      : '#1E88E5'
+
+  );
+
+}
+//------------------------------------------------
+// DIBUJAR BOCHA
+//------------------------------------------------
+
+private drawBall(
+
+  x: number,
+
+  y: number,
+
+  radius: number,
+
+  fillColor: string,
+
+  borderColor: string = '#FFFFFF',
+
+  borderWidth: number = 2,
+
+  dashed: boolean = false
+
+): void {
+
+  this.ctx.beginPath();
+
+  if (dashed) {
+
+    this.ctx.setLineDash([8, 6]);
+
+  } else {
+
+    this.ctx.setLineDash([]);
+
+  }
+
+  this.ctx.fillStyle = fillColor;
+
+  this.ctx.arc(
+
+    x,
+
+    y,
+
+    radius,
+
+    0,
+
+    Math.PI * 2
+
+  );
+
+  this.ctx.fill();
+
+  this.ctx.strokeStyle = borderColor;
+
+  this.ctx.lineWidth = borderWidth;
+
+  this.ctx.stroke();
+
+  this.ctx.setLineDash([]);
+
+}
+
 private drawJack(): void {
+
+  //------------------------------------------------
+  // JACK PENDIENTE
+  //------------------------------------------------
 
   if (this.pendingJack.placed) {
 
-    this.ctx.beginPath();
-
-    this.ctx.fillStyle = "#FFD54F";
-
-    this.ctx.arc(
+    this.drawBall(
 
       this.pendingJack.x,
 
@@ -521,15 +779,17 @@ private drawJack(): void {
 
       12,
 
-      0,
+      "#FFD54F",
 
-      Math.PI * 2
+      "#666666"
 
     );
 
-    this.ctx.fill();
-
   }
+
+  //------------------------------------------------
+  // JACK CONFIRMADA
+  //------------------------------------------------
 
   if (!this.jack.placed) {
 
@@ -537,97 +797,132 @@ private drawJack(): void {
 
   }
 
-  this.ctx.beginPath();
+  let x = this.jack.x;
 
-  this.ctx.fillStyle = "#FFFFFF";
+  let y = this.jack.y;
 
-  this.ctx.arc(
+  // Durante la animación la Jack se desplaza
+  if (this.animationRunning) {
 
-    this.jack.x,
+  const distance = 25;
 
-    this.jack.y,
+  x += this.impactDX
+      * distance
+      * this.animationProgress;
+
+  y += this.impactDY
+      * distance
+      * this.animationProgress;
+
+}
+
+  this.drawBall(
+
+    x,
+
+    y,
 
     10,
 
-    0,
+    "#FFFFFF",
 
-    Math.PI * 2
+    "#666666"
 
   );
-
-  this.ctx.fill();
-
-  this.ctx.strokeStyle = "#666";
-
-  this.ctx.lineWidth = 2;
-
-  this.ctx.stroke();
 
 }
 
 private drawThrows(): void {
 
-  for (const ball of this.throws) {
+  //------------------------------------------------
+  // BOCHAS CONFIRMADAS
+  //------------------------------------------------
 
-    this.ctx.beginPath();
+  this.throws.forEach(ball => {
 
-    this.ctx.fillStyle =
+    this.drawBall(
+
+      ball.x,
+
+      ball.y,
+
+      14,
+
       ball.color === 'red'
         ? '#E53935'
-        : '#1E88E5';
+        : '#1E88E5'
 
-    this.ctx.arc(
-      ball.x,
-      ball.y,
-      14,
-      0,
-      Math.PI * 2
     );
 
-    this.ctx.fill();
+  });
 
-    this.ctx.strokeStyle = '#FFFFFF';
+  //------------------------------------------------
+  // BOCHA ANIMADA
+  //------------------------------------------------
 
-    this.ctx.lineWidth = 3;
+  if (this.animationRunning && this.animatedThrow) {
 
-    this.ctx.stroke();
+    const distance = 120;
+
+    const x =
+      this.animatedThrow.x +
+      this.impactDX *
+      distance *
+      this.animationProgress;
+
+    const y =
+      this.animatedThrow.y +
+      this.impactDY *
+      distance *
+      this.animationProgress;
+
+    this.drawBall(
+
+      x,
+
+      y,
+
+      14,
+
+      this.animatedThrow.color === 'red'
+        ? '#E53935'
+        : '#1E88E5'
+
+    );
+
+    return;
 
   }
 
-  //--------------------------------------------------
-// Lanzamiento temporal
-//--------------------------------------------------
+  //------------------------------------------------
+  // BOCHA PENDIENTE
+  //------------------------------------------------
 
-if (this.pendingThrow) {
+  if (!this.pendingThrow) {
 
-  this.ctx.beginPath();
+    return;
 
-  this.ctx.fillStyle =
-    this.pendingThrow.color === 'red'
-      ? 'rgba(229,57,53,0.55)'
-      : 'rgba(30,136,229,0.55)';
+  }
 
-  this.ctx.arc(
+  this.drawBall(
+
     this.pendingThrow.x,
+
     this.pendingThrow.y,
+
     14,
-    0,
-    Math.PI * 2
+
+    this.pendingThrow.color === 'red'
+      ? '#E53935'
+      : '#1E88E5',
+
+    '#FFFFFF',
+
+    2,
+
+    true
+
   );
-
-  this.ctx.fill();
-
-  this.ctx.strokeStyle = '#FFFFFF';
-
-  this.ctx.lineWidth = 2;
-
-  this.ctx.setLineDash([6,4]);
-
-  this.ctx.stroke();
-
-  this.ctx.setLineDash([]);
-
-}
 
 }
 
@@ -909,6 +1204,148 @@ public cancelThrow(): void {
   this.pendingThrow = undefined;
 
   this.render();
+
+}
+
+//==================================================
+// REINICIAR INTENTO (FIRST BALL)
+// Mantiene el Box seleccionado
+// Elimina Jack y bochas
+//==================================================
+
+public resetAttempt(): void {
+
+  // Mantener Box
+
+  this.jack = {
+
+    placed: false,
+
+    x: 0,
+
+    y: 0
+
+  };
+
+  this.pendingJack = {
+
+    placed: false,
+
+    x: 0,
+
+    y: 0
+
+  };
+
+  this.opponentBall = {
+
+    x: 0,
+
+    y: 0,
+
+    color: 'blue',
+
+    placed: false
+
+  };
+
+  this.selectedQuadrant = null;
+
+  this.pendingThrow = undefined;
+
+  this.throws = [];
+
+  this.currentStep = 'jack';
+
+  this.render();
+
+}
+
+//------------------------------------------------
+// ANIMAR IMPACTO
+//------------------------------------------------
+
+private animateImpact(
+  throwX: number,
+  throwY: number,
+  callback?: () => void
+): void {
+
+  if (!this.pendingThrow) {
+    return;
+  }
+
+  if (this.animationRunning) {
+    return;
+  }
+
+  //------------------------------------------------
+  // Guardar una copia de la bocha para animarla
+  //------------------------------------------------
+
+  this.animatedThrow = {
+
+    ...this.pendingThrow
+
+  };
+
+  //------------------------------------------------
+  // Dirección del impacto
+  //------------------------------------------------
+
+  const dx = this.jack.x - throwX;
+
+  const dy = this.jack.y - throwY;
+
+  const length =
+    Math.sqrt(dx * dx + dy * dy) || 1;
+
+  this.impactDX = dx / length;
+
+  this.impactDY = dy / length;
+
+  //------------------------------------------------
+
+  this.animationRunning = true;
+
+  this.animationProgress = 0;
+
+  const duration = 500;
+
+  const start = performance.now();
+
+  const step = (time: number) => {
+
+    const elapsed = time - start;
+
+    this.animationProgress =
+      Math.min(elapsed / duration, 1);
+
+    this.render();
+
+    if (this.animationProgress < 1) {
+
+      requestAnimationFrame(step);
+
+    } else {
+
+      this.animationRunning = false;
+
+      this.animationProgress = 0;
+
+      this.animatedThrow = undefined;
+
+      if (callback) {
+
+        callback();
+
+      }
+
+    }
+
+  };
+
+  requestAnimationFrame(step);
 
 }
 

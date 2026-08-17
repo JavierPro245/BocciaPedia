@@ -6,6 +6,9 @@ import { PermissionService } from 'src/app/services/permission.service';
 
 import { StorageService } from 'src/app/services/storageService';
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { ModalController } from '@ionic/angular';
+import { LinkPasswordModalComponent } from 'src/app/shared/components/link-password-modal/link-password-modal.component';
 
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 
@@ -22,6 +25,10 @@ export class ProfilePage implements OnInit {
   constructor(
 
   private sessionService: SessionService,
+
+  private authService: AuthService,
+
+  private modalController: ModalController,
 
   private storageService: StorageService,
 
@@ -192,6 +199,73 @@ async changePhoto() {
     alert(
       `Código: ${error?.code ?? 'Sin código'}\n\n` +
       `Mensaje: ${error?.message ?? error}`
+    );
+
+  }
+
+  }
+
+  get hasGoogle(): boolean {
+
+    return this.authService.hasGoogleProvider();
+
+  }
+
+  get hasPassword(): boolean {
+
+    return this.authService.hasPasswordProvider();
+
+  }
+
+  async linkPassword() {
+
+  if (!this.user?.email) {
+    return;
+  }
+
+  const modal = await this.modalController.create({
+
+    component: LinkPasswordModalComponent,
+
+    componentProps: {
+
+      email: this.user.email
+
+    }
+
+  });
+
+  await modal.present();
+
+  const { data } = await modal.onDidDismiss();
+
+  if (!data) {
+    return;
+  }
+
+  try {
+
+    await this.authService.linkEmailPassword(
+
+      data.email,
+
+      data.password
+
+    );
+
+    await this.authService.reloadCurrentUser();
+
+    alert(
+      'Contraseña vinculada correctamente.'
+    );
+
+  } catch (error: any) {
+
+    console.error(error);
+
+    alert(
+      error?.message ??
+      'No fue posible vincular la contraseña.'
     );
 
   }
