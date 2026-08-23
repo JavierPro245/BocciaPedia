@@ -62,14 +62,14 @@ export class MenuService {
         {
           title: 'Evaluaciones',
           icon: 'clipboard-outline',
-          url: '/evaluations/evaluations-list',
+          url: '/main/evaluations/evaluations-list',
           roles: ['admin', 'trainer', 'athlete']
         },
 
         {
           title: 'Partidos',
           icon: 'football-outline',
-          url: '/matches/match-create',
+          url: '/main/matches/match-create',
           roles: ['admin', 'trainer', 'referee', 'athlete']
         }
 
@@ -86,27 +86,27 @@ export class MenuService {
         {
           title: 'Dashboard',
           icon: 'speedometer-outline',
-          url: '/statistics/dashboard',
+          url: '/main/statistics/dashboard',
           roles: ['admin', 'trainer']
         },
 
         {
           title: 'Estadísticas',
           icon: 'bar-chart-outline',
-          url: '/statistics',
+          url: '/main/statistics',
           roles: ['admin']
         },
 
         {
           title: 'Heatmap',
           icon: 'grid-outline',
-          url: '/evaluations/heatmap'
+          url: '/main/evaluations/heatmap'
         },
 
         {
           title: 'Reportes',
           icon: 'document-text-outline',
-          url: '/statistics/reports',
+          url: '/main/statistics/reports',
           roles: ['admin', 'trainer','athlete']
         }
 
@@ -123,14 +123,14 @@ export class MenuService {
         {
           title: 'Fotos',
           icon: 'image-outline',
-          url: '/media/photos',
+          url: '/main/media/photos',
           roles: ['admin']
         },
 
         {
           title: 'Videos',
           icon: 'videocam-outline',
-          url: '/media/videos',
+          url: '/main/media/videos',
           roles: ['admin']
         }
 

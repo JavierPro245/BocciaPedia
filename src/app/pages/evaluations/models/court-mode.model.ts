@@ -12,4 +12,6 @@ export type CourtMode =
 
     | 'ricochet'
 
-    | 'bochada';
+    | 'bochada'
+
+    | 'custom';

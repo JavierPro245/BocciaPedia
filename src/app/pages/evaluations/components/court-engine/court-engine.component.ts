@@ -13,6 +13,26 @@ import {
 import { CourtSelection } from '../../models/court-selection.model';
 import { Throw } from '../../models/throw.model';
 import { CourtMode } from '../../models/court-mode.model';
+import { OpponentBall } from '../../models/opponent-ball.model';
+import { Vec2 } from '../../engine/physics/vector';
+import {
+  ImpactResult,
+  resolveImpact
+} from '../../engine/physics/impact-resolver';
+import {
+  PIXELS_PER_METER_LENGTH,
+  COURT_MAX_LENGTH_M,
+  COURT_THROW_LINE_Y
+} from '../../engine/physics/court-scale';
+
+interface OpponentSetupConfig {
+  count: number;
+  roles: Array<'wall' | 'target' | undefined>;
+  // Recibe el índice de colocación (0, 1, 2...) porque algunos modos
+  // (Push On) necesitan una mezcla de bochas propias y rivales, no
+  // todas del mismo color.
+  color: (playerColor: 'red' | 'blue', index: number) => 'red' | 'blue';
+}
 
 @Component({
   selector: 'app-court-engine',
@@ -32,6 +52,15 @@ export class CourtEngineComponent implements AfterViewInit, OnChanges {
   }>();
 
   @Output() throwRegistered = new EventEmitter<Throw>();
+
+  @Output()
+  opponentSetupReady = new EventEmitter<OpponentBall[]>();
+
+  // Se emite en cada bocha rival colocada (antes de completar el
+  // total requerido), para que la página pueda refrescar el texto
+  // de instrucción ("2 de 3", etc.).
+  @Output()
+  opponentBallPlaced = new EventEmitter<void>();
 
   @Input() ballColor:'red'|'blue'='red';
 
@@ -71,7 +100,9 @@ mode: CourtMode = 'placement';
 
     targetSize:100,
 
-    vY:600
+    // Punta de la V a 1,5 m de la línea de tiro (frente de las
+    // casas) — ver court-scale.ts.
+    vY:566
 
   };
 
@@ -134,19 +165,73 @@ mode: CourtMode = 'placement';
 
   };
 
-  opponentBall = {
+  opponentBalls: OpponentBall[] = [];
 
-  x: 0,
+  private opponentDragIndex: number | null = null;
 
-  y: 0,
+  private impactedBallIndex: number | null = null;
 
-  color: 'blue' as 'red' | 'blue',
+  private impactResult: ImpactResult | null = null;
 
-  placed: false
+  opponentSetupConfirmed = false;
 
-};
+  private readonly OPPONENT_BALL_RADIUS = 14;
 
-private currentStep:
+  private readonly OPPONENT_SETUP: Record<CourtMode, OpponentSetupConfig> = {
+
+    'first-ball': { count: 0, roles: [], color: () => 'red' },
+
+    'placement': { count: 0, roles: [], color: () => 'red' },
+
+    'smash': {
+      count: 1,
+      roles: [undefined],
+      color: p => (p === 'red' ? 'blue' : 'red')
+    },
+
+    // 2 bochas rivales + la propia del deportista en el medio, para
+    // empujarla. El entrenador acomoda las 3 con arrastre libre.
+    'push-on': {
+      count: 3,
+      roles: [undefined, undefined, undefined],
+      color: (p, index) => (index === 1 ? p : (p === 'red' ? 'blue' : 'red'))
+    },
+
+    // Bocha rival pegada al jack.
+    'push-off': {
+      count: 1,
+      roles: [undefined],
+      color: p => (p === 'red' ? 'blue' : 'red')
+    },
+
+    // Bocha rival pegada al jack (misma estructura que Push Off).
+    'bochada': {
+      count: 1,
+      roles: [undefined],
+      color: p => (p === 'red' ? 'blue' : 'red')
+    },
+
+    // Muro de 2 bochas rivales + 1 bocha rival suelta.
+    'ricochet': {
+      count: 3,
+      roles: ['wall', 'wall', 'target'],
+      color: p => (p === 'red' ? 'blue' : 'red')
+    },
+
+    // Sin física automática ni cantidad fija: el entrenador arma la
+    // escena con los botones +Roja/+Azul (ver addCustomOpponentBall)
+    // y arrastra libremente, tantas bochas como quiera.
+    'custom': { count: 0, roles: [], color: () => 'red' }
+
+  };
+
+  getOpponentSetupConfig(): OpponentSetupConfig {
+
+    return this.OPPONENT_SETUP[this.mode];
+
+  }
+
+  private currentStep:
 
 'box'
 
@@ -169,6 +254,33 @@ private currentStep:
 };
 
   private pendingThrow?: Throw;
+
+  //------------------------------------------------
+  // ZOOM / DESPLAZAMIENTO (pellizcar con dos dedos)
+  //------------------------------------------------
+
+  private zoomScale = 1;
+
+  private panX = 0;
+
+  private panY = 0;
+
+  private readonly MIN_ZOOM = 1;
+
+  private readonly MAX_ZOOM = 3;
+
+  private pinchState: {
+    startDistance: number;
+    startScale: number;
+    startMidX: number;
+    startMidY: number;
+    startPanX: number;
+    startPanY: number;
+  } | null = null;
+
+  private lastTapTime = 0;
+
+  private suppressNextClick = false;
 
   //------------------------------------------------
 
@@ -208,11 +320,361 @@ private currentStep:
 
     );
 
+    // Arrastre de bochas rivales durante el armado previo al tiro
+    // (Push On/Off, Bochada, Ricochet). No interfiere con el click
+    // de arriba: si el pointerdown no cae sobre una bocha ya
+    // colocada, no hace nada y el click normal sigue su curso.
+    canvas.addEventListener(
+      'pointerdown',
+      event => this.onCanvasPointerDown(event)
+    );
+
+    canvas.addEventListener(
+      'pointermove',
+      event => this.onCanvasPointerMove(event)
+    );
+
+    canvas.addEventListener(
+      'pointerup',
+      () => this.onCanvasPointerUp()
+    );
+
+    canvas.addEventListener(
+      'pointerleave',
+      () => this.onCanvasPointerUp()
+    );
+
+    // Zoom con pellizco de dos dedos + doble toque para restablecer.
+    // No usa "pointer" porque necesita ver ambos dedos a la vez.
+    canvas.addEventListener(
+      'touchstart',
+      event => this.onTouchStart(event),
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      'touchmove',
+      event => this.onTouchMove(event),
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      'touchend',
+      event => this.onTouchEnd(event)
+    );
+
+    canvas.addEventListener(
+      'touchcancel',
+      event => this.onTouchEnd(event)
+    );
+
+  }
+
+  //------------------------------------------------
+  // ZOOM / DESPLAZAMIENTO
+  //------------------------------------------------
+
+  private touchDistance(a: Touch, b: Touch): number {
+
+    return Math.hypot(
+      a.clientX - b.clientX,
+      a.clientY - b.clientY
+    );
+
+  }
+
+  private onTouchStart(event: TouchEvent): void {
+
+    if (event.touches.length === 2) {
+
+      event.preventDefault();
+
+      // Si se estaba arrastrando una bocha con un dedo y aparece un
+      // segundo dedo, se corta el arrastre para que no siga
+      // "pegada" al puntero mientras se hace zoom.
+      this.opponentDragIndex = null;
+
+      const [t1, t2] = [event.touches[0], event.touches[1]];
+
+      this.pinchState = {
+
+        startDistance: this.touchDistance(t1, t2),
+
+        startScale: this.zoomScale,
+
+        startMidX: (t1.clientX + t2.clientX) / 2,
+
+        startMidY: (t1.clientY + t2.clientY) / 2,
+
+        startPanX: this.panX,
+
+        startPanY: this.panY
+
+      };
+
+      return;
+
+    }
+
+    if (event.touches.length === 1 && this.zoomScale > 1) {
+
+      // Doble toque restablece el zoom (sin necesidad de un botón
+      // aparte, ya que se eligió solo pellizco + arrastre).
+      const now = Date.now();
+
+      if (now - this.lastTapTime < 300) {
+
+        this.resetZoom();
+
+      }
+
+      this.lastTapTime = now;
+
+    }
+
+  }
+
+  private onTouchMove(event: TouchEvent): void {
+
+    if (event.touches.length !== 2 || !this.pinchState) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const [t1, t2] = [event.touches[0], event.touches[1]];
+
+    const newDistance = this.touchDistance(t1, t2);
+
+    const rawScale = this.pinchState.startScale *
+      (newDistance / this.pinchState.startDistance);
+
+    this.zoomScale = Math.min(
+      this.MAX_ZOOM,
+      Math.max(this.MIN_ZOOM, rawScale)
+    );
+
+    const midX = (t1.clientX + t2.clientX) / 2;
+
+    const midY = (t1.clientY + t2.clientY) / 2;
+
+    this.panX = this.pinchState.startPanX + (midX - this.pinchState.startMidX);
+
+    this.panY = this.pinchState.startPanY + (midY - this.pinchState.startMidY);
+
+    this.clampPan();
+
+    this.applyTransform();
+
+  }
+
+  private onTouchEnd(event: TouchEvent): void {
+
+    if (this.pinchState && event.touches.length < 2) {
+
+      // Algunos navegadores disparan un "click" sintético al soltar
+      // los dedos de un pellizco; se ignora ese próximo click para
+      // no colocar una bocha/jack sin querer en el punto medio.
+      this.suppressNextClick = true;
+
+    }
+
+    if (event.touches.length < 2) {
+
+      this.pinchState = null;
+
+    }
+
+  }
+
+  private clampPan(): void {
+
+    // Límite laxo: entre más zoom, más margen para desplazarse, sin
+    // necesitar medir el tamaño exacto renderizado del canvas.
+    const maxPan = 300 * (this.zoomScale - 1);
+
+    this.panX = Math.min(maxPan, Math.max(-maxPan, this.panX));
+
+    this.panY = Math.min(maxPan, Math.max(-maxPan, this.panY));
+
+  }
+
+  private applyTransform(): void {
+
+    this.canvas.nativeElement.style.transform =
+      `translate(${this.panX}px, ${this.panY}px) scale(${this.zoomScale})`;
+
+  }
+
+  public resetZoom(): void {
+
+    this.zoomScale = 1;
+
+    this.panX = 0;
+
+    this.panY = 0;
+
+    this.applyTransform();
+
+  }
+
+  //------------------------------------------------
+
+  private toCanvasPoint(clientX: number, clientY: number): Vec2 {
+
+    const rect = this.canvas.nativeElement.getBoundingClientRect();
+
+    const scaleX = this.WIDTH / rect.width;
+
+    const scaleY = this.HEIGHT / rect.height;
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+
+  }
+
+  //------------------------------------------------
+  // ARRASTRE DE BOCHAS RIVALES
+  //------------------------------------------------
+
+  private canDragOpponentBalls(): boolean {
+
+    if (this.locked || this.pinchState !== null) {
+      return false;
+    }
+
+    // Modo personalizado: las bochas se pueden reacomodar en
+    // cualquier momento, no solo durante un paso "opponent" fijo.
+    if (this.mode === 'custom') {
+      return true;
+    }
+
+    return (
+      this.currentStep === 'opponent' &&
+      this.mode !== 'smash' &&
+      !this.opponentSetupConfirmed
+    );
+
+  }
+
+  private onCanvasPointerDown(event: PointerEvent): void {
+
+    if (!this.canDragOpponentBalls()) {
+      return;
+    }
+
+    const point = this.toCanvasPoint(event.clientX, event.clientY);
+
+    const hitIndex = this.opponentBalls.findIndex(ball =>
+      Math.hypot(ball.x - point.x, ball.y - point.y) <=
+        this.OPPONENT_BALL_RADIUS
+    );
+
+    if (hitIndex !== -1) {
+
+      this.opponentDragIndex = hitIndex;
+
+      event.preventDefault();
+
+    }
+
+  }
+
+  private onCanvasPointerMove(event: PointerEvent): void {
+
+    if (this.opponentDragIndex === null) {
+      return;
+    }
+
+    const point = this.toCanvasPoint(event.clientX, event.clientY);
+
+    this.opponentBalls[this.opponentDragIndex] = {
+
+      ...this.opponentBalls[this.opponentDragIndex],
+
+      x: point.x,
+
+      y: point.y
+
+    };
+
+    this.render();
+
+  }
+
+  private onCanvasPointerUp(): void {
+
+    if (this.opponentDragIndex !== null) {
+
+      // El "click" sintético que sigue a un arrastre no debe
+      // registrarse como un lanzamiento (relevante en modo
+      // "custom", donde no hay un paso "opponent" que absorba ese
+      // click sobrante).
+      this.suppressNextClick = true;
+
+    }
+
+    this.opponentDragIndex = null;
+
+  }
+
+  //------------------------------------------------
+  // MODO PERSONALIZADO: bochas rivales libres
+  //------------------------------------------------
+
+  public addCustomOpponentBall(color: 'red' | 'blue'): void {
+
+    const c = this.COURT;
+
+    const index = this.opponentBalls.length;
+
+    // Pequeño desplazamiento por bocha para que no queden todas
+    // apiladas exactamente en el mismo punto; el entrenador las
+    // termina de acomodar arrastrando.
+    const offset = (index % 5) * 18;
+
+    this.opponentBalls = [
+
+      ...this.opponentBalls,
+
+      {
+        x: c.x + c.width / 2 - 40 + offset,
+        y: c.y + c.height / 2 + offset,
+        color,
+        placed: true
+      }
+
+    ];
+
+    this.render();
+
+  }
+
+  public removeLastCustomOpponentBall(): void {
+
+    if (!this.opponentBalls.length) {
+      return;
+    }
+
+    this.opponentBalls = this.opponentBalls.slice(0, -1);
+
+    this.render();
+
   }
 
   //------------------------------------------------
 
   private onCanvasClick(event:MouseEvent){
+
+    if (this.suppressNextClick) {
+
+      this.suppressNextClick = false;
+
+      return;
+
+    }
 
     if(this.locked){
 
@@ -220,15 +682,7 @@ private currentStep:
 
     }
 
-    const rect=this.canvas.nativeElement.getBoundingClientRect();
-
-    const scaleX=this.WIDTH/rect.width;
-
-    const scaleY=this.HEIGHT/rect.height;
-
-    const x=(event.clientX-rect.left)*scaleX;
-
-    const y=(event.clientY-rect.top)*scaleY;
+    const { x, y } = this.toCanvasPoint(event.clientX, event.clientY);
 
     const c=this.COURT;
 
@@ -280,9 +734,19 @@ if (this.currentStep === 'jack') {
 
 if (this.currentStep === 'opponent') {
 
-  this.placeOpponentBall(x, y);
+  if (this.mode === 'smash') {
 
-  this.currentStep = 'throw';
+    // Comportamiento original de Smash: un solo toque coloca la
+    // bocha rival y pasa directo al tiro, sin arrastre ni confirmación.
+    this.placeOpponentBall(x, y);
+
+    this.currentStep = 'throw';
+
+    return;
+
+  }
+
+  this.handleOpponentSetupTap(x, y);
 
   return;
 
@@ -329,16 +793,7 @@ private detectBox(x:number,y:number){
 
   this.render();
 
-  if (this.mode === 'smash') {
-
-    this.currentStep = 'jack';
-
-}
-else{
-
-    this.currentStep = 'jack';
-
-}
+  this.currentStep = 'jack';
 
 }
 
@@ -397,7 +852,7 @@ private placeOpponentBall(
   y: number
 ): void {
 
-  this.opponentBall = {
+  this.opponentBalls = [{
 
     x,
 
@@ -410,7 +865,74 @@ private placeOpponentBall(
 
     placed: true
 
-  };
+  }];
+
+  this.render();
+
+}
+
+//------------------------------------------------
+// COLOCAR / ARMAR BOCHAS RIVALES
+// (Push On, Push Off, Bochada, Ricochet)
+//------------------------------------------------
+
+private handleOpponentSetupTap(x: number, y: number): void {
+
+  const config = this.getOpponentSetupConfig();
+
+  if (this.opponentBalls.length >= config.count) {
+
+    // Ya están todas colocadas: solo se pueden arrastrar
+    // (ver onCanvasPointerDown/Move), un toque nuevo no hace nada.
+    return;
+
+  }
+
+  const index = this.opponentBalls.length;
+
+  this.opponentBalls = [
+
+    ...this.opponentBalls,
+
+    {
+      x,
+      y,
+      color: config.color(this.ballColor, index),
+      placed: true,
+      role: config.roles[index]
+    }
+
+  ];
+
+  this.render();
+
+  if (this.opponentBalls.length === config.count) {
+
+    this.opponentSetupReady.emit([...this.opponentBalls]);
+
+  } else {
+
+    this.opponentBallPlaced.emit();
+
+  }
+
+}
+
+public confirmOpponentSetup(): void {
+
+  this.opponentSetupConfirmed = true;
+
+  this.currentStep = 'throw';
+
+  this.render();
+
+}
+
+public cancelOpponentSetup(): void {
+
+  this.opponentBalls = [];
+
+  this.opponentSetupConfirmed = false;
 
   this.render();
 
@@ -479,7 +1001,7 @@ private getQuadrant(
   // CAMBIAR EL PASO SEGÚN LA EVALUACIÓN
   //------------------------------------------------
 
-  if (this.mode === 'smash') {
+  if (this.getOpponentSetupConfig().count > 0) {
 
     this.currentStep = 'opponent';
 
@@ -578,12 +1100,134 @@ private addThrow(x: number, y: number): void {
   }
 
   //------------------------------------------------
+  // PUSH ON / PUSH OFF / BOCHADA / RICOCHET
+  //------------------------------------------------
+
+  if (this.getOpponentSetupConfig().count > 0) {
+
+    this.animateOpponentImpact(
+
+      x,
+
+      y,
+
+      () => {
+
+        this.render();
+
+        this.throwRegistered.emit(this.pendingThrow!);
+
+      }
+
+    );
+
+    return;
+
+  }
+
+  //------------------------------------------------
   // RESTO DE EVALUACIONES
   //------------------------------------------------
 
   this.render();
 
   this.throwRegistered.emit(this.pendingThrow);
+
+}
+
+//------------------------------------------------
+// ANIMAR IMPACTO CONTRA BOCHA(S) RIVAL(ES)
+// (Push On, Push Off, Bochada, Ricochet) — la decisión de qué
+// impactó y qué debe animarse vive en engine/physics/impact-resolver
+// (función pura), compartida con el heatmap para poder reproducir
+// exactamente la misma animación al revisar un lanzamiento.
+//------------------------------------------------
+
+private animateOpponentImpact(
+  throwX: number,
+  throwY: number,
+  callback?: () => void
+): void {
+
+  if (!this.pendingThrow || this.animationRunning) {
+    return;
+  }
+
+  this.animatedThrow = { ...this.pendingThrow };
+
+  const impactPoint: Vec2 = { x: throwX, y: throwY };
+
+  const result = resolveImpact(
+    this.mode,
+    this.ballColor,
+    impactPoint,
+    { x: this.jack.x, y: this.jack.y },
+    this.opponentBalls
+  );
+
+  if (!result) {
+
+    // El tiro no llegó a tocar la bocha objetivo: se registra como
+    // un lanzamiento normal, sin animación de impacto.
+    this.animatedThrow = undefined;
+
+    if (callback) {
+      callback();
+    }
+
+    return;
+
+  }
+
+  this.impactResult = result;
+
+  this.impactedBallIndex = result.opponentIndex;
+
+  this.impactDX = result.direction.x;
+
+  this.impactDY = result.direction.y;
+
+  this.animationRunning = true;
+
+  this.animationProgress = 0;
+
+  const duration = 500;
+
+  const start = performance.now();
+
+  const step = (time: number) => {
+
+    const elapsed = time - start;
+
+    this.animationProgress = Math.min(elapsed / duration, 1);
+
+    this.render();
+
+    if (this.animationProgress < 1) {
+
+      requestAnimationFrame(step);
+
+    } else {
+
+      this.animationRunning = false;
+
+      this.animationProgress = 0;
+
+      this.animatedThrow = undefined;
+
+      this.impactedBallIndex = null;
+
+      this.impactResult = null;
+
+      if (callback) {
+        callback();
+      }
+
+    }
+
+  };
+
+  requestAnimationFrame(step);
 
 }
 
@@ -605,6 +1249,8 @@ private render(){
 
   this.drawSelectedBox();
 
+  this.drawDistanceRuler();
+
   this.drawJack();
 
   // NUEVO
@@ -614,16 +1260,85 @@ private render(){
 
 }
 
+//------------------------------------------------
+// REGLA DE DISTANCIAS (metros reales desde la línea de tiro)
+//------------------------------------------------
+
+private drawDistanceRuler(): void {
+
+  const c = this.COURT;
+
+  // 0 m = frente de las casas (línea de tiro), no el borde exterior
+  // de la cancha; la distancia aumenta hacia el fondo.
+  const baseY = COURT_THROW_LINE_Y;
+
+  const maxMeters = Math.floor(COURT_MAX_LENGTH_M);
+
+  const tickX = c.x - 6;
+
+  // Se dibuja en el margen gris claro fuera de la cancha verde, así
+  // que necesita un color oscuro (blanco ahí quedaba invisible).
+  this.ctx.strokeStyle = '#4A5568';
+
+  this.ctx.fillStyle = '#2D3748';
+
+  this.ctx.font = 'bold 13px Arial';
+
+  this.ctx.textAlign = 'right';
+
+  this.ctx.textBaseline = 'middle';
+
+  // Marcas menores cada 0,5 m, sin etiqueta (para ubicar distancias
+  // intermedias como 7,5 m).
+  this.ctx.lineWidth = 1;
+
+  for (let half = 1; half < maxMeters * 2; half += 2) {
+
+    const y = baseY - (half / 2) * PIXELS_PER_METER_LENGTH;
+
+    if (y < c.y) {
+      break;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(tickX - 5, y);
+    this.ctx.lineTo(tickX, y);
+    this.ctx.stroke();
+
+  }
+
+  // Marcas principales cada 1 m, con etiqueta.
+  this.ctx.lineWidth = 2;
+
+  for (let m = 1; m <= maxMeters; m++) {
+
+    const y = baseY - m * PIXELS_PER_METER_LENGTH;
+
+    if (y < c.y) {
+      break;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(tickX - 10, y);
+    this.ctx.lineTo(tickX, y);
+    this.ctx.stroke();
+
+    this.ctx.fillText(`${m}m`, tickX - 12, y);
+
+  }
+
+}
+
 private drawTarget(): void {
 
   const c = this.COURT;
 
   const size = c.targetSize;
 
-  // Posición fija del cuadrado
+  // Centrado a 5 m de la línea de tiro (frente de las casas).
   const x = c.x + c.width / 2 - size / 2;
 
-  const y = 290;
+  const y = 370;
 
   this.ctx.strokeStyle = "#FFFFFF";
 
@@ -664,41 +1379,55 @@ private drawTarget(): void {
 
 private drawOpponentBall(): void {
 
-  if (!this.opponentBall.placed) {
-    return;
-  }
+  this.opponentBalls.forEach((ball, index) => {
 
-  let x = this.opponentBall.x;
+    if (!ball.placed) {
+      return;
+    }
 
-  let y = this.opponentBall.y;
+    let x = ball.x;
 
-  if (this.animationRunning) {
+    let y = ball.y;
 
-    const distance = 45;
+    // Cada modo evalúa una bocha distinta, y esa es la que se anima:
+    // - Smash: conserva su animación original (sin cambios).
+    // - Push On/Off: se está evaluando si el deportista logra
+    //   desplazar esta bocha (propia o rival), así que es la que se
+    //   mueve — la bocha del deportista queda donde tocó.
+    // - Bochada: lo que se separa/mueve es el jack (ver drawJack),
+    //   esta bocha rival queda estática.
+    // - Ricochet: se está evaluando dónde termina la bocha del
+    //   deportista, así que esta queda estática (ver drawThrows).
+    const shouldDisplace = this.animationRunning && (
+      this.mode === 'smash' ||
+      (this.impactResult?.moves === 'opponent' && index === this.impactedBallIndex)
+    );
 
-x += this.impactDX
-    * distance
-    * this.animationProgress;
+    if (shouldDisplace) {
 
-y += this.impactDY
-    * distance
-    * this.animationProgress;
+      const travelDistance = this.mode === 'smash' ? 45 : (this.impactResult?.distance ?? 0);
 
-  }
+      x += this.impactDX * travelDistance * this.animationProgress;
 
-  this.drawBall(
+      y += this.impactDY * travelDistance * this.animationProgress;
 
-    x,
+    }
 
-    y,
+    this.drawBall(
 
-    14,
+      x,
 
-    this.opponentBall.color === 'red'
-      ? '#E53935'
-      : '#1E88E5'
+      y,
 
-  );
+      14,
+
+      ball.color === 'red'
+        ? '#E53935'
+        : '#1E88E5'
+
+    );
+
+  });
 
 }
 //------------------------------------------------
@@ -801,10 +1530,19 @@ private drawJack(): void {
 
   let y = this.jack.y;
 
-  // Durante la animación la Jack se desplaza
-  if (this.animationRunning) {
+  // Durante la animación la Jack se desplaza en Smash (sin cambios)
+  // y en Bochada (ahí se está separando el jack de la bocha rival
+  // pegada a él, así que es el jack el que se mueve, según lo
+  // resuelto por impact-resolver). En los demás modos nuevos el jack
+  // se queda fijo.
+  const jackMoves = this.animationRunning && (
+    this.mode === 'smash' ||
+    this.impactResult?.moves === 'jack'
+  );
 
-  const distance = 25;
+  if (jackMoves) {
+
+  const distance = this.mode === 'smash' ? 25 : (this.impactResult?.distance ?? 0);
 
   x += this.impactDX
       * distance
@@ -862,7 +1600,37 @@ private drawThrows(): void {
 
   if (this.animationRunning && this.animatedThrow) {
 
-    const distance = 120;
+    // La bocha del deportista solo "viaja" en Smash (sin cambios) y
+    // en Ricochet (moves === 'own', hasta el jack). En Push On/Off y
+    // Bochada se evalúa la otra bocha (ver drawOpponentBall/drawJack)
+    // — la del deportista queda fija donde tocó.
+    const ownMoves =
+      this.mode === 'smash' ||
+      this.impactResult?.moves === 'own';
+
+    if (!ownMoves) {
+
+      this.drawBall(
+
+        this.animatedThrow.x,
+
+        this.animatedThrow.y,
+
+        14,
+
+        this.animatedThrow.color === 'red'
+          ? '#E53935'
+          : '#1E88E5'
+
+      );
+
+      return;
+
+    }
+
+    const distance = this.mode === 'smash'
+      ? 120
+      : (this.impactResult?.distance ?? 0);
 
     const x =
       this.animatedThrow.x +
@@ -1237,17 +2005,13 @@ public resetAttempt(): void {
 
   };
 
-  this.opponentBall = {
+  this.opponentBalls = [];
 
-    x: 0,
+  this.opponentSetupConfirmed = false;
 
-    y: 0,
+  this.impactedBallIndex = null;
 
-    color: 'blue',
-
-    placed: false
-
-  };
+  this.impactResult = null;
 
   this.selectedQuadrant = null;
 

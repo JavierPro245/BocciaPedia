@@ -5,7 +5,28 @@ import {
   ElementRef
 } from '@angular/core';
 import { Throw } from '../models/throw.model';
+import { OpponentBall } from '../models/opponent-ball.model';
+import { CourtMode } from '../models/court-mode.model';
 import { EvaluationService } from 'src/app/services/evaluation.service';
+import { EvaluationType } from 'src/app/models/evaluation.model';
+import {
+  ImpactResult,
+  resolveImpact
+} from '../engine/physics/impact-resolver';
+import {
+  pixelDistanceToMeters,
+  formatCourtDistance,
+  PIXELS_PER_METER_LENGTH,
+  COURT_MAX_LENGTH_M,
+  COURT_THROW_LINE_Y
+} from '../engine/physics/court-scale';
+
+const ANIMATED_MODE_BY_TYPE: Partial<Record<EvaluationType, CourtMode>> = {
+  'Push On': 'push-on',
+  'Push Off': 'push-off',
+  'Bochada': 'bochada',
+  'Ricochet': 'ricochet'
+};
 
 @Component({
   selector: 'app-heatmap',
@@ -25,6 +46,28 @@ export class HeatmapPage implements AfterViewInit {
   throws: Throw[] = [];
 
   selectedBox?: number;
+
+  //------------------------------------------------
+  // VER DE A UNO
+  //------------------------------------------------
+
+  allThrows: Throw[] = [];
+
+  viewMode: 'all' | 'one-by-one' = 'all';
+
+  currentIndex = 0;
+
+  evaluationType?: EvaluationType;
+
+  opponentBalls: OpponentBall[] = [];
+
+  private singleAnimationRunning = false;
+
+  private singleAnimationProgress = 0;
+
+  private singleImpactDX = 0;
+
+  private singleImpactDY = 0;
 
   private readonly CELL_SIZE = 10;
 
@@ -48,6 +91,31 @@ export class HeatmapPage implements AfterViewInit {
 
   private readonly HEIGHT=1200;
 
+  //------------------------------------------------
+  // ZOOM / DESPLAZAMIENTO (pellizcar con dos dedos)
+  //------------------------------------------------
+
+  private zoomScale = 1;
+
+  private panX = 0;
+
+  private panY = 0;
+
+  private readonly MIN_ZOOM = 1;
+
+  private readonly MAX_ZOOM = 3;
+
+  private pinchState: {
+    startDistance: number;
+    startScale: number;
+    startMidX: number;
+    startMidY: number;
+    startPanX: number;
+    startPanY: number;
+  } | null = null;
+
+  private lastTapTime = 0;
+
   private readonly COURT={
 
     x:50,
@@ -64,7 +132,9 @@ export class HeatmapPage implements AfterViewInit {
 
     targetSize:100,
 
-    vY:600
+    // Punta de la V a 1,5 m de la línea de tiro (frente de las
+    // casas) — ver court-scale.ts.
+    vY:566
 
   };
 
@@ -81,21 +151,50 @@ console.log('SELECTED BOX', evaluation?.selectedBox);
 
   if (evaluation) {
 
-  this.throws = evaluation.throwList ?? [];
+  this.allThrows = evaluation.throwList ?? [];
+
+  this.throws = this.allThrows;
 
   this.selectedBox = evaluation.selectedBox;
+
+  this.evaluationType = evaluation.evaluationType;
+
+  this.opponentBalls = evaluation.opponentBalls ?? [];
+
+  // First Ball cambia el jack en cada intento — verlos todos juntos
+  // confunde. Para los demás tipos se mantiene la vista agregada.
+  this.viewMode = evaluation.evaluationType === 'First Ball'
+    ? 'one-by-one'
+    : 'all';
 
 }
 
   this.initializeCanvas();
 
-  this.render();
+  this.applyViewMode();
 
 }
 
 refresh(): void {
 
-  this.render();
+  this.applyViewMode();
+
+}
+
+get currentDistanceLabel(): string | undefined {
+
+  const throwBall = this.throws[0];
+
+  if (!throwBall?.jack) {
+    return undefined;
+  }
+
+  return formatCourtDistance(
+    pixelDistanceToMeters(
+      throwBall.x - throwBall.jack.x,
+      throwBall.y - throwBall.jack.y
+    )
+  );
 
 }
 
@@ -114,6 +213,158 @@ refresh(): void {
     }
 
     this.ctx=context;
+
+    canvas.addEventListener(
+      'touchstart',
+      event => this.onTouchStart(event),
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      'touchmove',
+      event => this.onTouchMove(event),
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      'touchend',
+      event => this.onTouchEnd(event)
+    );
+
+    canvas.addEventListener(
+      'touchcancel',
+      event => this.onTouchEnd(event)
+    );
+
+  }
+
+  //------------------------------------------------
+  // ZOOM / DESPLAZAMIENTO
+  //------------------------------------------------
+
+  private touchDistance(a: Touch, b: Touch): number {
+
+    return Math.hypot(
+      a.clientX - b.clientX,
+      a.clientY - b.clientY
+    );
+
+  }
+
+  private onTouchStart(event: TouchEvent): void {
+
+    if (event.touches.length === 2) {
+
+      event.preventDefault();
+
+      const [t1, t2] = [event.touches[0], event.touches[1]];
+
+      this.pinchState = {
+
+        startDistance: this.touchDistance(t1, t2),
+
+        startScale: this.zoomScale,
+
+        startMidX: (t1.clientX + t2.clientX) / 2,
+
+        startMidY: (t1.clientY + t2.clientY) / 2,
+
+        startPanX: this.panX,
+
+        startPanY: this.panY
+
+      };
+
+      return;
+
+    }
+
+    // Doble toque para restablecer el zoom.
+    if (event.touches.length === 1) {
+
+      const now = Date.now();
+
+      if (now - this.lastTapTime < 300) {
+
+        this.resetZoom();
+
+      }
+
+      this.lastTapTime = now;
+
+    }
+
+  }
+
+  private onTouchMove(event: TouchEvent): void {
+
+    if (!this.pinchState || event.touches.length !== 2) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const [t1, t2] = [event.touches[0], event.touches[1]];
+
+    const distance = this.touchDistance(t1, t2);
+
+    const rawScale =
+      this.pinchState.startScale *
+      (distance / this.pinchState.startDistance);
+
+    this.zoomScale = Math.min(
+      this.MAX_ZOOM,
+      Math.max(this.MIN_ZOOM, rawScale)
+    );
+
+    const midX = (t1.clientX + t2.clientX) / 2;
+
+    const midY = (t1.clientY + t2.clientY) / 2;
+
+    this.panX = this.pinchState.startPanX + (midX - this.pinchState.startMidX);
+
+    this.panY = this.pinchState.startPanY + (midY - this.pinchState.startMidY);
+
+    this.clampPan();
+
+    this.applyTransform();
+
+  }
+
+  private onTouchEnd(event: TouchEvent): void {
+
+    if (event.touches.length < 2) {
+      this.pinchState = null;
+    }
+
+  }
+
+  private clampPan(): void {
+
+    const maxPan = 300 * (this.zoomScale - 1);
+
+    this.panX = Math.min(maxPan, Math.max(-maxPan, this.panX));
+
+    this.panY = Math.min(maxPan, Math.max(-maxPan, this.panY));
+
+  }
+
+  private applyTransform(): void {
+
+    this.canvas.nativeElement.style.transform =
+      `translate(${this.panX}px, ${this.panY}px) scale(${this.zoomScale})`;
+
+  }
+
+  resetZoom(): void {
+
+    this.zoomScale = 1;
+
+    this.panX = 0;
+
+    this.panY = 0;
+
+    this.applyTransform();
 
   }
 
@@ -138,6 +389,8 @@ refresh(): void {
   this.drawBoxes();
 
   this.drawSelectedBox();
+
+  this.drawDistanceRuler();
 
   //==============================
   // Modo de visualización
@@ -199,6 +452,13 @@ refresh(): void {
   //------------------------------------------------
 
   private drawBackground(){
+
+    // Fondo del margen alrededor de la cancha, fijo y no ligado al
+    // tema (claro/oscuro) — así la regla de distancias dibujada ahí
+    // siempre tiene buen contraste, sin importar el modo.
+    this.ctx.fillStyle="#ECECEC";
+
+    this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 
     this.ctx.fillStyle="#37C759";
 
@@ -280,7 +540,8 @@ refresh(): void {
 
     const x=this.COURT.x+this.COURT.width/2-size/2;
 
-    const y=250;
+    // Centrado a 5 m de la línea de tiro (frente de las casas).
+    const y=370;
 
     this.ctx.strokeStyle="white";
 
@@ -833,8 +1094,6 @@ refresh(): void {
 
     const dy = ball.y - ball.jack.y;
 
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
     //-----------------------------------------
     // Color según RESULTADO
     //-----------------------------------------
@@ -907,7 +1166,7 @@ refresh(): void {
 
     this.ctx.fillText(
 
-      `${Math.round(distance)} px`,
+      formatCourtDistance(pixelDistanceToMeters(dx, dy)),
 
       mx,
 
@@ -1143,6 +1402,342 @@ selectFilter(
   this.filter = filter;
 
   this.refresh();
+
+}
+
+//------------------------------------------------
+// VER DE A UNO
+//------------------------------------------------
+
+setViewMode(mode: 'all' | 'one-by-one'): void {
+
+  this.viewMode = mode;
+
+  this.currentIndex = 0;
+
+  this.applyViewMode();
+
+}
+
+previousThrow(): void {
+
+  if (this.currentIndex > 0) {
+
+    this.currentIndex--;
+
+    this.applyViewMode();
+
+  }
+
+}
+
+nextThrow(): void {
+
+  if (this.currentIndex < this.allThrows.length - 1) {
+
+    this.currentIndex++;
+
+    this.applyViewMode();
+
+  }
+
+}
+
+private applyViewMode(): void {
+
+  if (!this.ctx) {
+    return;
+  }
+
+  if (this.viewMode === 'all') {
+
+    this.throws = this.allThrows;
+
+    this.render();
+
+    return;
+
+  }
+
+  this.throws = this.allThrows.length
+    ? [this.allThrows[this.currentIndex]]
+    : [];
+
+  this.renderSingleThrow();
+
+}
+
+private drawStaticCourt(): void {
+
+  this.clear();
+
+  this.drawBackground();
+
+  this.drawBorder();
+
+  this.drawCenterLine();
+
+  this.drawTarget();
+
+  this.drawV();
+
+  this.drawBoxes();
+
+  this.drawSelectedBox();
+
+  this.drawDistanceRuler();
+
+}
+
+//------------------------------------------------
+// REGLA DE DISTANCIAS (metros reales desde la línea de tiro)
+//------------------------------------------------
+
+private drawDistanceRuler(): void {
+
+  const c = this.COURT;
+
+  // 0 m = frente de las casas (línea de tiro), no el borde exterior
+  // de la cancha; la distancia aumenta hacia el fondo.
+  const baseY = COURT_THROW_LINE_Y;
+
+  const maxMeters = Math.floor(COURT_MAX_LENGTH_M);
+
+  const tickX = c.x - 6;
+
+  // Se dibuja en el margen gris claro fuera de la cancha verde, así
+  // que necesita un color oscuro (blanco ahí quedaba invisible).
+  this.ctx.strokeStyle = '#4A5568';
+
+  this.ctx.fillStyle = '#2D3748';
+
+  this.ctx.font = 'bold 13px Arial';
+
+  this.ctx.textAlign = 'right';
+
+  this.ctx.textBaseline = 'middle';
+
+  this.ctx.lineWidth = 1;
+
+  for (let half = 1; half < maxMeters * 2; half += 2) {
+
+    const y = baseY - (half / 2) * PIXELS_PER_METER_LENGTH;
+
+    if (y < c.y) {
+      break;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(tickX - 5, y);
+    this.ctx.lineTo(tickX, y);
+    this.ctx.stroke();
+
+  }
+
+  this.ctx.lineWidth = 2;
+
+  for (let m = 1; m <= maxMeters; m++) {
+
+    const y = baseY - m * PIXELS_PER_METER_LENGTH;
+
+    if (y < c.y) {
+      break;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(tickX - 10, y);
+    this.ctx.lineTo(tickX, y);
+    this.ctx.stroke();
+
+    this.ctx.fillText(`${m}m`, tickX - 12, y);
+
+  }
+
+}
+
+private drawDot(x: number, y: number, color: string): void {
+
+  this.ctx.beginPath();
+
+  this.ctx.fillStyle = color;
+
+  this.ctx.arc(x, y, 14, 0, Math.PI * 2);
+
+  this.ctx.fill();
+
+  this.ctx.strokeStyle = '#FFFFFF';
+
+  this.ctx.lineWidth = 2;
+
+  this.ctx.stroke();
+
+}
+
+private ballColorHex(color: 'red' | 'blue'): string {
+
+  return color === 'red' ? '#E53935' : '#1E88E5';
+
+}
+
+private renderSingleThrow(): void {
+
+  const throwBall = this.throws[0];
+
+  this.drawStaticCourt();
+
+  if (!throwBall) {
+    return;
+  }
+
+  const courtMode = this.evaluationType
+    ? ANIMATED_MODE_BY_TYPE[this.evaluationType]
+    : undefined;
+
+  const result = courtMode && throwBall.jack
+    ? resolveImpact(
+        courtMode,
+        throwBall.color,
+        { x: throwBall.x, y: throwBall.y },
+        { x: throwBall.jack.x, y: throwBall.jack.y },
+        this.opponentBalls
+      )
+    : null;
+
+  if (result) {
+
+    this.playSingleImpactAnimation(throwBall, result);
+
+    return;
+
+  }
+
+  // Sin animación que reproducir (tipo sin impacto, o el tiro no
+  // llegó a tocar la bocha objetivo): se dibuja el resultado final.
+  this.drawFinalFrame(throwBall);
+
+}
+
+private drawFinalFrame(throwBall: Throw): void {
+
+  if (throwBall.jack) {
+
+    this.drawDot(throwBall.jack.x, throwBall.jack.y, '#FFFFFF');
+
+  }
+
+  this.opponentBalls.forEach(ball => {
+
+    this.drawDot(ball.x, ball.y, this.ballColorHex(ball.color));
+
+  });
+
+  this.drawDot(throwBall.x, throwBall.y, this.ballColorHex(throwBall.color));
+
+}
+
+private playSingleImpactAnimation(throwBall: Throw, result: ImpactResult): void {
+
+  if (this.singleAnimationRunning) {
+    return;
+  }
+
+  this.singleAnimationRunning = true;
+
+  this.singleAnimationProgress = 0;
+
+  this.singleImpactDX = result.direction.x;
+
+  this.singleImpactDY = result.direction.y;
+
+  const duration = 500;
+
+  const start = performance.now();
+
+  const step = (time: number) => {
+
+    // El entrenador pudo haber cambiado de lanzamiento/modo mientras
+    // corría la animación: si ya no corresponde, se corta.
+    if (this.throws[0] !== throwBall) {
+
+      this.singleAnimationRunning = false;
+
+      return;
+
+    }
+
+    const elapsed = time - start;
+
+    this.singleAnimationProgress = Math.min(elapsed / duration, 1);
+
+    this.drawAnimatedFrame(throwBall, result);
+
+    if (this.singleAnimationProgress < 1) {
+
+      requestAnimationFrame(step);
+
+    } else {
+
+      this.singleAnimationRunning = false;
+
+    }
+
+  };
+
+  requestAnimationFrame(step);
+
+}
+
+private drawAnimatedFrame(throwBall: Throw, result: ImpactResult): void {
+
+  const progress = this.singleAnimationProgress;
+
+  this.drawStaticCourt();
+
+  let jackX = throwBall.jack!.x;
+
+  let jackY = throwBall.jack!.y;
+
+  if (result.moves === 'jack') {
+
+    jackX += this.singleImpactDX * result.distance * progress;
+
+    jackY += this.singleImpactDY * result.distance * progress;
+
+  }
+
+  this.drawDot(jackX, jackY, '#FFFFFF');
+
+  this.opponentBalls.forEach((ball, index) => {
+
+    let x = ball.x;
+
+    let y = ball.y;
+
+    if (result.moves === 'opponent' && index === result.opponentIndex) {
+
+      x += this.singleImpactDX * result.distance * progress;
+
+      y += this.singleImpactDY * result.distance * progress;
+
+    }
+
+    this.drawDot(x, y, this.ballColorHex(ball.color));
+
+  });
+
+  let bx = throwBall.x;
+
+  let by = throwBall.y;
+
+  if (result.moves === 'own') {
+
+    bx += this.singleImpactDX * result.distance * progress;
+
+    by += this.singleImpactDY * result.distance * progress;
+
+  }
+
+  this.drawDot(bx, by, this.ballColorHex(throwBall.color));
 
 }
 

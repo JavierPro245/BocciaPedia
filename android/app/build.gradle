@@ -7,8 +7,8 @@ android {
         applicationId "BocciaPedia.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "2.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -20,6 +20,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // El archivo generado (Build > Build Bundle(s)/APK(s) > Build APK(s)
+    // en Android Studio, o assembleDebug/assembleRelease) se llama
+    // "BocciaPedia.apk" en vez del genérico "app-debug.apk".
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "BocciaPedia.apk"
         }
     }
 }

@@ -6,6 +6,11 @@
 
     justify-content:center;
 
+    // Para que la cancha con zoom/desplazada no se salga del recuadro
+    overflow:hidden;
+
+    border-radius:14px;
+
 }
 
 canvas{
@@ -21,5 +26,11 @@ canvas{
     background:#ffffff;
 
     box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+    // Evita que el navegador intente hacer su propio pinch-zoom de
+    // página sobre la cancha; el zoom lo maneja el componente.
+    touch-action:none;
+
+    transform-origin:center center;
 
 }

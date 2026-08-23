@@ -313,3 +313,27 @@ font-weight:700;
     flex:1;
 
 }
+
+.jack-distance{
+
+    text-align:center;
+
+    color:var(--boccia-text-secondary, #666);
+
+    margin-top:8px;
+
+}
+
+.custom-opponent-toolbar{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin:12px 0;
+
+}

@@ -323,7 +323,7 @@ broadcastState:'playing',
   // ==========================
 
   this.router.navigate([
-    '/matches/match-run'
+    '/main/matches/match-run'
   ]);
 
 }

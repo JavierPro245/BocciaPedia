@@ -11,6 +11,10 @@ export class ThrowResultModalComponent implements OnChanges{
 
   @Input() throwNumber = 1;
 
+  @Input() distanceLabel?: string;
+
+  @Input() lineDistanceLabel?: string;
+
   @Output() save =
     new EventEmitter<{
       result: ThrowResult;

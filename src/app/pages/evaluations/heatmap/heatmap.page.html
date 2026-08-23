@@ -15,6 +15,88 @@
 
       <div class="filter-title">
 
+        Vista
+
+      </div>
+
+      <div class="chips">
+
+        <ion-chip
+          [outline]="viewMode !== 'all'"
+          [color]="viewMode === 'all' ? 'primary' : 'medium'"
+          (click)="setViewMode('all')">
+
+          <ion-icon name="apps"></ion-icon>
+
+          <ion-label>
+
+            Todos juntos
+
+          </ion-label>
+
+        </ion-chip>
+
+        <ion-chip
+          [outline]="viewMode !== 'one-by-one'"
+          [color]="viewMode === 'one-by-one' ? 'primary' : 'medium'"
+          (click)="setViewMode('one-by-one')">
+
+          <ion-icon name="play-skip-forward"></ion-icon>
+
+          <ion-label>
+
+            De a uno
+
+          </ion-label>
+
+        </ion-chip>
+
+      </div>
+
+    </div>
+
+    <div class="filter-group" *ngIf="viewMode === 'one-by-one'">
+
+      <div class="stepper">
+
+        <ion-button
+          fill="clear"
+          [disabled]="currentIndex === 0"
+          (click)="previousThrow()">
+
+          <ion-icon name="chevron-back" slot="icon-only"></ion-icon>
+
+        </ion-button>
+
+        <span class="stepper-label">
+
+          Lanzamiento {{ allThrows.length ? currentIndex + 1 : 0 }} de {{ allThrows.length }}
+
+        </span>
+
+        <ion-button
+          fill="clear"
+          [disabled]="currentIndex >= allThrows.length - 1"
+          (click)="nextThrow()">
+
+          <ion-icon name="chevron-forward" slot="icon-only"></ion-icon>
+
+        </ion-button>
+
+      </div>
+
+      <p class="distance-label" *ngIf="currentDistanceLabel">
+
+        📏 Distancia al jack: <strong>{{ currentDistanceLabel }}</strong>
+
+      </p>
+
+    </div>
+
+    <div class="filter-group" *ngIf="viewMode === 'all'">
+
+      <div class="filter-title">
+
         Modo de análisis
 
       </div>
@@ -70,7 +152,7 @@
 
     </div>
 
-    <div class="filter-group">
+    <div class="filter-group" *ngIf="viewMode === 'all'">
 
       <div class="filter-title">
 
@@ -139,7 +221,7 @@
       #courtCanvas>
     </canvas>
 
-    <div class="legend-overlay">
+    <div class="legend-overlay" *ngIf="viewMode === 'all'">
 
       <div class="legend-item">
 

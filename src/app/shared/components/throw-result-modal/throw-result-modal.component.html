@@ -12,6 +12,18 @@
 
   </p>
 
+  <p class="distance-label" *ngIf="lineDistanceLabel">
+
+    📐 Distancia desde la línea de tiro: <strong>{{ lineDistanceLabel }}</strong>
+
+  </p>
+
+  <p class="distance-label" *ngIf="distanceLabel">
+
+    📏 Distancia al jack: <strong>{{ distanceLabel }}</strong>
+
+  </p>
+
   <ion-radio-group
     [(ngModel)]="selectedResult">
 

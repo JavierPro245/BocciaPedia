@@ -11,6 +11,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
+  updatePassword,
+  reauthenticateWithCredential,
   signInWithCredential,
   EmailAuthProvider,
   linkWithCredential,
@@ -294,6 +296,36 @@ async linkEmailPassword(
     user,
     credential
   );
+
+}
+
+// =====================================
+// Cambiar contraseña (usuario ya tiene proveedor "password")
+// =====================================
+
+async changePassword(
+  currentPassword: string,
+  newPassword: string
+) {
+
+  const user = auth.currentUser;
+
+  if (!user || !user.email) {
+
+    throw new Error('No hay un usuario autenticado.');
+
+  }
+
+  const credential = EmailAuthProvider.credential(
+    user.email,
+    currentPassword
+  );
+
+  // Firebase exige reautenticación reciente antes de permitir un
+  // cambio de contraseña, incluso si la sesión sigue activa.
+  await reauthenticateWithCredential(user, credential);
+
+  await updatePassword(user, newPassword);
 
 }
 

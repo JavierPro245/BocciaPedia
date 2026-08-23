@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-user-avatar',
@@ -6,10 +6,26 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./user-avatar.component.scss'],
   standalone: false
 })
-export class UserAvatarComponent {
+export class UserAvatarComponent implements OnChanges {
 
   @Input() photoURL: string | null = null;
 
   @Input() size = 72;
+
+  loadFailed = false;
+
+  ngOnChanges(): void {
+
+    this.loadFailed = false;
+
+  }
+
+  onImageError(): void {
+
+    console.warn('[UserAvatar] No se pudo cargar la foto:', this.photoURL);
+
+    this.loadFailed = true;
+
+  }
 
 }

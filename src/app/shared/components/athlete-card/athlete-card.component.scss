@@ -50,7 +50,7 @@ h2{
 
     font-weight:700;
 
-    color:#234;
+    color:var(--boccia-text);
 
 }
 
@@ -116,9 +116,9 @@ h2{
 
     padding-top:12px;
 
-    border-top:1px solid #ececec;
+    border-top:1px solid var(--card-border);
 
-    color:#64748b;
+    color:var(--boccia-text-secondary);
 
     font-size:13px;
 

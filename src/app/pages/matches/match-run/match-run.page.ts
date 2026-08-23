@@ -68,6 +68,10 @@ penaltyInterval: any;
 
       BocciaCast.addListener('sessionResumed', () => this.sendMatchToCast());
 
+      BocciaCast.addListener('webosPairingPrompt', () => {
+        console.log('webOS: esperando aceptación en pantalla de la TV');
+      });
+
     }
 
   }
@@ -462,7 +466,7 @@ newMatch(){
 
     this.matchService.clear();
 
-    this.router.navigate(['/matches/create']);
+    this.router.navigate(['/main/matches/match-create']);
 
 }
 
@@ -474,34 +478,78 @@ goHome(){
 
 }
 
+// Dominio público donde vive la SPA (Firebase Hosting). Se usa en vez de
+// window.location.origin cuando corre nativo, porque ahí el origin es
+// local (capacitor://localhost), no el sitio real.
+private readonly publicBaseUrl = 'https://bocciapedia-c730f.web.app';
+
+private async showWebosPairingHintIfFirstTime(): Promise<void> {
+
+  const key = 'webosCastPairingHintShown';
+
+  if (localStorage.getItem(key)) {
+    return;
+  }
+
+  localStorage.setItem(key, '1');
+
+  const hint = await this.alertController.create({
+
+    header: 'Conectando con la TV',
+
+    message: 'La primera vez, revisa la TV: debe aparecer un aviso para aceptar la conexión.',
+
+    buttons: ['OK']
+
+  });
+
+  await hint.present();
+
+}
+
 async openBroadcast() {
 
   try {
 
-    // ANDROID -> Chromecast
+    const url = Capacitor.isNativePlatform()
+      ? `${this.publicBaseUrl}/public/broadcast/${this.match.id}`
+      : `${window.location.origin}/public/broadcast/${this.match.id}`;
+
+    // Muchas TVs con Chromecast integrado por licencia (no un Chromecast
+    // físico) no soportan apps receptoras personalizadas de Google Cast.
+    // Por eso primero intentamos el protocolo propio de LG (SSAP) para
+    // abrir el navegador de la TV directo en esta URL, con un toque.
     if (Capacitor.getPlatform() === 'android') {
 
-      await BocciaCast.initialize({
+      try {
 
-        appId: '7B9440C4'
+        this.showWebosPairingHintIfFirstTime();
 
-      });
+        await BocciaCast.webosCastUrl({ url });
 
-      await BocciaCast.requestSession();
+        return;
 
-      return;
+      } catch (webosError) {
+
+        console.warn(
+
+          'No se pudo transmitir por SSAP (webOS), abriendo en el navegador como respaldo:',
+
+          webosError
+
+        );
+
+      }
 
     }
 
-    // WEB / PC -> Broadcast
-    const url =
-      `${window.location.origin}/public/broadcast/${this.match.id}`;
-
+    // Respaldo: abrir el broadcast en el navegador (Android sin webOS
+    // disponible, o web/PC).
     window.open(
 
       url,
 
-      '_blank'
+      Capacitor.isNativePlatform() ? '_system' : '_blank'
 
     );
 

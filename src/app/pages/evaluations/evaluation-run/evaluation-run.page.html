@@ -176,9 +176,50 @@
 
   (jackPending)="onJackPending($event)"
 
+  (opponentBallPlaced)="onOpponentBallPlaced()"
+
+  (opponentSetupReady)="onOpponentSetupReady()"
+
   (throwRegistered)="onThrowRegistered($event)">
 
 </app-court-engine>
+
+        <div
+          *ngIf="courtMode === 'custom'"
+          class="custom-opponent-toolbar">
+
+          <ion-button
+            size="small"
+            color="danger"
+            (click)="courtEngine.addCustomOpponentBall('red')">
+
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Bocha roja
+
+          </ion-button>
+
+          <ion-button
+            size="small"
+            color="primary"
+            (click)="courtEngine.addCustomOpponentBall('blue')">
+
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Bocha azul
+
+          </ion-button>
+
+          <ion-button
+            size="small"
+            fill="outline"
+            color="medium"
+            (click)="courtEngine.removeLastCustomOpponentBall()">
+
+            <ion-icon slot="start" name="remove-circle-outline"></ion-icon>
+            Quitar última
+
+          </ion-button>
+
+        </div>
 
         <ion-card
         *ngIf="showJackConfirmation"
@@ -191,6 +232,12 @@
     <p>
 
       ¿La posición del Jack es correcta?
+
+    </p>
+
+    <p class="jack-distance" *ngIf="jackDistanceLabel">
+
+      📐 Distancia desde la línea de tiro: <strong>{{ jackDistanceLabel }}</strong>
 
     </p>
 
@@ -210,6 +257,47 @@
         expand="block"
         color="success"
         (click)="confirmJack()">
+
+        Confirmar
+
+        </ion-button>
+
+        </div>
+
+        </ion-card-content>
+
+        </ion-card>
+
+        <ion-card
+        *ngIf="showOpponentConfirmation"
+        class="jack-confirm-card">
+
+  <ion-card-content>
+
+    <h2>🎯 Confirmar bocha(s) rival(es)</h2>
+
+    <p>
+
+      Puede arrastrarlas para ajustar la posición antes de confirmar.
+
+    </p>
+
+    <div class="bottom-buttons">
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="repositionOpponentSetup()">
+
+        Reiniciar
+
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        color="success"
+        (click)="confirmOpponentSetup()">
 
         Confirmar
 
@@ -278,6 +366,8 @@
 
     <app-throw-result-modal
     [throwNumber]="currentThrow"
+    [distanceLabel]="distanceLabel"
+    [lineDistanceLabel]="throwLineDistanceLabel"
     (save)="saveThrowEvaluation($event)"
     (reposition)="repositionThrow()">
     </app-throw-result-modal>

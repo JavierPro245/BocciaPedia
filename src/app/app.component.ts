@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationStart} from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { SessionService } from './services/session.service';
+import { ThemeService } from './services/theme.service';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 
 @Component({
@@ -15,8 +16,10 @@ export class AppComponent {
   constructor(
   private authService: AuthService,
   private sessionService: SessionService,
+  private themeService: ThemeService,
   private router: Router
 ) {
+  this.themeService.init();
   this.initializeGoogleSignIn();
   this.listenSession();
   this.router.events.subscribe(event => {
@@ -81,12 +84,21 @@ export class AppComponent {
 
   console.log('No hay usuario autenticado');
 
-  this.router.navigateByUrl(
-    '/auth',
-    {
-      replaceUrl: true
-    }
-  );
+  // Las rutas /public/** (ej. broadcast para TV) son de acceso
+  // libre y no deben expulsar al usuario a /auth. Se usa
+  // window.location.pathname (no this.router.url) porque en un
+  // arranque en frío el estado de Auth puede resolver antes de
+  // que el Router termine de procesar la navegación inicial.
+  if (!window.location.pathname.startsWith('/public')) {
+
+    this.router.navigateByUrl(
+      '/auth',
+      {
+        replaceUrl: true
+      }
+    );
+
+  }
 
 }
 

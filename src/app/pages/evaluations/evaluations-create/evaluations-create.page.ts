@@ -68,13 +68,17 @@ export class EvaluationsCreatePage {
 
   'Smash',
 
-  'Bochada'
+  'Bochada',
+
+  'Custom'
 
 ];
 
   distances = [3,5,7,9];
 
   editingEvaluation: Evaluation | null = null;
+
+  saving = false;
 
   ngOnInit() {
 
@@ -142,6 +146,10 @@ if (this.editingEvaluation) {
 
   async continue() {
 
+    if (this.saving) {
+      return;
+    }
+
     if (this.config.distance > 10) {
 
   const alert = await this.alertController.create({
@@ -176,47 +184,34 @@ if (this.editingEvaluation) {
     return;
   }
 
-  const evaluation: Evaluation = {
+  // Solo los campos de configuración — al editar, esto se usa como
+  // actualización PARCIAL para no pisar throwList/statistics/
+  // currentThrow/status, que son datos ya registrados durante la
+  // evaluación y no deben perderse solo por editar el título,
+  // distancia, etc.
+  const configFields: Partial<Evaluation> = {
 
     title: this.config.title,
 
-  trainerId: currentUser.uid,
+    trainerId: currentUser.uid,
 
-  athleteId: this.config.athleteId,
+    athleteId: this.config.athleteId,
 
-  athleteName: this.config.athleteName,
+    athleteName: this.config.athleteName,
 
-  evaluationType: this.config.evaluationType,
+    evaluationType: this.config.evaluationType,
 
-  category: athlete.category,
+    category: athlete.category,
 
-  throws: this.config.throws,
+    throws: this.config.throws,
 
-  currentThrow: 0,
+    distance: this.config.distance,
 
-  distance: this.config.distance,
+    notes: this.config.notes
 
-  notes: this.config.notes,
+  };
 
-  date: new Date(),
-
-  status: 'config',
-
-  throwList: [],
-
-  statistics: {
-
-    excellent: 0,
-
-    good: 0,
-
-    regular: 0,
-
-    bad: 0
-
-  }
-
-};
+  this.saving = true;
 
   try {
 
@@ -226,39 +221,62 @@ if (this.editingEvaluation?.id) {
 
   evaluationId = this.editingEvaluation.id;
 
-  await this.evaluationService.updateEvaluation(
+  await this.evaluationService.updateEvaluationFields(
     evaluationId,
-    evaluation
+    configFields
   );
 
-} else {
+  this.evaluationService.setEvaluation({
 
-  evaluationId =
-    await this.evaluationService.createEvaluation(
-      evaluation
-    );
+    ...this.editingEvaluation,
 
-}
+    ...configFields,
 
-this.evaluationService.setEvaluation({
+    id: evaluationId
 
-  id: evaluationId,
+  });
 
-  ...evaluation
-
-});
-
-    this.sessionService.setConfig(this.config);
-
-    if (this.editingEvaluation) {
-
-      this.evaluationService.clearEvaluation();
+  this.evaluationService.clearEvaluation();
 
   this.router.navigate([
     '/main/evaluations/evaluations-detail'
   ]);
 
 } else {
+
+  const evaluation: Evaluation = {
+
+    ...configFields as Evaluation,
+
+    currentThrow: 0,
+
+    date: new Date(),
+
+    status: 'config',
+
+    throwList: [],
+
+    statistics: {
+      excellent: 0,
+      good: 0,
+      regular: 0,
+      bad: 0
+    }
+
+  };
+
+  evaluationId =
+    await this.evaluationService.createEvaluation(
+      evaluation
+    );
+
+  this.evaluationService.setEvaluation({
+
+    id: evaluationId,
+
+    ...evaluation
+
+  });
 
   this.sessionService.setConfig(this.config);
 
@@ -271,6 +289,10 @@ this.evaluationService.setEvaluation({
   } catch (error) {
 
     console.error(error);
+
+  } finally {
+
+    this.saving = false;
 
   }
 

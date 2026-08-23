@@ -84,6 +84,19 @@ export const EvaluationFlows: Record<EvaluationType, EvaluationFlow> = {
 
     resetCourtEveryAttempt: false
 
+  },
+
+  // El entrenador arma la escena con las bochas rivales que quiera
+  // (cualquier cantidad, cualquier color, posición libre) y evalúa a
+  // mano — sin física automática, igual que Placement.
+  'Custom': {
+
+    type: 'continuous',
+
+    placeJackEveryAttempt: false,
+
+    resetCourtEveryAttempt: false
+
   }
 
 };

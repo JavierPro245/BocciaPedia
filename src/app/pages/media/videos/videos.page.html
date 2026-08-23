@@ -1,13 +1,80 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>videos</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Videos"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">videos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ng-container *ngIf="videos.length > 0; else emptyState">
+
+    <div class="list">
+
+      <div class="video-item" *ngFor="let item of videos">
+
+        <video controls preload="metadata" [src]="item.url"></video>
+
+        <div class="video-footer">
+
+          <span class="video-title">{{ item.title }}</span>
+
+          <div *ngIf="canManage" class="video-actions">
+
+            <ion-button
+              fill="clear"
+              (click)="renameVideo(item)">
+
+              <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+
+            </ion-button>
+
+            <ion-button
+              fill="clear"
+              color="danger"
+              (click)="deleteVideo(item)">
+
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <ng-template #emptyState>
+
+    <div class="empty">
+
+      <ion-icon name="videocam-outline"></ion-icon>
+
+      <h2>No hay videos todavía</h2>
+
+      <p *ngIf="canManage">Presiona el botón + para subir el primero.</p>
+
+    </div>
+
+  </ng-template>
+
+  <ion-fab
+    *ngIf="canManage"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed">
+
+    <ion-fab-button
+      color="success"
+      [disabled]="uploading"
+      (click)="uploadVideo()">
+
+      <ion-icon name="add"></ion-icon>
+
+    </ion-fab-button>
+
+  </ion-fab>
+
 </ion-content>

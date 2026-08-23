@@ -65,7 +65,7 @@ Tipo evaluación
 *ngFor="let evaluation of evaluations"
 [value]="evaluation">
 
-{{evaluation}}
+{{ evaluation === 'Custom' ? 'Personalizada' : evaluation }}
 
 </ion-select-option>
 
@@ -153,10 +153,10 @@ Observaciones
 
 <ion-button
   expand="block"
-  [disabled]="!config.athleteId || !config.title.trim()"
+  [disabled]="!config.athleteId || !config.title.trim() || saving"
   (click)="continue()">
 
-  Continuar
+  {{ saving ? 'Guardando...' : 'Continuar' }}
 
 </ion-button>
 

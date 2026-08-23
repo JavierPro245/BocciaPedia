@@ -38,7 +38,7 @@ h2{
 
     font-weight:700;
 
-    color:#243746;
+    color:var(--boccia-text);
 
 }
 
@@ -46,7 +46,7 @@ p{
 
     margin-top:8px;
 
-    color:#7f8c8d;
+    color:var(--boccia-text-secondary);
 
     font-size:1rem;
 

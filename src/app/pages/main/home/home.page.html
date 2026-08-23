@@ -32,21 +32,21 @@
       icon="clipboard-outline"
       title="Evaluaciones"
       [value]="0"
-      route="/evaluations/evaluations-list">
+      route="/main/evaluations/evaluations-list">
     </app-dashboard-card>
 
     <app-dashboard-card
       icon="analytics-outline"
       title="Estadísticas"
       [value]="0"
-      route="/dashboard">
+      route="/main/statistics/dashboard">
     </app-dashboard-card>
 
     <app-dashboard-card
       icon="trophy-outline"
       title="Partidos"
       [value]="0"
-      route="/matches/match-create">
+      route="/main/matches/match-create">
     </app-dashboard-card>
 
   </div>
@@ -63,7 +63,7 @@
 
     <ion-item
       button
-      routerLink="/athlete-create">
+      routerLink="/main/athlete-create">
 
       <ion-icon
         slot="start"
@@ -80,7 +80,7 @@
 
     <ion-item
       button
-      routerLink="/evaluations-create">
+      (click)="goToNewEvaluation()">
 
       <ion-icon
         slot="start"
@@ -97,7 +97,7 @@
 
     <ion-item
       button
-      routerLink="/dashboard">
+      routerLink="/main/statistics/dashboard">
 
       <ion-icon
         slot="start"
@@ -114,7 +114,7 @@
 
     <ion-item
       button
-      routerLink="/reports">
+      routerLink="/main/statistics/reports">
 
       <ion-icon
         slot="start"

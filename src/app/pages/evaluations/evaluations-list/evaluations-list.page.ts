@@ -117,6 +117,11 @@ else if (user.roles.includes('athlete')) {
 
   newEvaluation(){
 
+    // Sin esto, si quedaba una evaluación guardada en el servicio
+    // (de una sesión anterior de crear/ver/editar), la pantalla de
+    // creación la detectaba como "edición" y precargaba sus datos.
+    this.evaluationService.clearEvaluation();
+
     this.router.navigate([
       '/main/evaluations/evaluations-create'
     ]);

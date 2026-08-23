@@ -21,6 +21,38 @@ ion-card{
 }
 
 
+.stepper{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+.stepper-label{
+
+    font-weight:600;
+
+    min-width:150px;
+
+    text-align:center;
+
+}
+
+.distance-label{
+
+    text-align:center;
+
+    margin-top:8px;
+
+    color:var(--boccia-text-secondary, #666);
+
+}
+
 .dot{
 
     width:14px;
@@ -133,6 +165,8 @@ ion-chip ion-icon{
 
     padding:8px;
 
+    overflow:hidden;
+
 }
 
 canvas{
@@ -140,6 +174,12 @@ canvas{
     width:100%;
 
     display:block;
+
+    // Evita que el navegador intente su propio pinch-zoom de página
+    // sobre la cancha; el zoom lo maneja el componente.
+    touch-action:none;
+
+    transform-origin:center center;
 
 }
 

@@ -1,4 +1,5 @@
 import { Throw } from "../pages/evaluations/models/throw.model";
+import { OpponentBall } from "../pages/evaluations/models/opponent-ball.model";
 
 export interface Evaluation {
 
@@ -44,11 +45,13 @@ export interface Evaluation {
 
   jack?: Jack;
 
+  opponentBalls?: OpponentBall[];
+
   throwList?: Throw[];
 
   currentBallColor?: 'red' | 'blue';
 
-  lastUpdatedStep?: 'box' | 'jack' | 'throw';
+  lastUpdatedStep?: 'box' | 'jack' | 'opponent' | 'throw';
 
   statistics?: EvaluationStatistics;
 
@@ -91,4 +94,5 @@ export type EvaluationType =
   | 'Push Off'
   | 'Ricochet'
   | 'Smash'
-  | 'Bochada';
+  | 'Bochada'
+  | 'Custom';

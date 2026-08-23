@@ -135,6 +135,34 @@ const routes: Routes = [
       .then(m => m.TrainerDetailPageModule)
 },
 
+// ======================
+// MATCHES / STATISTICS / MEDIA
+// (antes solo existían como rutas de nivel superior, fuera del
+// ion-menu lateral — por eso el botón de menú no abría nada al
+// llegar a ellas desde el propio menú)
+// ======================
+
+{
+  path: 'matches',
+  loadChildren: () =>
+    import('../matches/matches.module')
+      .then(m => m.MatchesPageModule)
+},
+
+{
+  path: 'statistics',
+  loadChildren: () =>
+    import('../statistics/statistics.module')
+      .then(m => m.StatisticsPageModule)
+},
+
+{
+  path: 'media',
+  loadChildren: () =>
+    import('../media/media.module')
+      .then(m => m.MediaPageModule)
+},
+
       {
         path: '',
         redirectTo: 'home',

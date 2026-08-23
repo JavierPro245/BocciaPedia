@@ -11,6 +11,7 @@ import { EvaluationService } from 'src/app/services/evaluation.service';
 import { EvaluationFlow } from
 '../engine/evaluation-flow';
 import { CourtMode } from '../models/court-mode.model';
+import { pixelDistanceToMeters, formatCourtDistance, metersFromThrowLine } from '../engine/physics/court-scale';
 
 @Component({
   selector: 'app-evaluation-run',
@@ -78,6 +79,8 @@ export class EvaluationRunPage implements OnInit {
     quadrant: string;
 
   };
+
+  showOpponentConfirmation = false;
 
   showThrowModal = false;
 
@@ -181,6 +184,12 @@ export class EvaluationRunPage implements OnInit {
 
       break;
 
+    case 'Custom':
+
+      this.courtMode = 'custom';
+
+      break;
+
     default:
 
       this.courtMode = 'placement';
@@ -216,6 +225,20 @@ export class EvaluationRunPage implements OnInit {
 
   if (!this.flow) {
     return;
+  }
+
+  if (this.flow.currentState === 'OPPONENT' && this.courtEngine) {
+
+    const config = this.courtEngine.getOpponentSetupConfig();
+
+    const placed = this.courtEngine.opponentBalls.length;
+
+    this.instruction = placed < config.count
+      ? `Coloque la bocha (${placed + 1} de ${config.count}).`
+      : 'Ajuste la posición si es necesario y confirme.';
+
+    return;
+
   }
 
   this.instruction =
@@ -299,6 +322,10 @@ export class EvaluationRunPage implements OnInit {
   // LANZAMIENTOS
   //==============================
 
+  distanceLabel?: string;
+
+  throwLineDistanceLabel?: string;
+
   onThrowRegistered(ball: Throw): void {
 
   if (this.evaluationFinished) {
@@ -313,6 +340,16 @@ export class EvaluationRunPage implements OnInit {
   this.currentThrow = this.throws.length + 1;
 
   this.lockCourt = true;
+
+  this.distanceLabel = ball.jack
+    ? formatCourtDistance(
+        pixelDistanceToMeters(ball.x - ball.jack.x, ball.y - ball.jack.y)
+      )
+    : undefined;
+
+  this.throwLineDistanceLabel = formatCourtDistance(
+    metersFromThrowLine(ball.y)
+  );
 
   this.showThrowModal = true;
 
@@ -496,9 +533,10 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
   this.flow.next();
 
   this.updateInstruction();
-  // Navegamos al resumen
+  // Al guardar/terminar, volvemos al listado (no al detalle de
+  // esta evaluación puntual).
   this.router.navigate([
-    '/main/evaluations/evaluations-detail'
+    '/main/evaluations/evaluations-list'
   ]);
 
 }
@@ -547,6 +585,8 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
 
 }
 
+jackDistanceLabel?: string;
+
 onJackPending(event: any): void {
 
   console.log('JACK PENDING', event);
@@ -554,6 +594,10 @@ onJackPending(event: any): void {
   this.pendingJack = event;
 
   this.lockCourt = true;
+
+  this.jackDistanceLabel = formatCourtDistance(
+    metersFromThrowLine(event.y)
+  );
 
   this.showJackConfirmation = true;
 
@@ -582,6 +626,70 @@ repositionJack(): void {
   this.showJackConfirmation = false;
 
   this.lockCourt = false;
+
+}
+
+//==============================
+// BOCHAS RIVALES (Push On/Off, Bochada, Ricochet)
+//==============================
+
+onOpponentBallPlaced(): void {
+
+  this.updateInstruction();
+
+}
+
+onOpponentSetupReady(): void {
+
+  // A diferencia del Jack, acá NO se bloquea la cancha: el
+  // entrenador puede seguir arrastrando las bochas para ajustarlas
+  // mientras la tarjeta de confirmación está visible.
+  this.showOpponentConfirmation = true;
+
+  this.updateInstruction();
+
+}
+
+async confirmOpponentSetup(): Promise<void> {
+
+  // Se leen las posiciones actuales del motor (no las del momento en
+  // que se completó el conteo), por si el entrenador las arrastró
+  // después de eso.
+  const finalOpponentBalls = [...this.courtEngine.opponentBalls];
+
+  this.courtEngine.confirmOpponentSetup();
+
+  this.showOpponentConfirmation = false;
+
+  this.lockCourt = false;
+
+  if (this.evaluationId) {
+
+    await this.evaluationService.updateEvaluationFields(
+      this.evaluationId,
+      {
+        opponentBalls: finalOpponentBalls,
+        lastUpdatedStep: 'opponent'
+      }
+    );
+
+  }
+
+  this.flow.next();
+
+  this.updateInstruction();
+
+}
+
+repositionOpponentSetup(): void {
+
+  this.courtEngine.cancelOpponentSetup();
+
+  this.showOpponentConfirmation = false;
+
+  this.lockCourt = false;
+
+  this.updateInstruction();
 
 }
 

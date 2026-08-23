@@ -13,10 +13,10 @@ export class StatisticsPage implements OnInit {
   currentPath: string = '';
 
   pages = [
-    { title: 'Athlete Statistics', url: '/statistics/athlete-statistics', icon: 'home-outline'},
-    { title: 'Comparisions', url: '/statistics/comparisions', icon: 'person-outline'},
-    { title: 'Dashboard', url: '/statistics/dashboard', icon: 'counter-outline'},
-    { title: 'Reports', url: '/statistics/reports', icon: 'person-outline'}
+    { title: 'Athlete Statistics', url: '/main/statistics/athlete-statistics', icon: 'home-outline'},
+    { title: 'Comparisions', url: '/main/statistics/comparisions', icon: 'person-outline'},
+    { title: 'Dashboard', url: '/main/statistics/dashboard', icon: 'counter-outline'},
+    { title: 'Reports', url: '/main/statistics/reports', icon: 'person-outline'}
   ]
 
   ngOnInit() {

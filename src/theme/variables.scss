@@ -74,6 +74,8 @@
 
 --boccia-text: #263238;
 
+--boccia-text-secondary: #777777;
+
 --boccia-border-radius: 18px;
 
 --boccia-shadow: 0 6px 18px rgba(0,0,0,.12);
@@ -163,5 +165,30 @@
 --input-height: 52px;
 
 --input-padding: 14px;
+
+}
+
+/* ==========================================================
+   MODO OSCURO (activado con .ion-palette-dark en <html>,
+   ver ThemeService). Ionic ya oscurece sus propios --ion-*,
+   acá solo se ajustan las variables propias de BocciApp que
+   páginas/tarjetas usan directamente para fondos y texto.
+========================================================== */
+
+:root.ion-palette-dark {
+
+  --page-background: #101418;
+
+  --card-border: #2A2F36;
+
+  --boccia-background: #14181D;
+
+  --boccia-card: #1C2126;
+
+  --boccia-text: #ECEFF3;
+
+  --boccia-text-secondary: #9AA3AD;
+
+  --boccia-shadow: 0 6px 18px rgba(0, 0, 0, .45);
 
 }

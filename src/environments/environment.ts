@@ -1,6 +1,8 @@
 export const environment = {
   production: false,
 
+  appVersion: "2.5",
+
   firebase: {
     apiKey: "AIzaSyDQltt3nTtMSJ31F_ZXwct7zz5SddsWSGs",
     authDomain: "bocciapedia-c730f.firebaseapp.com",

@@ -18,7 +18,7 @@
         icon="lock-closed-outline"
         title="Cambiar contraseña"
         subtitle="Actualizar credenciales"
-        route="">
+        route="/main/settings/change-password">
     </app-settings-item>
 
     <h3>Competencia</h3>
@@ -46,12 +46,38 @@
         route="">
     </app-settings-item>
 
+    <h3>Apariencia</h3>
+
+    <ion-item class="app-card" lines="none">
+
+        <ion-icon
+            slot="start"
+            name="moon-outline"
+            color="primary">
+        </ion-icon>
+
+        <ion-label>
+
+            <h2>Modo oscuro</h2>
+
+            <p>Cambia la apariencia de la aplicación</p>
+
+        </ion-label>
+
+        <ion-toggle
+            slot="end"
+            [checked]="darkMode"
+            (ionChange)="toggleDarkMode($event.detail.checked)">
+        </ion-toggle>
+
+    </ion-item>
+
     <h3>Información</h3>
 
     <app-settings-item
         icon="information-circle-outline"
         title="Acerca de BocciApp"
-        subtitle="Versión 1.0"
+        [subtitle]="'Versión ' + appVersion"
         route="">
     </app-settings-item>
 

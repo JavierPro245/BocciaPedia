@@ -1,13 +1,65 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>reports</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Reportes"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">reports</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ion-searchbar
+    [(ngModel)]="search"
+    placeholder="Buscar por deportista o tipo..."
+    animated="true">
+  </ion-searchbar>
+
+  <ng-container *ngIf="filteredEvaluations.length > 0; else emptyState">
+
+    <ion-list>
+
+      <ion-item *ngFor="let evaluation of filteredEvaluations">
+
+        <ion-label>
+
+          <h2>{{ evaluation.athleteName }}</h2>
+
+          <p>{{ evaluation.evaluationType }} · {{ evaluation.throwList?.length ?? 0 }} lanzamientos</p>
+
+          <p>{{ evaluation.date | date:'dd/MM/yyyy' }}</p>
+
+        </ion-label>
+
+        <ion-button
+          slot="end"
+          fill="outline"
+          [disabled]="generatingId === evaluation.id"
+          (click)="downloadPdf(evaluation)">
+
+          <ion-icon
+            name="document-text-outline"
+            slot="start">
+          </ion-icon>
+
+          PDF
+
+        </ion-button>
+
+      </ion-item>
+
+    </ion-list>
+
+  </ng-container>
+
+  <ng-template #emptyState>
+
+    <div class="empty">
+
+      <ion-icon name="document-text-outline"></ion-icon>
+
+      <h2>No hay evaluaciones para reportar</h2>
+
+      <p>Cuando tengas evaluaciones registradas, vas a poder descargarlas en PDF desde acá.</p>
+
+    </div>
+
+  </ng-template>
+
 </ion-content>

@@ -12,6 +12,11 @@
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
+/* Paleta oscura de Ionic, activada manualmente con la clase
+   .ion-palette-dark en <html> (ver ThemeService) — no sigue el tema
+   del sistema, se elige desde Configuración. */
+@import "@ionic/angular/css/palettes/dark.class.css";
+
 @import "theme/cards";
 
 /* Basic CSS for apps built with Ionic */
@@ -29,6 +34,20 @@
 
 ion-button {
     text-transform: none;
+}
+
+// Refuerzo defensivo del modo oscuro: por si algún ion-content/ion-card
+// puntual no hereda bien las variables de Ionic, se fuerzan acá.
+:root.ion-palette-dark {
+
+    ion-content {
+        --background: var(--ion-background-color, #121212);
+    }
+
+    ion-card {
+        --background: var(--ion-card-background, #1e1e1e);
+        color: var(--ion-text-color, #ffffff);
+    }
 }
 
 .new-background-color{

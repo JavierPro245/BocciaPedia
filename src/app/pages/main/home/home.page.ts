@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AthleteService } from 'src/app/services/athlete.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { EvaluationService } from 'src/app/services/evaluation.service';
 import { Athlete } from 'src/app/models/athlete.model';
 
 @Component({
@@ -17,7 +19,11 @@ export class HomePage implements OnInit {
 
   private athleteService: AthleteService,
 
-  private authService: AuthService
+  private authService: AuthService,
+
+  private evaluationService: EvaluationService,
+
+  private router: Router
 
 ) {}
 
@@ -48,5 +54,16 @@ export class HomePage implements OnInit {
   });
 
 }
+
+  goToNewEvaluation(): void {
+
+    // Sin esto, si quedaba una evaluación guardada en el servicio
+    // (de una sesión anterior de crear/ver/editar), la pantalla de
+    // creación la detectaba como "edición" y precargaba sus datos.
+    this.evaluationService.clearEvaluation();
+
+    this.router.navigate(['/evaluations-create']);
+
+  }
 
 }
