@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 
 import { Athlete } from 'src/app/models/athlete.model';
 
@@ -27,7 +28,9 @@ export class AthleteListPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private athleteService: AthleteService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit(): void {
@@ -70,19 +73,65 @@ export class AthleteListPage implements OnInit, OnDestroy {
 
   editAthlete(id: string) {
 
-    console.log('Editar', id);
+    this.router.navigate([
+      '/main/athlete-edit',
+      id
+    ]);
 
   }
 
-  deleteAthlete(id: string) {
+  async deleteAthlete(id: string) {
 
-    console.log('Eliminar', id);
+    const athlete = this.athletes.find(a => a.id === id);
+
+    const alert = await this.alertController.create({
+
+      header: 'Eliminar deportista',
+
+      message: `¿Está seguro de eliminar a ${athlete?.fullName ?? 'este deportista'}? Esta acción no se puede deshacer.`,
+
+      buttons: [
+
+        { text: 'Cancelar', role: 'cancel' },
+
+        {
+
+          text: 'Eliminar',
+
+          role: 'destructive',
+
+          handler: async () => {
+
+            await this.athleteService.deleteAthlete(id);
+
+            const toast = await this.toastController.create({
+              message: 'Deportista eliminado.',
+              duration: 2000,
+              color: 'success'
+            });
+
+            await toast.present();
+
+          }
+
+        }
+
+      ]
+
+    });
+
+    await alert.present();
 
   }
 
   openEvaluations(id: string) {
 
-    console.log('Evaluaciones', id);
+    const athlete = this.athletes.find(a => a.id === id);
+
+    this.router.navigate(
+      ['/main/evaluations/evaluations-list'],
+      { queryParams: { athlete: athlete?.fullName ?? '' } }
+    );
 
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Match } from '../models/match.model';
+import { Match, Penalty } from '../models/match.model';
 import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 
 @Injectable({
@@ -163,6 +163,15 @@ private async notifyChanges() {
 
         return;
 
+    }
+
+    // Si ya se le acabó el tiempo a ese equipo, no se reanuda el
+    // reloj ni se cuenta otra bocha: no le alcanzaría el tiempo para
+    // tirarla.
+    const timeLeft = team === 'red' ? this.match.redTime : this.match.blueTime;
+
+    if (timeLeft <= 0) {
+        return;
     }
 
     // Si el mismo jugador ya tiene el reloj corriendo,
@@ -333,6 +342,9 @@ this.match.penaltySeconds = 0;
 
   this.notifyChanges();
 
+  // Todavía no se resetean los relojes acá (eso pasa recién al pasar
+  // al siguiente END), así que redTime/blueTime siguen siendo lo que
+  // le quedaba a cada uno al cerrar este parcial.
   this.match.ends.push({
 
     end: this.match.currentEnd,
@@ -341,7 +353,11 @@ this.match.penaltySeconds = 0;
 
     blueScore: this.match.currentEndBlueScore,
 
-    winner
+    winner,
+
+    redTimeUsed: Math.max(0, this.match.secondsPerPlayer - this.match.redTime),
+
+    blueTimeUsed: Math.max(0, this.match.secondsPerPlayer - this.match.blueTime)
 
   });
 
@@ -447,51 +463,120 @@ pauseTimers(){
 
 }
 
-startPenalty(team: 'red' | 'blue') {
+// Agrega una falta/penalización a la lista, sin reemplazar las que
+// ya estén pendientes: así pueden acumularse varias en el mismo parcial.
+startPenalty(team: 'red' | 'blue'): void {
 
   if (!this.match) return;
 
-  this.match.penalty = {
+  if (!this.match.penalties) {
+    this.match.penalties = [];
+  }
+
+  const penalty: Penalty = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     team,
+    end: this.match.currentEnd,
     active: true,
     executed: false,
     timeRemaining: 60,
     success: null
-};
+  };
 
-this.notifyChanges();
-
-}
-
-updatePenaltyTime(seconds: number) {
-
-  if (!this.match?.penalty) return;
-
-  this.match.penalty.timeRemaining = seconds;
+  this.match.penalties.push(penalty);
 
   this.notifyChanges();
 
 }
 
-finishPenalty(scored: boolean) {
+// Resuelve una falta puntual de la lista (logró o no logró) y, si la
+// logró, suma el punto al parcial en curso.
+resolvePenalty(id: string, success: boolean): void {
 
-  if (!this.match?.penalty) return;
+  if (!this.match?.penalties) return;
 
-  if (scored) {
+  const penalty = this.match.penalties.find(p => p.id === id);
 
-    if (this.match.penalty.team === 'red') {
+  if (!penalty || penalty.executed) return;
 
-      this.match.redScore++;
+  penalty.success = success;
+  penalty.executed = true;
+  penalty.active = false;
+
+  if (success) {
+
+    if (penalty.team === 'red') {
+
+      this.match.currentEndRedScore++;
 
     } else {
 
-      this.match.blueScore++;
+      this.match.currentEndBlueScore++;
 
     }
 
   }
 
-  this.match.penalty = null;
+  this.notifyChanges();
+
+}
+
+// Elimina una falta todavía pendiente (el árbitro se equivocó al
+// marcarla). No se permite borrar una ya ejecutada, porque su
+// resultado ya pudo haber sumado un punto al parcial.
+removePenalty(id: string): void {
+
+  if (!this.match?.penalties) return;
+
+  this.match.penalties = this.match.penalties.filter(
+    p => p.id !== id || p.executed
+  );
+
+  this.notifyChanges();
+
+}
+
+// Corrección manual del reloj (ej: el árbitro marcó mal el tiempo).
+// El delta puede ser negativo; el tiempo nunca baja de 0.
+adjustTime(team: 'red' | 'blue', deltaSeconds: number): void {
+
+  if (!this.match) return;
+
+  if (team === 'red') {
+
+    this.match.redTime = Math.max(0, this.match.redTime + deltaSeconds);
+
+  } else {
+
+    this.match.blueTime = Math.max(0, this.match.blueTime + deltaSeconds);
+
+  }
+
+  this.notifyChanges();
+
+}
+
+// Corrección manual de bochas jugadas (0 a 6).
+adjustBalls(team: 'red' | 'blue', delta: number): void {
+
+  if (!this.match) return;
+
+  if (team === 'red') {
+
+    this.match.redBallsPlayed = Math.min(
+      6,
+      Math.max(0, this.match.redBallsPlayed + delta)
+    );
+
+  } else {
+
+    this.match.blueBallsPlayed = Math.min(
+      6,
+      Math.max(0, this.match.blueBallsPlayed + delta)
+    );
+
+  }
+
   this.notifyChanges();
 
 }

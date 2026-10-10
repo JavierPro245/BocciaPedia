@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "bocciapedia-c730f"
-  }
+  },
+  "targets": {
+    "bocciapedia-c730f": {
+      "storage": {
+        "main": [
+          "bocciapedia-c730f.firebasestorage.app"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

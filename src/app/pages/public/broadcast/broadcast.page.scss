@@ -25,7 +25,7 @@ ion-content{
 
 .end-bar{
 
-  height:clamp(55px,7vh,90px);
+  min-height:clamp(55px,7vh,90px);
 
   background:#111;
 
@@ -35,19 +35,11 @@ ion-content{
 
   justify-content:center;
 
-  gap:2vw;
+  flex-wrap:wrap;
 
-}
+  gap:1.2vw;
 
-.end-bar .line{
-
-  flex:1;
-
-  height:2px;
-
-  background:#5b5b5b;
-
-  margin:0 2vw;
+  padding:.5rem 1rem;
 
 }
 
@@ -61,6 +53,19 @@ ion-content{
 
   letter-spacing:.15rem;
 
+}
+
+.end-bar .sep{
+  color:#777;
+  font-size:clamp(1.4rem,2.2vw,2.6rem);
+}
+
+.end-bar .category,
+.end-bar .gender{
+  color:#bbb;
+  font-size:clamp(1.2rem,2vw,2.4rem);
+  font-weight:600;
+  letter-spacing:.1rem;
 }
 
 /*=============================
@@ -131,6 +136,16 @@ ion-content{
 
   font-size:clamp(2.3rem,3.4vw,4.5rem);
 
+}
+
+.side-flag{
+  display:block;
+  width:clamp(40px,5vw,80px);
+  height:clamp(40px,5vw,80px);
+  object-fit:cover;
+  border-radius:10px;
+  margin:0 auto clamp(6px,1vh,14px);
+  box-shadow:0 2px 10px rgba(0,0,0,.4);
 }
 
 /*=============================

@@ -67,8 +67,6 @@ export class DashboardPage implements OnInit {
       return;
     }
 
-    console.log('Usuario logueado:', user);
-
     this.evaluationService.listenEvaluationsByTrainer(
 
   user.uid,
@@ -91,8 +89,6 @@ this.monthlyStats =
   this.statisticsService.getMonthlyStatistics(
     evaluations
   );
-
-  console.log(this.monthlyStats);
 
   }
 

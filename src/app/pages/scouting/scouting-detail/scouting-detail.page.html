@@ -1,0 +1,217 @@
+<app-header
+  [title]="report?.opponentName || 'Scouting'"
+  [showBackButton]="true"
+  [showAction]="true"
+  actionIcon="create-outline"
+  (action)="editReport()">
+</app-header>
+
+<ion-content *ngIf="report">
+
+  <ion-card class="info-card">
+
+    <ion-card-content>
+
+      <h2>{{ report.opponentName }}</h2>
+
+      <p class="country">🌎 {{ report.opponentCountry || 'País no indicado' }}
+        <span *ngIf="report.category"> · {{ report.category }}</span>
+      </p>
+
+      <p class="matchup" *ngIf="report.athleteName">
+
+        <ion-badge [color]="ownColor === 'red' ? 'danger' : 'primary'">
+          {{ ownColor === 'red' ? '🔴' : '🔵' }} {{ report.athleteName }}
+        </ion-badge>
+
+        vs
+
+        <ion-badge [color]="rivalColor === 'red' ? 'danger' : 'primary'">
+          {{ rivalColor === 'red' ? '🔴' : '🔵' }} {{ report.opponentName }}
+        </ion-badge>
+
+      </p>
+
+      <p class="notes" *ngIf="report.notes">{{ report.notes }}</p>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="court-card">
+
+    <ion-card-content class="court-content">
+
+      <div class="preview-banner" *ngIf="previewPlay">
+
+        <span>👁 Viendo jugada #{{ previewPlay.id }}</span>
+
+        <ion-button size="small" fill="clear" (click)="closePreview()">
+          Volver a la jugada actual
+        </ion-button>
+
+      </div>
+
+      <p class="hint" *ngIf="!previewPlay">
+        Toca la cancha para ubicar el jack (una vez colocado, solo se mueve arrastrándolo) y agrega las bochas. Pellizca con dos dedos para hacer zoom, doble toque para restablecerlo.
+      </p>
+
+      <canvas #courtCanvas></canvas>
+
+      <div class="court-toolbar" *ngIf="!previewPlay">
+
+        <ion-button
+          size="small"
+          [color]="ownColor === 'red' ? 'danger' : 'primary'"
+          fill="outline"
+          (click)="addOwnBall()">
+          <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+          Bocha de {{ report.athleteName || 'mi deportista' }}
+        </ion-button>
+
+        <ion-button
+          size="small"
+          [color]="rivalColor === 'red' ? 'danger' : 'primary'"
+          fill="outline"
+          (click)="addRivalBall()">
+          <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+          Bocha de {{ report.opponentName || 'el rival' }}
+        </ion-button>
+
+        <ion-button size="small" color="medium" fill="outline" (click)="removeLastBall()">
+          <ion-icon slot="start" name="remove-circle-outline"></ion-icon>
+          Quitar última
+        </ion-button>
+
+        <ion-button size="small" color="medium" fill="clear" (click)="clearCourt()">
+          <ion-icon slot="start" name="refresh-outline"></ion-icon>
+          Limpiar cancha
+        </ion-button>
+
+      </div>
+
+      <ion-button
+        expand="block"
+        color="success"
+        *ngIf="!previewPlay"
+        (click)="registerPlay()">
+
+        <ion-icon slot="start" name="flag-outline"></ion-icon>
+        Registrar jugada
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="summary-card" *ngIf="actionSummary.length > 0">
+
+    <ion-card-header>
+      <ion-card-title>Resumen por tipo de jugada</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <div class="summary-row" *ngFor="let item of actionSummary">
+
+        <span class="summary-action">{{ item.action }}</span>
+
+        <div class="summary-bar-track">
+          <div class="summary-bar-fill" [style.width.%]="item.successPercent"></div>
+        </div>
+
+        <span class="summary-count">{{ item.success }}/{{ item.total }} · {{ item.successPercent | number:'1.0-0' }}%</span>
+
+      </div>
+
+    </ion-card-content>
+
+  </ion-card>
+
+  <h3 class="section-title">Jugadas registradas ({{ plays.length }})</h3>
+
+  <ion-list *ngIf="plays.length > 0; else emptyPlays">
+
+    <ion-item *ngFor="let play of plays">
+
+      <ion-avatar
+        slot="start"
+        class="play-number"
+        [class.fail]="play.outcome === 'fail'">
+        {{ play.id }}
+      </ion-avatar>
+
+      <ion-label class="ion-text-wrap">
+
+        <h2>
+          {{ play.action }}
+          <ion-badge [color]="play.outcome === 'success' ? 'success' : 'danger'">
+            {{ play.outcome === 'success' ? 'Exitosa' : 'Fallida' }}
+          </ion-badge>
+        </h2>
+
+        <p *ngIf="play.note">{{ play.note }}</p>
+
+        <p *ngIf="!play.note" class="no-note">Sin descripción</p>
+
+        <a
+          *ngIf="play.mediaUrl && play.mediaType === 'photo'"
+          [href]="play.mediaUrl"
+          target="_blank">
+          📷 Ver foto
+        </a>
+
+        <a
+          *ngIf="play.mediaUrl && play.mediaType === 'video'"
+          [href]="play.mediaUrl"
+          target="_blank">
+          🎬 Ver video
+        </a>
+
+      </ion-label>
+
+      <ion-buttons slot="end">
+
+        <ion-button
+          fill="clear"
+          [color]="previewPlay?.id === play.id ? 'primary' : 'medium'"
+          (click)="viewPlay(play)">
+          <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          *ngIf="!play.mediaUrl"
+          fill="clear"
+          [disabled]="uploadingPlayId === play.id"
+          (click)="attachPhoto(play)">
+          <ion-icon slot="icon-only" name="image-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          *ngIf="!play.mediaUrl"
+          fill="clear"
+          [disabled]="uploadingPlayId === play.id"
+          (click)="attachVideo(play)">
+          <ion-icon slot="icon-only" name="videocam-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button fill="clear" color="danger" (click)="deletePlay(play)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+
+      </ion-buttons>
+
+    </ion-item>
+
+  </ion-list>
+
+  <ng-template #emptyPlays>
+
+    <div class="empty">
+      <p>Todavía no hay jugadas registradas.</p>
+    </div>
+
+  </ng-template>
+
+</ion-content>

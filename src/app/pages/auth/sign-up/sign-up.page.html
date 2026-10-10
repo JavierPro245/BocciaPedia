@@ -1,114 +1,143 @@
-<app-header
-    [showBackButton]="true"
-    title="Registrarse">
-</app-header>
+<ion-content class="auth-content" [fullscreen]="true">
 
-<ion-content>
-
-    <form
-        class="auth-form"
-        [formGroup]="form"
-        (ngSubmit)="submit()">
-
-        <h2 class="title">
-
-            Crear cuenta
-
-        </h2>
-
-        <p class="subtitle">
-
-            Completa la información para crear tu cuenta.
-
-        </p>
-
-        <!-- Nombre -->
-
-        <app-login-input
-            label="Nombre completo"
-            placeholder="Ingrese su nombre"
-            icon="person-outline"
-            [control]="form.controls.fullName">
-        </app-login-input>
-
-        <!-- Correo -->
-
-        <app-login-input
-            label="Correo electrónico"
-            placeholder="correo@bocciapp.cl"
-            icon="mail-outline"
-            type="email"
-            [control]="form.controls.email">
-        </app-login-input>
-
-        <!-- Contraseña -->
-
-        <app-login-input
-            label="Contraseña"
-            placeholder="Ingrese una contraseña"
-            icon="lock-closed-outline"
-            type="password"
-            [control]="form.controls.password">
-        </app-login-input>
-
-        <!-- Confirmar contraseña -->
-
-        <app-login-input
-            label="Confirmar contraseña"
-            placeholder="Repita la contraseña"
-            icon="shield-checkmark-outline"
-            type="password"
-            [control]="form.controls.confirmPassword">
-        </app-login-input>
-
-        <!-- Términos -->
-
-        <ion-item
-            lines="none"
-            class="terms-item">
-
-            <ion-checkbox
-                slot="start"
-                formControlName="acceptTerms">
-            </ion-checkbox>
-
-            <ion-label>
-
-                Acepto los términos y condiciones.
-
-            </ion-label>
-
-        </ion-item>
-
-        <!-- Botón -->
+    <div class="auth-shell has-back">
 
         <ion-button
-            expand="block"
-            type="submit"
-            color="primary"
-            class="submit"
-            [disabled]="form.invalid">
+            class="auth-back"
+            fill="clear"
+            mode="ios"
+            aria-label="Volver"
+            routerLink="/auth">
 
-            Crear cuenta
+            <ion-icon
+                slot="icon-only"
+                name="chevron-back-outline">
+            </ion-icon>
 
         </ion-button>
 
-        <div class="login-link">
+        <form
+            class="auth-card auth-anim"
+            [formGroup]="form"
+            (ngSubmit)="submit()">
 
-            <span>
+            <div class="auth-badge">
 
-                ¿Ya tienes una cuenta?
+                <ion-icon name="person-add-outline"></ion-icon>
 
-            </span>
+            </div>
 
-            <a routerLink="/auth">
+            <div class="signup-intro">
 
-                Iniciar sesión
+                <h1 class="auth-heading">
 
-            </a>
+                    Crear cuenta
 
-        </div>
+                </h1>
 
-    </form>
+                <p class="auth-sub">
+
+                    Completa tus datos y comienza a registrar entrenamientos y partidos.
+
+                </p>
+
+            </div>
+
+            <!-- Nombre -->
+
+            <app-login-input
+                label="Nombre completo"
+                placeholder="Ingrese su nombre"
+                icon="person-outline"
+                autocomplete="name"
+                [control]="form.controls.fullName">
+            </app-login-input>
+
+            <!-- Correo -->
+
+            <app-login-input
+                label="Correo electrónico"
+                placeholder="correo@bocciapp.cl"
+                icon="mail-outline"
+                type="email"
+                autocomplete="email"
+                [control]="form.controls.email">
+            </app-login-input>
+
+            <!-- Contraseña -->
+
+            <app-login-input
+                label="Contraseña"
+                placeholder="Mínimo 6 caracteres"
+                icon="lock-closed-outline"
+                type="password"
+                autocomplete="new-password"
+                [control]="form.controls.password">
+            </app-login-input>
+
+            <!-- Confirmar contraseña -->
+
+            <app-login-input
+                label="Confirmar contraseña"
+                placeholder="Repita la contraseña"
+                icon="shield-checkmark-outline"
+                type="password"
+                autocomplete="new-password"
+                [control]="form.controls.confirmPassword">
+            </app-login-input>
+
+            <!-- Términos -->
+
+            <label class="terms">
+
+                <ion-checkbox
+                    mode="ios"
+                    formControlName="acceptTerms">
+                </ion-checkbox>
+
+                <span>
+
+                    Acepto los
+                    <strong>términos y condiciones</strong>
+                    de BocciaPedia.
+
+                </span>
+
+            </label>
+
+            <!-- Botón -->
+
+            <ion-button
+                expand="block"
+                type="submit"
+                mode="ios"
+                class="auth-cta"
+                [disabled]="form.invalid">
+
+                Crear cuenta
+
+            </ion-button>
+
+            <p class="auth-footer">
+
+                <span>
+
+                    ¿Ya tienes una cuenta?
+
+                </span>
+
+                <a
+                    class="auth-link"
+                    routerLink="/auth">
+
+                    Iniciar sesión
+
+                </a>
+
+            </p>
+
+        </form>
+
+    </div>
 
 </ion-content>

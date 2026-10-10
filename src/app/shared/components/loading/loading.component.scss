@@ -1,0 +1,38 @@
+:host {
+
+    display: block;
+
+}
+
+.app-loading {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 14px;
+
+    padding: 48px 24px;
+}
+
+.app-loading ion-spinner {
+
+    width: 42px;
+
+    height: 42px;
+
+    color: var(--ion-color-primary);
+}
+
+.app-loading p {
+
+    margin: 0;
+
+    font-size: .9rem;
+
+    color: var(--boccia-text-secondary, #777);
+}

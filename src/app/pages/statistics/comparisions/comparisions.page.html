@@ -1,13 +1,136 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>comparisions</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Comparar deportistas"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">comparisions</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <div class="container">
+
+    <div class="selectors">
+
+      <ion-item>
+        <ion-label position="stacked">Deportista A</ion-label>
+        <ion-select [(ngModel)]="athleteAId" (ionChange)="onChange()" placeholder="Selecciona">
+          <ion-select-option *ngFor="let athlete of athletes" [value]="athlete.id">
+            {{ athlete.fullName }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Deportista B</ion-label>
+        <ion-select [(ngModel)]="athleteBId" (ionChange)="onChange()" placeholder="Selecciona">
+          <ion-select-option *ngFor="let athlete of athletes" [value]="athlete.id">
+            {{ athlete.fullName }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </div>
+
+    <app-empty-state
+      *ngIf="!comparisonA && !comparisonB"
+      title="Elige dos deportistas"
+      subtitle="Selecciona un deportista en cada casilla para comparar su rendimiento.">
+    </app-empty-state>
+
+    <div class="comparison-grid" *ngIf="comparisonA || comparisonB">
+
+      <ion-card class="athlete-col">
+
+        <ion-card-header *ngIf="comparisonA">
+          <ion-card-title>{{ comparisonA.athlete.fullName }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content *ngIf="comparisonA">
+
+          <div class="stat-row">
+            <span>Evaluaciones</span>
+            <strong>{{ comparisonA.stats.totalEvaluations }}</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Lanzamientos</span>
+            <strong>{{ comparisonA.stats.totalThrows }}</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Excelente</span>
+            <strong>{{ comparisonA.stats.excellentPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Buena</span>
+            <strong>{{ comparisonA.stats.goodPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Regular</span>
+            <strong>{{ comparisonA.stats.regularPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Baja</span>
+            <strong>{{ comparisonA.stats.badPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+        </ion-card-content>
+
+        <ion-card-content *ngIf="!comparisonA" class="placeholder">
+          Selecciona un deportista
+        </ion-card-content>
+
+      </ion-card>
+
+      <ion-card class="athlete-col">
+
+        <ion-card-header *ngIf="comparisonB">
+          <ion-card-title>{{ comparisonB.athlete.fullName }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content *ngIf="comparisonB">
+
+          <div class="stat-row">
+            <span>Evaluaciones</span>
+            <strong>{{ comparisonB.stats.totalEvaluations }}</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Lanzamientos</span>
+            <strong>{{ comparisonB.stats.totalThrows }}</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Excelente</span>
+            <strong>{{ comparisonB.stats.excellentPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Buena</span>
+            <strong>{{ comparisonB.stats.goodPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Regular</span>
+            <strong>{{ comparisonB.stats.regularPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Baja</span>
+            <strong>{{ comparisonB.stats.badPercent | number:'1.0-1' }}%</strong>
+          </div>
+
+        </ion-card-content>
+
+        <ion-card-content *ngIf="!comparisonB" class="placeholder">
+          Selecciona un deportista
+        </ion-card-content>
+
+      </ion-card>
+
+    </div>
+
+  </div>
+
 </ion-content>

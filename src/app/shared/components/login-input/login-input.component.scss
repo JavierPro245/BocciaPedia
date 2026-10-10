@@ -1,105 +1,199 @@
+/* Campo de formulario reutilizable.
+   Usa los tokens --auth-* (definidos en :root por theme/_auth.scss),
+   así que sigue el modo claro/oscuro en toda la app. */
+
 :host {
 
     display: block;
 
-    margin-bottom: 18px;
-
+    margin-bottom: var(--login-input-gap, 18px);
 }
 
 .input-label {
 
     display: block;
 
-    margin-bottom: 8px;
+    margin-bottom: 7px;
+    margin-left: 2px;
 
-    font-size: .95rem;
-
+    font-size: .84rem;
     font-weight: 600;
 
-    color: #374151;
-
+    color: var(--auth-text, #11213c);
 }
 
 .input-container {
 
     display: flex;
-
     align-items: center;
+    gap: 10px;
 
-    gap: 12px;
+    min-height: 54px;
 
-    min-height: 56px;
+    padding: 0 14px;
 
-    padding: 0 16px;
+    border: 1px solid var(--auth-border, #dde5f0);
+    border-radius: 15px;
 
-    border: 1px solid #d7dee8;
+    background: var(--auth-field, #f7f9fc);
 
-    border-radius: 16px;
-
-    background: white;
-
-    transition: .25s;
-
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
 }
 
 .input-container:focus-within {
 
-    border-color: var(--ion-color-primary);
+    border-color: var(--ion-color-secondary);
 
-    box-shadow: 0 0 0 3px rgba(18,117,142,.15);
+    background: var(--auth-field-focus, #ffffff);
 
+    box-shadow: 0 0 0 4px var(--auth-ring, rgba(58, 134, 255, .18));
+}
+
+.input-container:focus-within .left-icon {
+    color: var(--ion-color-secondary);
 }
 
 .input-container.invalid {
 
-    border-color: #dc2626;
+    border-color: var(--ion-color-danger);
+}
 
+.input-container.invalid:focus-within {
+
+    box-shadow: 0 0 0 4px rgba(var(--ion-color-danger-rgb), .16);
+}
+
+.input-container.invalid .left-icon {
+    color: var(--ion-color-danger);
 }
 
 .left-icon {
 
-    font-size: 22px;
+    flex: none;
 
-    color: #6b7280;
+    font-size: 20px;
 
+    color: var(--auth-text-soft, #64748b);
+
+    transition: color .2s ease;
 }
 
 ion-input {
 
     flex: 1;
 
-    --padding-top: 14px;
+    --background: transparent;
+    --color: var(--auth-text, #11213c);
 
-    --padding-bottom: 14px;
+    --placeholder-color: var(--auth-text-soft, #64748b);
+    --placeholder-opacity: .8;
 
+    /* El subrayado de Material choca con el borde redondeado:
+       el estado lo comunica el contenedor. */
+    --highlight-height: 0;
+
+    --padding-top: 13px;
+    --padding-bottom: 13px;
     --padding-start: 0;
-
     --padding-end: 0;
 
+    font-size: .97rem;
 }
 
 .eye-button {
 
-    --padding-start: 0;
+    flex: none;
 
-    --padding-end: 0;
+    --color: var(--auth-text-soft, #64748b);
 
+    --padding-start: 6px;
+    --padding-end: 6px;
+
+    height: 36px;
     margin: 0;
+}
 
+.eye-button ion-icon {
+    font-size: 19px;
+}
+
+/* El autocompletado de Chrome/Edge pinta el campo con un recuadro
+   claro fijo (vía -webkit-box-shadow), que la regla propia de Ionic
+   (background-color: transparent) no llega a anular. En modo oscuro
+   eso deja texto oscuro sobre fondo claro: invisible mientras se escribe.
+   ion-input no usa Shadow DOM real en este build (es "scoped", no shadow:
+   su .native-input queda en el DOM normal), así que sí se puede apuntar
+   con ::ng-deep. */
+/* !important es necesario: el recuadro de Chrome no es una regla de
+   autor normal, así que una especificidad más alta no basta para
+   ganarle de forma confiable (es el fix estándar para este problema). */
+:host ::ng-deep .native-input:-webkit-autofill,
+:host ::ng-deep .native-input:-webkit-autofill:hover,
+:host ::ng-deep .native-input:-webkit-autofill:focus {
+
+    -webkit-text-fill-color: var(--auth-text, #11213c) !important;
+    caret-color: var(--auth-text, #11213c) !important;
+
+    -webkit-box-shadow: 0 0 0 1000px var(--auth-field, #f7f9fc) inset !important;
+    box-shadow: 0 0 0 1000px var(--auth-field, #f7f9fc) inset !important;
+
+    transition: background-color 600000s ease-in-out 0s !important;
+}
+
+.input-container:focus-within ::ng-deep .native-input:-webkit-autofill {
+
+    -webkit-box-shadow: 0 0 0 1000px var(--auth-field-focus, #ffffff) inset !important;
+    box-shadow: 0 0 0 1000px var(--auth-field-focus, #ffffff) inset !important;
 }
 
 .error-message {
 
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 
-    margin-top: 6px;
+    margin-top: 7px;
+    margin-left: 2px;
 
-    margin-left: 4px;
+    color: var(--ion-color-danger);
 
-    color: #dc2626;
-
-    font-size: .82rem;
-
+    font-size: .8rem;
     font-weight: 500;
+    line-height: 1.35;
 
+    animation: login-input-error .22s ease both;
+}
+
+.error-message ion-icon {
+
+    flex: none;
+
+    font-size: 14px;
+}
+
+@keyframes login-input-error {
+
+    from {
+        opacity: 0;
+        transform: translateY(-3px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .input-container {
+        transition: none;
+    }
+
+    .error-message {
+        animation: none;
+    }
 }

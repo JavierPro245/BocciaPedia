@@ -1,3 +1,21 @@
-<p>
-  empty-state works!
-</p>
+<div class="empty-state">
+
+  <div class="empty-icon">
+
+    <ion-icon [name]="icon"></ion-icon>
+
+  </div>
+
+  <h3>
+
+    {{ title }}
+
+  </h3>
+
+  <p *ngIf="description">
+
+    {{ description }}
+
+  </p>
+
+</div>

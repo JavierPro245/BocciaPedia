@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
   padding:16px;
@@ -30,7 +36,7 @@ h2{
 
 .evaluation{
 
-  color:#666;
+  color:var(--boccia-text-secondary, #666);
 
   font-size:16px;
 
@@ -88,7 +94,7 @@ ion-progress-bar{
 
 .precision-card h3{
 
-  color:#666;
+  color:var(--boccia-text-secondary, #666);
 
   margin-bottom:12px;
 
@@ -154,7 +160,7 @@ ion-button{
 
     font-weight:600;
 
-    color:#555;
+    color:var(--boccia-text-secondary, #555);
 
 }
 
@@ -174,7 +180,7 @@ ion-button{
 
     font-size:16px;
 
-    color:#888;
+    color:var(--boccia-text-secondary, #888);
 
 }
 

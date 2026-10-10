@@ -6,15 +6,17 @@
 
   <div class="end-bar">
 
-    <span class="line"></span>
-
     <span class="text">
-
       {{ match.isTieBreak ? 'TB' : ('END ' + match.currentEnd) }}
-
     </span>
 
-    <span class="line"></span>
+    <span class="sep">·</span>
+
+    <span class="text category">{{ match.category }}</span>
+
+    <span class="sep">·</span>
+
+    <span class="text gender">{{ genderLabel }}</span>
 
   </div>
 
@@ -22,17 +24,17 @@
 
   <div
     class="penalty-warning"
-    *ngIf="match.penalty &&
-           match.penalty.active &&
-           !match.penalty.executed">
+    *ngIf="pendingPenalties.length > 0">
 
     <ion-icon name="warning"></ion-icon>
 
-    Penalización pendiente
+    {{ pendingPenalties.length > 1
+        ? pendingPenalties.length + ' penalizaciones pendientes'
+        : 'Penalización pendiente' }}
 
     <span>
 
-      {{ match.penalty.team === 'red'
+      {{ pendingPenalties[0].team === 'red'
           ? 'Bocha Roja'
           : 'Bocha Azul' }}
 
@@ -47,6 +49,12 @@
     <!-- ROJO -->
 
     <div class="side red">
+
+      <img
+        *ngIf="match.redImage"
+        class="side-flag"
+        [src]="match.redImage"
+        alt="">
 
       <div class="player-name">
 
@@ -89,6 +97,12 @@
     <!-- AZUL -->
 
     <div class="side blue">
+
+      <img
+        *ngIf="match.blueImage"
+        class="side-flag"
+        [src]="match.blueImage"
+        alt="">
 
       <div class="player-name">
 
@@ -141,7 +155,7 @@
       [totalSeconds]="60"
       [label]="showPenalty ? 'PENALIZACIÓN' : 'DESCANSO'"
       [subtitle]="showPenalty ? 'Bocha de penalización' : 'Próximo END'"
-      [team]="match.penalty?.team"
+      [team]="currentPenalty?.team"
       [penaltyMode]="showPenalty">
 
     </app-countdown-circle>

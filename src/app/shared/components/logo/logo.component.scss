@@ -1,25 +1,74 @@
-.logo-image {
-    width: 180px;
-    max-width: 55%;
+:host {
+
     display: block;
-    margin: 40px auto 20px;
+
+    text-align: center;
 }
 
-h1 {
-    margin: 0;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--ion-color-primary);
-    letter-spacing: 1px;
+/* El archivo logo.png no es un ícono recortado: es la pieza completa
+   (1024×1536) con el isotipo + el wordmark "BocciaPedia" ya dibujado
+   encima de su propio fondo. Antes se encogía a 62px dentro de una
+   placa cuadrada y se perdía casi todo el detalle; ahora se muestra
+   completa, grande, respetando su proporción real (2:3). */
+.logo-image {
+
+    display: block;
+
+    width: 136px;
+    height: auto;
+
+    margin: 0 auto 14px;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 0 0 6px rgba(var(--ion-color-secondary-rgb), .1),
+        0 18px 38px -16px rgba(10, 61, 145, .5);
+}
+
+:host-context(.ion-palette-dark) .logo-image {
+
+    box-shadow:
+        0 0 0 6px rgba(var(--ion-color-secondary-rgb), .14),
+        0 18px 38px -16px rgba(0, 0, 0, .8);
 }
 
 .slogan {
-    margin-top: 8px;
-    text-align: center;
-    font-size: .9rem;
-    font-weight: 500;
-    color: var(--ion-color-medium);
-    letter-spacing: 2px;
+
+    margin: 0;
+
+    font-size: .78rem;
+    font-weight: 600;
+
+    color: var(--auth-text-soft, #64748b);
+
+    letter-spacing: 2.4px;
     text-transform: uppercase;
+}
+
+/* Oculto visualmente pero accesible para lectores de pantalla:
+   https://www.w3.org/WAI/tutorials/forms/labels/#note-on-hiding-elements */
+.sr-only {
+
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    margin: -1px;
+    padding: 0;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+
+    border: 0;
+}
+
+@media (max-width: 400px) {
+
+    .logo-image {
+        width: 112px;
+    }
 }

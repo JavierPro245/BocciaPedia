@@ -46,4 +46,8 @@ export interface User {
   // Perfil específico del entrenador
   trainerProfile?: TrainerProfile;
 
+  // Tokens FCM de los dispositivos donde inició sesión (puede tener
+  // más de uno), usados por la Cloud Function para mandar push.
+  fcmTokens?: string[];
+
 }

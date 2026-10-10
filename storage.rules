@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Cualquier archivo (fotos de perfil, deportistas, media,
+    // scouting) requiere estar autenticado para leer o escribir. El
+    // control más fino de "quién puede subir a Media/Scouting" ya se
+    // hace en la app (PermissionService) y en las reglas de
+    // Firestore para los documentos asociados; acá se cierra el
+    // acceso anónimo directo al bucket, que antes estaba abierto.
+    match /{allPaths=**} {
+
+      allow read, write: if request.auth != null;
+
+    }
+
+  }
+}

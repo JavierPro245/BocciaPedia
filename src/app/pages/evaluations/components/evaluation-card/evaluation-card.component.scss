@@ -102,13 +102,18 @@
 
   font-weight:700;
 
+  /* Antes heredaba el color por defecto nomás: en modo oscuro
+     igual se leía, pero se deja explícito para que siga el tema. */
+  color:var(--boccia-text, #1f2937);
+
 }
 
 .athlete{
 
   margin-top:4px;
 
-  color:#555;
+  /* Antes era un gris fijo (#555): invisible en modo oscuro. */
+  color:var(--boccia-text-secondary, #555);
 
 }
 
@@ -124,7 +129,8 @@
 
   font-size:13px;
 
-  color:#757575;
+  /* Antes era un gris fijo (#757575): invisible en modo oscuro. */
+  color:var(--boccia-text-secondary, #757575);
 
 }
 
@@ -132,7 +138,10 @@
 
   font-size:22px;
 
-  color:#BDBDBD;
+  /* Antes era un gris fijo (#BDBDBD): casi invisible en modo oscuro. */
+  color:var(--boccia-text-secondary, #bdbdbd);
+
+  opacity:.7;
 
 }
 

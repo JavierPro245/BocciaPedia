@@ -1,75 +1,66 @@
-<ion-card class="app-card">
+<div class="info-card">
 
-    <ion-list lines="none">
+    <div class="info-row">
 
-        <ion-item>
+        <ion-icon name="mail-outline"></ion-icon>
 
-            <ion-label>
+        <div>
+            <h3>Correo</h3>
+            <p>{{ user.email }}</p>
+        </div>
 
-                <h3>Correo</h3>
+    </div>
 
-                <p>{{ user.email }}</p>
+    <div class="info-row">
 
-            </ion-label>
+        <ion-icon name="ribbon-outline"></ion-icon>
 
-        </ion-item>
+        <div>
+            <h3>Rol</h3>
+            <p>{{ role }}</p>
+        </div>
 
-        <ion-item>
+    </div>
 
-            <ion-label>
+    <div class="info-row">
 
-                <h3>Rol</h3>
+        <ion-icon
+            [name]="user.active ? 'checkmark-circle-outline' : 'close-circle-outline'"
+            [class.ok]="user.active"
+            [class.bad]="!user.active">
+        </ion-icon>
 
-                <p>{{ role }}</p>
+        <div>
+            <h3>Estado</h3>
+            <p>{{ user.active ? 'Activa' : 'Desactivada' }}</p>
+        </div>
 
-            </ion-label>
+    </div>
 
-        </ion-item>
+    <div class="info-row">
 
-        <ion-item>
+        <ion-icon
+            [name]="user.approved ? 'shield-checkmark-outline' : 'time-outline'"
+            [class.ok]="user.approved"
+            [class.pending]="!user.approved">
+        </ion-icon>
 
-            <ion-label>
+        <div>
+            <h3>Aprobación</h3>
+            <p>{{ user.approved ? 'Aprobado' : 'Pendiente' }}</p>
+        </div>
 
-                <h3>Estado</h3>
+    </div>
 
-                <p>
+    <div class="info-row">
 
-                    {{ user.active ? 'Activa' : 'Desactivada' }}
+        <ion-icon name="finger-print-outline"></ion-icon>
 
-                </p>
+        <div>
+            <h3>UID</h3>
+            <p class="uid">{{ user.uid }}</p>
+        </div>
 
-            </ion-label>
+    </div>
 
-        </ion-item>
-
-        <ion-item>
-
-            <ion-label>
-
-                <h3>Aprobación</h3>
-
-                <p>
-
-                    {{ user.approved ? 'Aprobado' : 'Pendiente' }}
-
-                </p>
-
-            </ion-label>
-
-        </ion-item>
-
-        <ion-item>
-
-            <ion-label>
-
-                <h3>UID</h3>
-
-                <p>{{ user.uid }}</p>
-
-            </ion-label>
-
-        </ion-item>
-
-    </ion-list>
-
-</ion-card>
+</div>

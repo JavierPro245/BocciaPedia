@@ -1,0 +1,43 @@
+ion-content {
+
+  --background: var(--boccia-background);
+}
+
+ion-card {
+
+  margin: 16px;
+
+  border-radius: var(--card-radius, 18px);
+
+  box-shadow: var(--shadow-small);
+}
+
+.submit {
+
+  margin-top: 20px;
+
+  margin-bottom: 8px;
+
+  height: 50px;
+
+  --border-radius: 14px;
+
+  font-weight: 600;
+
+}
+
+.own-color-segment {
+
+  margin-top: 8px;
+
+}
+
+.rival-color-hint {
+
+  margin: 6px 0 0;
+
+  font-size: .8rem;
+
+  color: var(--boccia-text-secondary, #666);
+
+}

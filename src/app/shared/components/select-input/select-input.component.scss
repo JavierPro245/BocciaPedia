@@ -1,7 +1,57 @@
-ion-item{
+/* Mismo lenguaje visual que app-login-input (campo tipo píldora),
+   para que los formularios de toda la app se vean consistentes. */
 
-    --border-radius:14px;
+:host {
 
-    margin-bottom:14px;
+    display: block;
 
+    margin-bottom: 18px;
+}
+
+.select-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    margin-left: 2px;
+
+    font-size: .84rem;
+
+    font-weight: 600;
+
+    color: var(--boccia-text, #263238);
+}
+
+.select-container {
+
+    min-height: 54px;
+
+    padding: 0 6px 0 14px;
+
+    border: 1px solid var(--card-border, #dde5f0);
+
+    border-radius: var(--input-radius, 14px);
+
+    background: var(--boccia-card, #fff);
+
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.select-container:focus-within {
+
+    border-color: var(--ion-color-secondary);
+
+    box-shadow: 0 0 0 4px rgba(var(--ion-color-secondary-rgb), .16);
+}
+
+ion-select {
+
+    width: 100%;
+
+    --placeholder-color: var(--boccia-text-secondary, #777);
+
+    --placeholder-opacity: .8;
+
+    color: var(--boccia-text, #263238);
 }

@@ -1,3 +1,9 @@
 <ion-app>
+
+  <div class="offline-banner" *ngIf="!connectivityService.online()">
+    📡 Sin conexión — los cambios se guardan y se sincronizan solos al recuperar internet.
+  </div>
+
   <ion-router-outlet></ion-router-outlet>
+
 </ion-app>

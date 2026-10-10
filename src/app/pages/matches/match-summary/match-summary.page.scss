@@ -1,0 +1,359 @@
+ion-content {
+
+  --background: var(--boccia-background);
+
+}
+
+.container {
+
+  padding: 16px;
+
+}
+
+.score-card {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 8px;
+
+}
+
+.player {
+
+  flex: 1;
+
+  text-align: center;
+
+  padding: 16px 8px;
+
+  border-radius: 16px;
+
+  background: var(--boccia-card, #fff);
+
+  box-shadow: var(--boccia-shadow, 0 4px 12px rgba(0,0,0,.08));
+
+  h2 {
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+
+  .score {
+    font-size: 40px;
+    font-weight: 800;
+  }
+
+  .winner-tag {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2dd36f;
+  }
+
+}
+
+.player.red .score {
+  color: #E53935;
+}
+
+.player.blue .score {
+  color: #1E88E5;
+}
+
+.player.winner {
+  outline: 2px solid #2dd36f;
+}
+
+.vs {
+
+  font-weight: 700;
+
+  color: var(--boccia-text-secondary, #666);
+
+}
+
+.meta {
+
+  text-align: center;
+
+  color: var(--boccia-text-secondary, #666);
+
+  font-size: 13px;
+
+  margin: 4px 0 16px;
+
+}
+
+.section-title {
+
+  margin: 22px 0 12px;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: var(--boccia-text);
+
+}
+
+.end-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+}
+
+.end-card {
+
+  padding: 14px;
+
+  border-radius: var(--card-radius, 16px);
+
+  background: var(--boccia-card, #fff);
+
+  border: 1px solid var(--card-border);
+
+  box-shadow: var(--shadow-small);
+
+}
+
+.end-card-head {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 10px;
+}
+
+.end-badge {
+
+  font-size: .8rem;
+
+  font-weight: 800;
+
+  letter-spacing: .4px;
+
+  color: var(--boccia-text-secondary);
+}
+
+.end-winner-tag {
+
+  font-size: .78rem;
+
+  font-weight: 700;
+
+  padding: 2px 10px;
+
+  border-radius: 20px;
+}
+
+.end-winner-tag.red {
+  color: #E53935;
+  background: rgba(229, 57, 53, .12);
+}
+
+.end-winner-tag.blue {
+  color: #1E88E5;
+  background: rgba(30, 136, 229, .12);
+}
+
+.end-winner-tag.tie {
+  color: var(--boccia-text-secondary);
+  background: rgba(var(--ion-color-medium-rgb, 146, 148, 156), .15);
+}
+
+.end-teams {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+}
+
+.end-team {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 8px;
+
+  border-radius: 12px;
+
+  background: rgba(var(--ion-color-medium-rgb, 146, 148, 156), .08);
+}
+
+.end-team.red {
+  color: #E53935;
+}
+
+.end-team.blue {
+  color: #1E88E5;
+}
+
+.end-team.win {
+  background: rgba(45, 211, 111, .14);
+}
+
+.end-team .pts {
+
+  font-weight: 800;
+
+  font-size: 1rem;
+}
+
+.end-team .time {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: .76rem;
+
+  font-weight: 600;
+
+  color: var(--boccia-text-secondary);
+}
+
+.end-team .time ion-icon {
+  font-size: 13px;
+}
+
+.end-faults {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 6px;
+
+  margin-top: 10px;
+
+  padding-top: 10px;
+
+  border-top: 1px dashed var(--card-border);
+
+  font-size: .8rem;
+
+  color: var(--ion-color-warning-shade, #b8860b);
+
+  line-height: 1.4;
+}
+
+.end-faults.none {
+
+  color: var(--boccia-text-secondary);
+}
+
+.end-faults ion-icon {
+
+  flex: none;
+
+  margin-top: 1px;
+
+  font-size: 15px;
+}
+
+.end-card.totals {
+
+  margin-top: 4px;
+
+  border: 1px solid var(--ion-color-primary);
+
+  background: rgba(var(--ion-color-primary-rgb), .06);
+
+}
+
+.end-card.totals .end-badge {
+
+  color: var(--ion-color-primary);
+
+  font-size: .85rem;
+
+}
+
+.report-saved {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  flex-wrap: wrap;
+
+  margin: 14px 0 0;
+
+  font-size: .82rem;
+
+  color: var(--ion-color-success);
+}
+
+.report-saved ion-icon {
+  font-size: 16px;
+}
+
+.report-saved a {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.empty-ends {
+
+  text-align: center;
+
+  color: var(--boccia-text-secondary);
+
+  padding: 20px;
+}
+
+.actions {
+
+  margin-top: 24px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+}
+
+.report-btn {
+
+  --border-radius: 14px;
+
+  height: 52px;
+
+  font-weight: 700;
+
+}
+
+.actions ion-button {
+
+  --border-radius: 14px;
+
+  height: 50px;
+
+  font-weight: 600;
+
+}

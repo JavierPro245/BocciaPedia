@@ -1,0 +1,103 @@
+.trainer-create-content {
+
+    --background: var(--boccia-background);
+}
+
+.list-search {
+
+    --background: var(--boccia-card);
+
+    --border-radius: 14px;
+
+    --box-shadow: var(--shadow-small);
+
+    padding: 10px 14px 4px;
+}
+
+.candidate-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding: 10px 16px 16px;
+}
+
+.candidate-row {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px;
+
+    border-radius: 16px;
+
+    background: var(--boccia-card);
+
+    border: 1px solid var(--card-border);
+
+    box-shadow: var(--shadow-small);
+}
+
+.candidate-info {
+
+    flex: 1;
+
+    min-width: 160px;
+}
+
+.candidate-info h2 {
+
+    margin: 0;
+
+    font-size: .95rem;
+
+    font-weight: 700;
+
+    color: var(--boccia-text);
+}
+
+.candidate-info p {
+
+    margin: 2px 0 0;
+
+    font-size: .82rem;
+
+    color: var(--boccia-text-secondary);
+}
+
+.chips {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    margin-top: 8px;
+}
+
+.chips ion-chip {
+
+    margin: 0;
+
+    font-size: .72rem;
+
+    height: 24px;
+}
+
+.convert-btn {
+
+    flex: none;
+
+    margin: 0 0 0 auto;
+
+    --border-radius: 10px;
+}

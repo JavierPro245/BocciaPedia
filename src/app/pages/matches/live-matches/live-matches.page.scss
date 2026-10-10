@@ -1,0 +1,184 @@
+.live-content {
+
+  --background: var(--boccia-background);
+}
+
+.match-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  padding: 16px;
+}
+
+.live-card {
+
+  padding: 16px;
+
+  border-radius: var(--card-radius, 18px);
+
+  background: var(--boccia-card);
+
+  border: 1px solid var(--card-border);
+
+  box-shadow: var(--shadow-small);
+
+  cursor: pointer;
+
+  transition: transform .15s ease;
+}
+
+.live-card:active {
+
+  transform: scale(.98);
+}
+
+.live-card-head {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 14px;
+
+  flex-wrap: wrap;
+}
+
+.live-dot {
+
+  width: 9px;
+
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #e53935;
+
+  animation: liveDotPulse 1.2s infinite;
+}
+
+@keyframes liveDotPulse {
+  from { opacity: 1; }
+  to { opacity: .3; }
+}
+
+.live-label {
+
+  font-size: .72rem;
+
+  font-weight: 800;
+
+  letter-spacing: .6px;
+
+  color: #e53935;
+}
+
+.live-meta {
+
+  margin-left: auto;
+
+  font-size: .76rem;
+
+  font-weight: 600;
+
+  color: var(--boccia-text-secondary);
+}
+
+.live-players {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.live-side {
+
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.live-side.blue {
+
+  justify-content: flex-end;
+}
+
+.live-flag {
+
+  width: 28px;
+
+  height: 28px;
+
+  border-radius: 6px;
+
+  object-fit: cover;
+
+  flex: none;
+}
+
+.live-name {
+
+  font-weight: 700;
+
+  font-size: .9rem;
+
+  color: var(--boccia-text);
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.live-score {
+
+  font-weight: 800;
+
+  font-size: 1.3rem;
+
+  flex: none;
+}
+
+.live-side.red .live-score {
+  color: #E53935;
+}
+
+.live-side.blue .live-score {
+  color: #1E88E5;
+}
+
+.live-vs {
+
+  flex: none;
+
+  font-size: .72rem;
+
+  font-weight: 700;
+
+  color: var(--boccia-text-secondary);
+}
+
+.watch-btn {
+
+  margin-top: 14px;
+
+  --border-radius: 12px;
+
+  height: 42px;
+
+  font-weight: 600;
+}

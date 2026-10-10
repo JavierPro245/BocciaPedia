@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'match-summary',
     loadChildren: () => import('./match-summary/match-summary.module').then( m => m.MatchSummaryPageModule)
+  },
+  {
+    path: 'live',
+    loadChildren: () => import('./live-matches/live-matches.module').then( m => m.LiveMatchesPageModule)
   }
 
 ];

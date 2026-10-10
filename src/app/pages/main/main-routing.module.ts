@@ -163,6 +163,13 @@ const routes: Routes = [
       .then(m => m.MediaPageModule)
 },
 
+{
+  path: 'scouting',
+  loadChildren: () =>
+    import('../scouting/scouting.module')
+      .then(m => m.ScoutingPageModule)
+},
+
       {
         path: '',
         redirectTo: 'home',

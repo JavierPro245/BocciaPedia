@@ -8,14 +8,14 @@ const routes: Routes = [
     path: '',
     component: StatisticsPage,
     children: [
-    //   {
-    //     path: 'athlete-statistics',
-    //     loadChildren: () => import('./athlete-statistics/athlete-statistics.module').then( m => m.AthleteStatisticsPageModule)
-    //   },
-    //   {
-    //     path: 'comparisions',
-    //     loadChildren: () => import('./comparisions/comparisions.module').then( m => m.ComparisionsPageModule)
-    //   },
+      {
+        path: 'athlete-statistics',
+        loadChildren: () => import('./athlete-statistics/athlete-statistics.module').then( m => m.AthleteStatisticsPageModule)
+      },
+      {
+        path: 'comparisions',
+        loadChildren: () => import('./comparisions/comparisions.module').then( m => m.ComparisionsPageModule)
+      },
       {
         path: 'dashboard',
         loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
@@ -23,6 +23,11 @@ const routes: Routes = [
       {
         path: 'reports',
         loadChildren: () => import('./reports/reports.module').then( m => m.ReportsPageModule)
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
       }
     ]
   },

@@ -3,21 +3,19 @@
   [showBackButton]="true">
 </app-header>
 
-<ion-content fullscreen>
+<ion-content fullscreen class="trainer-create-content">
 
   <ion-searchbar
+    class="list-search"
     placeholder="Buscar usuario..."
     [(ngModel)]="searchText"
     (ionInput)="filterUsers()">
   </ion-searchbar>
 
-  <div
-    class="ion-padding ion-text-center"
-    *ngIf="loading">
-
-    <ion-spinner name="crescent"></ion-spinner>
-
-  </div>
+  <app-loading
+    *ngIf="loading"
+    message="Cargando usuarios...">
+  </app-loading>
 
   <app-empty-state
     *ngIf="!loading && filteredUsers.length === 0"
@@ -26,32 +24,28 @@
     message="Todos los usuarios ya son entrenadores o no existen usuarios registrados.">
   </app-empty-state>
 
-  <ion-list *ngIf="!loading && filteredUsers.length > 0">
+  <div
+    class="candidate-list"
+    *ngIf="!loading && filteredUsers.length > 0">
 
-    <ion-item
+    <div
+      class="candidate-row"
       *ngFor="let user of filteredUsers">
 
-      <ion-avatar slot="start">
+      <app-user-avatar
+        [photoURL]="user.photoURL"
+        [size]="48">
+      </app-user-avatar>
 
-        <img
-          *ngIf="user.photoURL"
-          [src]="user.photoURL">
-
-        <ion-icon
-          *ngIf="!user.photoURL"
-          name="person-circle"
-          style="font-size:48px">
-        </ion-icon>
-
-      </ion-avatar>
-
-      <ion-label>
+      <div class="candidate-info">
 
         <h2>{{ user.displayName }}</h2>
 
         <p>{{ user.email }}</p>
 
-        <div style="margin-top:8px;">
+        <div
+          class="chips"
+          *ngIf="user.roles.length">
 
           <ion-chip
             *ngFor="let role of user.roles"
@@ -67,10 +61,11 @@
 
         </div>
 
-      </ion-label>
+      </div>
 
       <ion-button
-        slot="end"
+        class="convert-btn"
+        size="small"
         color="success"
         (click)="convertToTrainer(user)">
 
@@ -83,8 +78,8 @@
 
       </ion-button>
 
-    </ion-item>
+    </div>
 
-  </ion-list>
+  </div>
 
 </ion-content>

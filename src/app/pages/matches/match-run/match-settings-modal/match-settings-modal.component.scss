@@ -1,0 +1,192 @@
+.settings-content {
+
+  /* Antes fijo (#f5f5f5): quedaba claro aunque el resto de la app
+     estuviera en modo oscuro. */
+  --background: var(--boccia-background, #f5f5f5);
+
+}
+
+.settings-section {
+
+  background: var(--boccia-card, white);
+
+  border: 1px solid var(--card-border, transparent);
+
+  margin: 14px;
+
+  padding: 16px;
+
+  border-radius: 14px;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+
+}
+
+.settings-section h3 {
+
+  margin: 0 0 14px;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  color: var(--boccia-text, #1f2937);
+
+}
+
+.team-row {
+
+  margin-bottom: 16px;
+
+}
+
+.team-row:last-child {
+
+  margin-bottom: 0;
+
+}
+
+.team-row-head {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 10px;
+
+}
+
+.team-row-head .name {
+
+  font-weight: 700;
+
+  flex: 1;
+
+  color: var(--boccia-text, #1f2937);
+
+}
+
+.team-row-head .value {
+
+  font-size: 20px;
+
+  font-weight: 800;
+
+  font-variant-numeric: tabular-nums;
+
+  color: var(--boccia-text, #1f2937);
+
+}
+
+.dot {
+
+  width: 12px;
+
+  height: 12px;
+
+  border-radius: 50%;
+
+  display: inline-block;
+
+  flex: none;
+
+}
+
+.dot.red {
+  background: #cf103d;
+}
+
+.dot.blue {
+  background: #1565c0;
+}
+
+.btn-row {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+}
+
+.btn-row ion-button {
+
+  flex: 1;
+
+  min-width: 64px;
+
+  height: 38px;
+
+  margin: 0;
+
+  font-size: 13px;
+
+  --border-radius: 10px;
+
+}
+
+.voice-item {
+
+  --background: transparent;
+
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+}
+
+.voice-item ion-label p {
+
+  font-size: 12px;
+
+  color: var(--boccia-text-secondary, #888);
+
+}
+
+.test-voice-btn {
+
+  margin-top: 8px;
+
+  --border-radius: 10px;
+
+  height: 36px;
+
+  font-size: 13px;
+
+}
+
+.hint {
+
+  margin: 10px 0 14px;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  color: var(--boccia-text-secondary, #888);
+
+}
+
+.empty-hint {
+
+  color: var(--boccia-text-secondary, #888);
+
+  font-size: 14px;
+
+  text-align: center;
+
+  padding: 14px 0 4px;
+
+}
+
+ion-list {
+
+  margin-top: 4px;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+}

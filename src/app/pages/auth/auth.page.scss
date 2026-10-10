@@ -1,72 +1,17 @@
-.auth-form {
+/* El lenguaje visual vive en src/theme/_auth.scss.
+   Acá solo los ajustes propios del login. */
 
-    width: 100%;
-    max-width: 420px;
-
-    margin: auto;
-
-    padding: 12px 20px 24px;
-
+:host {
+    display: block;
 }
 
-app-logo{
-
-    display:block;
-
-    margin-bottom:20px;
-
+/* El logo ocupa su propio paso de la animación escalonada */
+app-logo {
+    display: block;
+    margin-bottom: 22px;
 }
 
-.forgot-password{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    margin-top:8px;
-
-    margin-bottom:18px;
-
-}
-
-.forgot-password a{
-
-    color:var(--ion-color-primary);
-
-    text-decoration:none;
-
-    font-size:.9rem;
-
-    font-weight:500;
-
-}
-
-.forgot-password a:hover{
-
-    text-decoration:underline;
-
-}
-
-.submit{
-
-    margin-top:8px;
-
-    --border-radius:16px;
-
-    height:50px;
-
-    font-weight:600;
-
-}
-
-.register-btn{
-
-    margin-top:14px;
-
-    --border-radius:16px;
-
-    height:50px;
-
-    font-weight:600;
-
+/* Los campos del login respiran un poco más que en el registro */
+app-login-input {
+    --login-input-gap: 18px;
 }

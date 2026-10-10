@@ -1,0 +1,55 @@
+<div class="modal-content">
+
+  <h2 class="title">Nueva jugada</h2>
+
+  <ion-item>
+
+    <ion-label position="stacked">Tipo de jugada</ion-label>
+
+    <ion-select [(ngModel)]="action" interface="popover">
+
+      <ion-select-option *ngFor="let a of actions" [value]="a">
+        {{ a === 'Otro' ? 'Otro' : a }}
+      </ion-select-option>
+
+    </ion-select>
+
+  </ion-item>
+
+  <ion-segment [(ngModel)]="outcome" class="outcome-segment">
+
+    <ion-segment-button value="success">
+      <ion-label>✅ Exitosa</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="fail">
+      <ion-label>❌ Fallida</ion-label>
+    </ion-segment-button>
+
+  </ion-segment>
+
+  <ion-item>
+
+    <ion-textarea
+      autoGrow="true"
+      label="Observación (opcional)"
+      labelPlacement="stacked"
+      placeholder="Detalle de la jugada..."
+      [(ngModel)]="note">
+    </ion-textarea>
+
+  </ion-item>
+
+  <div class="buttons">
+
+    <ion-button fill="outline" color="medium" (click)="cancel()">
+      Cancelar
+    </ion-button>
+
+    <ion-button color="primary" (click)="save()">
+      Guardar
+    </ion-button>
+
+  </div>
+
+</div>

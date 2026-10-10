@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { AthleteStatisticsPageRoutingModule } from './athlete-statistics-routing.module';
 
 import { AthleteStatisticsPage } from './athlete-statistics.page';
+import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AthleteStatisticsPageRoutingModule
+    AthleteStatisticsPageRoutingModule,
+    SharedModule
   ],
   declarations: [AthleteStatisticsPage]
 })

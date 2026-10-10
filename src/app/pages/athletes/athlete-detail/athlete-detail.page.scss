@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
     padding:20px;
@@ -11,6 +17,8 @@ h2{
     margin-top:15px;
 
     font-weight:700;
+
+    color: var(--boccia-text);
 
 }
 
@@ -31,11 +39,64 @@ ion-chip{
     width:max-content;
 
     margin:10px auto 20px;
+}
 
+/* Listas de datos (info personal/deportiva): filas dentro de una
+   tarjeta con esquinas redondeadas, en vez del ion-list plano por
+   defecto. */
+ion-list{
+
+    margin-bottom: 8px;
+
+    border-radius: var(--card-radius, 18px);
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow-small);
+}
+
+ion-list ion-item{
+
+    --background: var(--boccia-card);
+
+    --border-color: var(--card-border);
+}
+
+ion-list ion-item ion-label{
+
+    color: var(--boccia-text-secondary);
+
+    font-size: .88rem;
+}
+
+ion-list ion-item ion-note{
+
+    font-weight: 600;
+
+    color: var(--boccia-text);
+}
+
+ion-card{
+
+    border-radius: var(--card-radius, 18px);
+
+    box-shadow: var(--shadow-small);
+
+    margin-bottom: 8px;
+}
+
+ion-card ion-item{
+
+    --background: transparent;
 }
 
 ion-button{
 
     margin-top:15px;
 
+    height: 50px;
+
+    --border-radius: 14px;
+
+    font-weight: 600;
 }

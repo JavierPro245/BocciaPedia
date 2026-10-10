@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
     padding:16px;
@@ -9,6 +15,8 @@ ion-card{
     border-radius:18px;
 
     margin-bottom:18px;
+
+    box-shadow: var(--shadow-small);
 
 }
 
@@ -39,6 +47,8 @@ ion-button{
     margin-top:24px;
 
     height:56px;
+
+    --border-radius: 14px;
 
     font-size:18px;
 
@@ -76,7 +86,11 @@ ion-button{
 
     height:60px;
 
-    border:2px solid #d8d8d8;
+    /* Antes era un gris claro fijo (#d8d8d8): casi no se notaba
+       contra un fondo de tarjeta oscuro. */
+    border:2px solid var(--card-border, #d8d8d8);
+
+    color: var(--boccia-text);
 
     border-radius:14px;
 
@@ -110,7 +124,8 @@ ion-button{
 
     border-color:var(--ion-color-primary);
 
-    background:#eef5ff;
+    /* Antes era un celeste fijo (#eef5ff): no se adaptaba a oscuro. */
+    background:rgba(var(--ion-color-primary-rgb), .12);
 
     color:var(--ion-color-primary);
 
@@ -142,4 +157,70 @@ ion-button{
 
     font-size:20px;
 
+}
+
+.flags-row{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:28px;
+
+    margin-bottom:8px;
+}
+
+.flag-pick{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:4px;
+}
+
+.flag-pick app-image-picker{
+
+    display:block;
+}
+
+.flag-pick ::ng-deep .picker{
+
+    margin: 0;
+}
+
+.flag-pick ::ng-deep img{
+
+    width:72px;
+
+    height:72px;
+}
+
+.flag-pick ::ng-deep .camera{
+
+    width:30px;
+
+    height:30px;
+}
+
+.flag-label{
+
+    font-size:.74rem;
+
+    font-weight:600;
+}
+
+.flag-label.red{
+    color:#E53935;
+}
+
+.flag-label.blue{
+    color:#1E88E5;
+}
+
+.gender-segment{
+
+    margin-top: 6px;
 }

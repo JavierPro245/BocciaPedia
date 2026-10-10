@@ -31,6 +31,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { RoleChipComponent } from './components/role-chip/role-chip.component';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { LinkPasswordModalComponent } from './components/link-password-modal/link-password-modal.component';
+import { ScoutingPlayModalComponent } from './components/scouting-play-modal/scouting-play-modal.component';
 
 
 
@@ -63,6 +64,7 @@ import { LinkPasswordModalComponent } from './components/link-password-modal/lin
     RoleChipComponent,
     UserAvatarComponent,
     LinkPasswordModalComponent,
+    ScoutingPlayModalComponent,
 
   ],
   exports: [
@@ -96,7 +98,8 @@ import { LinkPasswordModalComponent } from './components/link-password-modal/lin
     RoleChipComponent,
     UserAvatarComponent,
     LinkPasswordModalComponent,
-    
+    ScoutingPlayModalComponent,
+
   ],
   imports: [
     CommonModule,

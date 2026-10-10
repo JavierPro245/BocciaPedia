@@ -1,7 +1,28 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .page-content{
 
     padding:20px;
 
+}
+
+ion-list[inset]{
+
+    box-shadow: var(--shadow-small);
+}
+
+ion-button[type="submit"],
+.save-btn{
+
+    height: 50px;
+
+    --border-radius: 14px;
+
+    font-weight: 600;
 }
 
 .profile-header{

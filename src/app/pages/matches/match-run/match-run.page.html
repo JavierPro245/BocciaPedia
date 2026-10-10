@@ -10,9 +10,20 @@
 
 <div class="scoreboard">
 
-  <div class="end-bar">
+  <ion-button
+    fill="clear"
+    class="match-settings-btn"
+    [disabled]="showRest"
+    (click)="openMatchSettings()">
 
-  <span class="line"></span>
+    <ion-icon
+        slot="icon-only"
+        name="settings-outline">
+    </ion-icon>
+
+  </ion-button>
+
+  <div class="end-bar">
 
   <span class="text">
 
@@ -20,25 +31,39 @@
 
   </span>
 
-  <span class="line"></span>
+  <span class="sep">·</span>
+
+  <span class="text category">
+
+    {{ match.category }}
+
+  </span>
+
+  <span class="sep">·</span>
+
+  <span class="text gender">
+
+    {{ genderLabel }}
+
+  </span>
 
 </div>
 
 <div
     class="penalty-warning"
-    *ngIf="match.penalty &&
-           match.penalty.active &&
-           !match.penalty.executed">
+    *ngIf="pendingPenalties.length > 0">
 
     <ion-icon
         name="warning">
     </ion-icon>
 
-    Penalización pendiente
+    {{ pendingPenalties.length > 1
+        ? pendingPenalties.length + ' penalizaciones pendientes'
+        : 'Penalización pendiente' }}
 
     <span>
 
-        {{ match.penalty.team==='red'
+        {{ pendingPenalties[0].team==='red'
             ? 'Bocha Roja'
             : 'Bocha Azul' }}
 
@@ -53,6 +78,12 @@
     <!-- ROJO -->
 
     <div class="side red">
+
+      <img
+        *ngIf="match.redImage"
+        class="side-flag"
+        [src]="match.redImage"
+        alt="">
 
       <div class="player-name">
 
@@ -73,7 +104,9 @@
   </span>
 
 </div>
-      <div class="timer">
+      <div
+        class="timer"
+        [class.time-over]="match.redTime <= 0">
 
         {{ formatTime(match.redTime) }}
 
@@ -102,7 +135,7 @@
       [totalSeconds]="60"
       [label]="showPenalty ? 'PENALIZACIÓN' : 'DESCANSO'"
       [subtitle]="showPenalty ? 'Bocha de penalización' : 'Próximo END'"
-      [team]="match.penalty?.team"
+      [team]="currentPenalty?.team"
       [penaltyMode]="showPenalty">
     </app-countdown-circle>
 
@@ -132,6 +165,12 @@
 
     <div class="side blue">
 
+      <img
+        *ngIf="match.blueImage"
+        class="side-flag"
+        [src]="match.blueImage"
+        alt="">
+
       <div class="player-name">
 
         {{ match.bluePlayer }}
@@ -152,7 +191,9 @@
 
 </div>
 
-      <div class="timer">
+      <div
+        class="timer"
+        [class.time-over]="match.blueTime <= 0">
 
         {{ formatTime(match.blueTime) }}
 
@@ -322,7 +363,7 @@
     color="danger"
     class="round-btn"
     (click)="startRedTimer()"
-    [disabled]="showRest || match.timerRunning && match.turn === 'red'">
+    [disabled]="showRest || match.redTime <= 0 || (match.timerRunning && match.turn === 'red')">
 
     <ion-icon name="play"></ion-icon>
 
@@ -344,7 +385,7 @@
     color="primary"
     class="round-btn"
     (click)="startBlueTimer()"
-    [disabled]="showRest || match.timerRunning && match.turn === 'blue'">
+    [disabled]="showRest || match.blueTime <= 0 || (match.timerRunning && match.turn === 'blue')">
 
     <ion-icon name="play"></ion-icon>
 
@@ -370,6 +411,14 @@
 <div
     class="finish-actions"
     *ngIf="match.state==='finished'">
+
+    <button
+        class="view-summary"
+        (click)="viewSummary()">
+
+        Ver resumen
+
+    </button>
 
     <button
         class="new-match"

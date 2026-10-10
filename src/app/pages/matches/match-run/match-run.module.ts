@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MatchRunPageRoutingModule } from './match-run-routing.module';
 
 import { MatchRunPage } from './match-run.page';
+import { MatchSettingsModalComponent } from './match-settings-modal/match-settings-modal.component';
 import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
@@ -17,6 +18,6 @@ import { SharedModule } from 'src/app/shared/shared-module';
     MatchRunPageRoutingModule,
     SharedModule
   ],
-  declarations: [MatchRunPage]
+  declarations: [MatchRunPage, MatchSettingsModalComponent]
 })
 export class MatchRunPageModule {}

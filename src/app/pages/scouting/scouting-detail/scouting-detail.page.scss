@@ -1,0 +1,232 @@
+ion-content {
+
+  --background: var(--boccia-background);
+}
+
+.info-card {
+
+  h2 {
+    margin: 0 0 4px;
+  }
+
+  .country {
+    color: var(--boccia-text-secondary, #666);
+    margin: 0 0 8px;
+  }
+
+  .notes {
+    margin: 0;
+    font-style: italic;
+  }
+
+  .matchup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--boccia-text-secondary, #666);
+  }
+
+}
+
+.court-card {
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+}
+
+.court-content {
+
+  position: relative;
+
+  padding: 8px;
+
+  overflow: hidden;
+
+}
+
+.hint {
+
+  text-align: center;
+
+  font-size: .85rem;
+
+  color: var(--boccia-text-secondary, #666);
+
+  margin: 0 0 8px;
+
+}
+
+canvas {
+
+  width: 100%;
+
+  display: block;
+
+  touch-action: none;
+
+  transform-origin: center center;
+
+}
+
+.court-toolbar {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  margin: 12px 0;
+
+}
+
+.preview-banner {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  padding: 6px 10px;
+
+  margin-bottom: 8px;
+
+  border-radius: 10px;
+
+  background: rgba(var(--ion-color-primary-rgb, 56, 128, 255), .12);
+
+  font-size: .85rem;
+
+  font-weight: 600;
+
+}
+
+.section-title {
+
+  margin: 20px 16px 8px;
+
+  font-size: 1.1rem;
+
+  font-weight: 700;
+
+}
+
+.play-number {
+
+  background: #2dd36f;
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: 700;
+
+}
+
+.play-number.fail {
+
+  background: #eb445a;
+
+}
+
+.summary-card {
+
+  border-radius: 20px;
+
+}
+
+.summary-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid var(--card-border, #ececec);
+
+  font-size: 12px;
+
+}
+
+.summary-row:last-child {
+
+  border-bottom: none;
+
+}
+
+.summary-action {
+
+  flex: 0 0 90px;
+
+  font-weight: 600;
+
+}
+
+.summary-bar-track {
+
+  flex: 1;
+
+  height: 8px;
+
+  border-radius: 4px;
+
+  background: rgba(0, 0, 0, .08);
+
+  overflow: hidden;
+
+}
+
+.summary-bar-fill {
+
+  height: 100%;
+
+  background: #2dd36f;
+
+  border-radius: 4px;
+
+}
+
+.summary-count {
+
+  flex: 0 0 90px;
+
+  text-align: right;
+
+  color: var(--boccia-text-secondary, #666);
+
+}
+
+.no-note {
+
+  opacity: .6;
+
+  font-style: italic;
+
+}
+
+.empty {
+
+  text-align: center;
+
+  padding: 30px;
+
+  opacity: .6;
+
+}

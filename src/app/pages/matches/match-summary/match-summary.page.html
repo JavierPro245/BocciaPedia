@@ -1,13 +1,211 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>match-summary</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Resumen del partido"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">match-summary</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content *ngIf="match">
+
+  <div class="container">
+
+    <div class="score-card">
+
+      <div class="player red" [class.winner]="winner === 'red'">
+
+        <h2>{{ match.redPlayer }}</h2>
+
+        <span class="score">{{ match.redScore }}</span>
+
+        <span class="winner-tag" *ngIf="winner === 'red'">🏆 Ganador</span>
+
+      </div>
+
+      <div class="vs">VS</div>
+
+      <div class="player blue" [class.winner]="winner === 'blue'">
+
+        <h2>{{ match.bluePlayer }}</h2>
+
+        <span class="score">{{ match.blueScore }}</span>
+
+        <span class="winner-tag" *ngIf="winner === 'blue'">🏆 Ganador</span>
+
+      </div>
+
+    </div>
+
+    <p class="meta">
+
+      Categoría {{ match.category }} · {{ match.ends.length }} ends jugados
+
+      <span *ngIf="match.isTieBreak"> · Definido por Tie Break</span>
+
+    </p>
+
+    <!-- DETALLE POR PARCIAL: puntos, tiempo usado y faltas -->
+
+    <h3 class="section-title">Detalle por parcial</h3>
+
+    <div class="end-list">
+
+      <div class="end-card" *ngFor="let end of match.ends">
+
+        <div class="end-card-head">
+
+          <span class="end-badge">END {{ end.end }}</span>
+
+          <span
+            class="end-winner-tag"
+            [class.red]="end.winner === 'red'"
+            [class.blue]="end.winner === 'blue'"
+            *ngIf="end.winner !== 'tie'">
+
+            {{ end.winner === 'red' ? match.redPlayer : match.bluePlayer }}
+
+          </span>
+
+          <span class="end-winner-tag tie" *ngIf="end.winner === 'tie'">
+            Empate
+          </span>
+
+        </div>
+
+        <div class="end-teams">
+
+          <div class="end-team red" [class.win]="end.winner === 'red'">
+
+            <span class="pts">{{ end.redScore }} pts</span>
+
+            <span class="time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ formatTime(end.redTimeUsed) }}
+            </span>
+
+          </div>
+
+          <div class="end-team blue" [class.win]="end.winner === 'blue'">
+
+            <span class="pts">{{ end.blueScore }} pts</span>
+
+            <span class="time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ formatTime(end.blueTimeUsed) }}
+            </span>
+
+          </div>
+
+        </div>
+
+        <div
+          class="end-faults"
+          *ngIf="faultsFor(end).length as count; else noFaults">
+
+          <ion-icon name="warning-outline"></ion-icon>
+
+          <span>
+
+            {{ count }} {{ count === 1 ? 'falta' : 'faltas' }}:
+
+            <ng-container *ngFor="let fault of faultsFor(end); let last = last">
+
+              {{ fault.team === 'red' ? match.redPlayer : match.bluePlayer }}
+              ({{ !fault.executed ? 'pendiente' : (fault.success ? 'lograda' : 'no lograda') }}){{ last ? '' : ', ' }}
+
+            </ng-container>
+
+          </span>
+
+        </div>
+
+        <ng-template #noFaults>
+
+          <div class="end-faults none">
+
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+
+            <span>Sin faltas</span>
+
+          </div>
+
+        </ng-template>
+
+      </div>
+
+      <!-- TOTALES -->
+
+      <div class="end-card totals" *ngIf="match.ends.length > 0">
+
+        <div class="end-card-head">
+          <span class="end-badge">TOTALES</span>
+        </div>
+
+        <div class="end-teams">
+
+          <div class="end-team red">
+            <span class="pts">{{ match.redScore }} pts</span>
+            <span class="time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ formatTime(totalRedTime) }}
+            </span>
+          </div>
+
+          <div class="end-team blue">
+            <span class="pts">{{ match.blueScore }} pts</span>
+            <span class="time">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ formatTime(totalBlueTime) }}
+            </span>
+          </div>
+
+        </div>
+
+        <div class="end-faults" [class.none]="totalFaults === 0">
+          <ion-icon [name]="totalFaults > 0 ? 'warning-outline' : 'checkmark-circle-outline'"></ion-icon>
+          <span>{{ totalFaults }} {{ totalFaults === 1 ? 'falta' : 'faltas' }} en todo el partido</span>
+        </div>
+
+      </div>
+
+      <p class="empty-ends" *ngIf="match.ends.length === 0">
+        Este partido no registró parciales.
+      </p>
+
+    </div>
+
+    <p class="report-saved" *ngIf="match.reportUrl">
+
+      <ion-icon name="checkmark-done-circle"></ion-icon>
+
+      Ya hay un informe guardado con este partido.
+
+      <a [href]="match.reportUrl" target="_blank">Abrirlo</a>
+
+    </p>
+
+    <div class="actions">
+
+      <ion-button
+        expand="block"
+        color="success"
+        class="report-btn"
+        [disabled]="generatingReport"
+        (click)="confirmAndGenerateReport()">
+
+        <ion-icon slot="start" name="document-text-outline"></ion-icon>
+
+        {{ generatingReport ? 'Generando informe...' : 'Aprobar informe del partido' }}
+
+      </ion-button>
+
+      <ion-button expand="block" (click)="newMatch()">
+        Nuevo partido
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" (click)="goHome()">
+        Volver al inicio
+      </ion-button>
+
+    </div>
+
+  </div>
+
 </ion-content>

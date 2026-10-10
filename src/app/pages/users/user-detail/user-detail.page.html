@@ -5,10 +5,10 @@
 
 <ion-content>
 
-    <ion-spinner
+    <app-loading
         *ngIf="loading"
-        class="ion-margin">
-    </ion-spinner>
+        message="Cargando usuario...">
+    </app-loading>
 
     <ng-container
         *ngIf="!loading && user">

@@ -1,0 +1,462 @@
+/* ==========================================================
+   BOCCIAPP · AUTH DESIGN SYSTEM
+   Lenguaje visual compartido por Login / Registro / Recuperar.
+   Clases con prefijo .auth-* para no chocar con el resto de la app.
+========================================================== */
+
+:root {
+
+  --auth-bg: #eef3fa;
+  --auth-bg-deep: #e3ebf7;
+
+  --auth-surface: rgba(255, 255, 255, .86);
+  --auth-surface-solid: #ffffff;
+
+  --auth-field: #f7f9fc;
+  --auth-field-focus: #ffffff;
+
+  --auth-text: #11213c;
+  --auth-text-soft: #64748b;
+
+  --auth-border: #dde5f0;
+  --auth-border-strong: #c7d4e6;
+
+  --auth-ring: rgba(58, 134, 255, .18);
+
+  --auth-card-shadow: 0 24px 60px -18px rgba(10, 61, 145, .26);
+  --auth-cta-shadow: 0 12px 26px -8px rgba(10, 61, 145, .55);
+
+  --auth-glow-a: rgba(58, 134, 255, .34);
+  --auth-glow-b: rgba(10, 61, 145, .22);
+
+  --auth-radius: 26px;
+}
+
+:root.ion-palette-dark {
+
+  --auth-bg: #0b0f15;
+  --auth-bg-deep: #0f1620;
+
+  --auth-surface: rgba(28, 34, 44, .78);
+  --auth-surface-solid: #1a2029;
+
+  --auth-field: #151b23;
+  --auth-field-focus: #1b222c;
+
+  --auth-text: #eaeef5;
+  --auth-text-soft: #94a1b2;
+
+  --auth-border: #2a323d;
+  --auth-border-strong: #3a4552;
+
+  --auth-ring: rgba(58, 134, 255, .26);
+
+  --auth-card-shadow: 0 24px 60px -18px rgba(0, 0, 0, .75);
+  --auth-cta-shadow: 0 12px 26px -10px rgba(58, 134, 255, .6);
+
+  --auth-glow-a: rgba(58, 134, 255, .22);
+  --auth-glow-b: rgba(10, 61, 145, .3);
+}
+
+/* ----------------------------------------------------------
+   Lienzo: ion-content a pantalla completa con halos difusos
+---------------------------------------------------------- */
+
+ion-content.auth-content {
+
+  --background: var(--auth-bg);
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.auth-shell {
+
+  position: relative;
+  isolation: isolate;
+
+  display: flex;
+
+  min-height: 100%;
+
+  padding:
+    calc(28px + env(safe-area-inset-top))
+    20px
+    calc(28px + env(safe-area-inset-bottom));
+
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(90% 55% at 50% -10%, var(--auth-glow-a), transparent 70%),
+    linear-gradient(180deg, var(--auth-bg) 0%, var(--auth-bg-deep) 100%);
+}
+
+/* Las pantallas con botón de volver dejan espacio para él */
+.auth-shell.has-back {
+  padding-top: calc(66px + env(safe-area-inset-top));
+}
+
+/* Halo inferior: da profundidad sin usar imágenes */
+.auth-shell::after {
+
+  content: '';
+
+  /* Pegado a los bordes: si sobresaliera, el contenedor
+     generaría scroll horizontal. */
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 0 0;
+  height: 46%;
+
+  background: radial-gradient(60% 100% at 50% 100%, var(--auth-glow-b), transparent 72%);
+
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------
+   Tarjeta
+---------------------------------------------------------- */
+
+.auth-card {
+
+  position: relative;
+
+  width: 100%;
+  max-width: 430px;
+
+  /* margin:auto centra en ambos ejes sin recortar el desbordamiento */
+  margin: auto;
+
+  padding: 30px 26px 28px;
+
+  border: 1px solid var(--auth-border);
+  border-radius: var(--auth-radius);
+
+  background: var(--auth-surface);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+
+  box-shadow: var(--auth-card-shadow);
+
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* Filo de luz superior */
+.auth-card::before {
+
+  content: '';
+
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent);
+
+  pointer-events: none;
+}
+
+:root.ion-palette-dark .auth-card::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .16), transparent);
+}
+
+/* ----------------------------------------------------------
+   Encabezados
+---------------------------------------------------------- */
+
+.auth-heading {
+
+  margin: 0 0 6px;
+
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -.4px;
+
+  color: var(--auth-text);
+}
+
+.auth-sub {
+
+  margin: 0 0 24px;
+
+  font-size: .92rem;
+  line-height: 1.55;
+
+  color: var(--auth-text-soft);
+}
+
+/* Insignia redonda sobre el título (registro / recuperar) */
+.auth-badge {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+
+  margin-bottom: 16px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+
+  box-shadow: var(--auth-cta-shadow);
+}
+
+.auth-badge ion-icon {
+
+  font-size: 26px;
+  color: #fff;
+}
+
+/* ----------------------------------------------------------
+   Botón principal
+---------------------------------------------------------- */
+
+ion-button.auth-cta {
+
+  --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  --background-activated: linear-gradient(135deg, var(--ion-color-primary-shade) 0%, var(--ion-color-secondary-shade) 100%);
+  --background-focused: linear-gradient(135deg, var(--ion-color-primary-shade) 0%, var(--ion-color-secondary-shade) 100%);
+  --background-hover: linear-gradient(135deg, var(--ion-color-primary-shade) 0%, var(--ion-color-secondary-shade) 100%);
+
+  --color: #fff;
+  --border-radius: 16px;
+  --box-shadow: var(--auth-cta-shadow);
+
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  height: 52px;
+  margin: 4px 0 0;
+
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: .2px;
+
+  transition: transform var(--transition-fast, .2s) ease;
+}
+
+ion-button.auth-cta:active {
+  transform: scale(.985);
+}
+
+ion-button.auth-cta.button-disabled {
+
+  --background: var(--auth-border-strong);
+  --box-shadow: none;
+
+  opacity: .75;
+}
+
+/* ----------------------------------------------------------
+   Botón secundario / Google
+---------------------------------------------------------- */
+
+ion-button.auth-ghost {
+
+  --background: var(--auth-surface-solid);
+  --background-activated: var(--auth-field);
+  --background-hover: var(--auth-field);
+
+  --color: var(--auth-text);
+
+  --border-radius: 16px;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: var(--auth-border-strong);
+
+  --box-shadow: none;
+
+  height: 52px;
+  margin: 0;
+
+  font-size: .97rem;
+  font-weight: 600;
+
+  transition: transform var(--transition-fast, .2s) ease;
+}
+
+ion-button.auth-ghost:active {
+  transform: scale(.985);
+}
+
+ion-button.auth-ghost ion-icon {
+
+  font-size: 19px;
+  margin-inline-end: 10px;
+}
+
+/* El icono de Google conserva su color de marca */
+ion-button.auth-google ion-icon {
+  color: #ea4335;
+}
+
+/* ----------------------------------------------------------
+   Separador "o"
+---------------------------------------------------------- */
+
+.auth-divider {
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin: 20px 0;
+
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+
+  color: var(--auth-text-soft);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+
+  content: '';
+
+  flex: 1;
+  height: 1px;
+
+  background: linear-gradient(90deg, transparent, var(--auth-border-strong), transparent);
+}
+
+/* ----------------------------------------------------------
+   Enlaces y pies
+---------------------------------------------------------- */
+
+.auth-link {
+
+  color: var(--ion-color-secondary);
+
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-forgot {
+
+  display: flex;
+  justify-content: flex-end;
+
+  margin: -6px 0 20px;
+
+  font-size: .88rem;
+}
+
+.auth-footer {
+
+  margin: 22px 0 0;
+
+  text-align: center;
+  font-size: .92rem;
+
+  color: var(--auth-text-soft);
+}
+
+.auth-footer .auth-link {
+  margin-left: 6px;
+}
+
+/* ----------------------------------------------------------
+   Botón de volver flotante (reemplaza al toolbar)
+---------------------------------------------------------- */
+
+ion-button.auth-back {
+
+  position: absolute;
+  z-index: 5;
+
+  top: calc(10px + env(safe-area-inset-top));
+  inset-inline-start: 8px;
+
+  --color: var(--auth-text);
+  --background: transparent;
+  --background-activated: var(--auth-border);
+  --background-hover: var(--auth-border);
+
+  --border-radius: 50%;
+  --padding-start: 10px;
+  --padding-end: 10px;
+
+  height: 42px;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   Entrada escalonada
+---------------------------------------------------------- */
+
+@keyframes auth-rise {
+
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.auth-anim > * {
+
+  opacity: 0;
+  animation: auth-rise .5s cubic-bezier(.22, .9, .3, 1) forwards;
+}
+
+.auth-anim > *:nth-child(1) { animation-delay: .04s; }
+.auth-anim > *:nth-child(2) { animation-delay: .10s; }
+.auth-anim > *:nth-child(3) { animation-delay: .16s; }
+.auth-anim > *:nth-child(4) { animation-delay: .22s; }
+.auth-anim > *:nth-child(5) { animation-delay: .28s; }
+.auth-anim > *:nth-child(6) { animation-delay: .34s; }
+.auth-anim > *:nth-child(7) { animation-delay: .40s; }
+.auth-anim > *:nth-child(8) { animation-delay: .46s; }
+.auth-anim > *:nth-child(n + 9) { animation-delay: .52s; }
+
+@media (prefers-reduced-motion: reduce) {
+
+  .auth-anim > * {
+    animation: none;
+    opacity: 1;
+  }
+
+  ion-button.auth-cta,
+  ion-button.auth-ghost {
+    transition: none;
+  }
+
+  ion-button.auth-cta:active,
+  ion-button.auth-ghost:active {
+    transform: none;
+  }
+}
+
+/* ----------------------------------------------------------
+   Pantallas pequeñas
+---------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+  .auth-shell {
+    padding-inline: 14px;
+  }
+
+  .auth-card {
+    padding: 26px 20px 24px;
+    border-radius: 22px;
+  }
+
+  .auth-heading {
+    font-size: 1.4rem;
+  }
+}

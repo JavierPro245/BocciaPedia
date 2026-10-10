@@ -1,0 +1,15 @@
+ion-content {
+
+    --background: var(--boccia-background);
+}
+
+.list-search {
+
+    --background: var(--boccia-card);
+
+    --border-radius: 14px;
+
+    --box-shadow: var(--shadow-small);
+
+    padding: 10px 14px 4px;
+}

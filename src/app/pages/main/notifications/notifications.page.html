@@ -1,13 +1,60 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>notifications</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  [showMenu]="true"
+  title="Notificaciones">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">notifications</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ng-container *ngIf="notifications.length > 0; else emptyState">
+
+    <ion-list>
+
+      <ion-item-sliding *ngFor="let notification of notifications">
+
+        <ion-item button (click)="open(notification)">
+
+          <ion-icon
+            slot="start"
+            [name]="notification.read ? 'notifications-outline' : 'notifications'"
+            [color]="notification.read ? 'medium' : 'primary'">
+          </ion-icon>
+
+          <ion-label class="ion-text-wrap" [class.unread]="!notification.read">
+
+            <h2>{{ notification.title }}</h2>
+
+            <p>{{ notification.message }}</p>
+
+            <p class="date">{{ notification.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+
+          </ion-label>
+
+          <ion-badge slot="end" color="primary" *ngIf="!notification.read">Nueva</ion-badge>
+
+        </ion-item>
+
+        <ion-item-options side="end">
+
+          <ion-item-option color="danger" (click)="remove(notification)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
+
+        </ion-item-options>
+
+      </ion-item-sliding>
+
+    </ion-list>
+
+  </ng-container>
+
+  <ng-template #emptyState>
+
+    <app-empty-state
+      icon="notifications-outline"
+      title="No tenés notificaciones"
+      subtitle="Cuando haya novedades, van a aparecer acá.">
+    </app-empty-state>
+
+  </ng-template>
+
 </ion-content>

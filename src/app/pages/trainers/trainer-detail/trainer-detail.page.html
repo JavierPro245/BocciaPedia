@@ -5,13 +5,10 @@
 
 <ion-content fullscreen>
 
-  <div
-    class="ion-padding ion-text-center"
-    *ngIf="loading">
-
-    <ion-spinner name="crescent"></ion-spinner>
-
-  </div>
+  <app-loading
+    *ngIf="loading"
+    message="Cargando entrenador...">
+  </app-loading>
 
   <app-empty-state
     *ngIf="!loading && !trainer"

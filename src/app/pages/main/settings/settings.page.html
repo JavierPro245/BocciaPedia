@@ -9,6 +9,7 @@
 
     <app-settings-item
         icon="person-outline"
+        color="primary"
         title="Mi perfil"
         subtitle="Editar información personal"
         route="/main/profile">
@@ -16,6 +17,7 @@
 
     <app-settings-item
         icon="lock-closed-outline"
+        color="medium"
         title="Cambiar contraseña"
         subtitle="Actualizar credenciales"
         route="/main/settings/change-password">
@@ -25,6 +27,7 @@
 
     <app-settings-item
         icon="trophy-outline"
+        color="warning"
         title="Categorías"
         subtitle="Administrar categorías"
         route="">
@@ -32,6 +35,7 @@
 
     <app-settings-item
         icon="clipboard-outline"
+        color="secondary"
         title="Evaluaciones"
         subtitle="Configuración general"
         route="">
@@ -41,20 +45,33 @@
 
     <app-settings-item
         icon="cloud-upload-outline"
+        color="success"
         title="Respaldos"
         subtitle="Exportar e importar información"
         route="">
     </app-settings-item>
 
+    <h3>Notificaciones</h3>
+
+    <app-settings-item
+        icon="musical-notes-outline"
+        color="primary"
+        title="Sonido de notificaciones"
+        subtitle="Elegir el tono que suena al recibirlas"
+        route="/main/settings/notification-sound">
+    </app-settings-item>
+
     <h3>Apariencia</h3>
 
-    <ion-item class="app-card" lines="none">
+    <ion-item class="dark-mode-item" lines="none">
 
-        <ion-icon
-            slot="start"
-            name="moon-outline"
-            color="primary">
-        </ion-icon>
+        <div
+            class="icon-badge c-primary"
+            slot="start">
+
+            <ion-icon name="moon-outline"></ion-icon>
+
+        </div>
 
         <ion-label>
 
@@ -76,6 +93,7 @@
 
     <app-settings-item
         icon="information-circle-outline"
+        color="medium"
         title="Acerca de BocciApp"
         [subtitle]="'Versión ' + appVersion"
         route="">

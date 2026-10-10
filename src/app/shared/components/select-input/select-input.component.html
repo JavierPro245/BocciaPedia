@@ -1,29 +1,35 @@
-<ion-item>
+<div class="select-group">
 
-    <ion-label position="stacked">
+    <label
+        *ngIf="label"
+        class="select-label">
 
         {{ label }}
 
-    </ion-label>
+    </label>
 
-    <ion-select
+    <div class="select-container">
 
-        interface="popover"
+        <ion-select
 
-        [placeholder]="placeholder"
+            interface="popover"
 
-        [formControl]="control">
+            [placeholder]="placeholder"
 
-        <ion-select-option
+            [formControl]="control">
 
-            *ngFor="let option of options"
+            <ion-select-option
 
-            [value]="option">
+                *ngFor="let option of options"
 
-            {{ option }}
+                [value]="option">
 
-        </ion-select-option>
+                {{ option }}
 
-    </ion-select>
+            </ion-select-option>
 
-</ion-item>
+        </ion-select>
+
+    </div>
+
+</div>

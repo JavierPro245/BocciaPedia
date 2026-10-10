@@ -1,0 +1,90 @@
+<app-header
+  [showMenu]="true"
+  title="Partidos en vivo">
+</app-header>
+
+<ion-content class="live-content">
+
+  <app-loading
+    *ngIf="loading"
+    message="Buscando partidos en curso...">
+  </app-loading>
+
+  <app-empty-state
+    *ngIf="!loading && matches.length === 0"
+    icon="tv-outline"
+    title="No hay partidos en curso"
+    subtitle="Cuando un árbitro inicie un partido, va a aparecer acá para que puedas seguirlo en vivo.">
+  </app-empty-state>
+
+  <div
+    class="match-list"
+    *ngIf="!loading && matches.length > 0">
+
+    <div
+      class="live-card"
+      *ngFor="let match of matches"
+      (click)="openBroadcast(match)">
+
+      <div class="live-card-head">
+
+        <span class="live-dot"></span>
+
+        <span class="live-label">EN VIVO</span>
+
+        <span class="live-meta">
+          {{ match.isTieBreak ? 'TB' : ('END ' + match.currentEnd) }}
+          · {{ match.category }} · {{ genderLabel(match) }}
+        </span>
+
+      </div>
+
+      <div class="live-players">
+
+        <div class="live-side red">
+
+          <img
+            *ngIf="match.redImage"
+            class="live-flag"
+            [src]="match.redImage"
+            alt="">
+
+          <span class="live-name">{{ match.redPlayer }}</span>
+
+          <span class="live-score">{{ match.redScore }}</span>
+
+        </div>
+
+        <span class="live-vs">VS</span>
+
+        <div class="live-side blue">
+
+          <span class="live-score">{{ match.blueScore }}</span>
+
+          <span class="live-name">{{ match.bluePlayer }}</span>
+
+          <img
+            *ngIf="match.blueImage"
+            class="live-flag"
+            [src]="match.blueImage"
+            alt="">
+
+        </div>
+
+      </div>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="watch-btn">
+
+        <ion-icon slot="start" name="tv-outline"></ion-icon>
+        Ver transmisión
+
+      </ion-button>
+
+    </div>
+
+  </div>
+
+</ion-content>

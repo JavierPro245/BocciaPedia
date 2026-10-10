@@ -1,13 +1,116 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>athleteStatistics</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  title="Estadísticas por deportista"
+  [showBackButton]="true">
+</app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">athleteStatistics</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <div class="container">
+
+    <ion-item>
+
+      <ion-label position="stacked">Deportista</ion-label>
+
+      <ion-select
+        [(ngModel)]="selectedAthleteId"
+        (ionChange)="onAthleteChange()"
+        placeholder="Selecciona un deportista">
+
+        <ion-select-option
+          *ngFor="let athlete of athletes"
+          [value]="athlete.id">
+          {{ athlete.fullName }}
+        </ion-select-option>
+
+      </ion-select>
+
+    </ion-item>
+
+    <app-empty-state
+      *ngIf="selectedAthleteId && athleteEvaluations.length === 0"
+      title="Sin evaluaciones todavía"
+      subtitle="Este deportista todavía no tiene evaluaciones registradas.">
+    </app-empty-state>
+
+    <ng-container *ngIf="stats && athleteEvaluations.length > 0">
+
+      <div class="cards">
+
+        <ion-card class="kpi">
+          <ion-icon name="clipboard" color="primary"></ion-icon>
+          <h1>{{ stats.totalEvaluations }}</h1>
+          <p>Evaluaciones</p>
+        </ion-card>
+
+        <ion-card class="kpi">
+          <ion-icon name="locate" color="warning"></ion-icon>
+          <h1>{{ stats.totalThrows }}</h1>
+          <p>Lanzamientos</p>
+        </ion-card>
+
+        <ion-card class="kpi">
+          <ion-icon name="ribbon" color="success"></ion-icon>
+          <h1>{{ stats.excellentPercent | number:'1.0-1' }}%</h1>
+          <p>Excelente</p>
+        </ion-card>
+
+      </div>
+
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Calidad general</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+
+          <app-quality-chart
+            [excellent]="stats.excellent"
+            [good]="stats.good"
+            [regular]="stats.regular"
+            [bad]="stats.bad">
+          </app-quality-chart>
+
+        </ion-card-content>
+
+      </ion-card>
+
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Progreso por evaluación</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+
+          <div class="trend-row" *ngFor="let point of trend">
+
+            <div class="trend-label">
+
+              <strong>{{ point.title }}</strong>
+              <span>{{ point.date | date:'dd/MM/yyyy' }} · {{ point.throws }} lanzamientos</span>
+
+            </div>
+
+            <div class="trend-bar-track">
+
+              <div
+                class="trend-bar-fill"
+                [style.width.%]="point.excellentPercent">
+              </div>
+
+            </div>
+
+            <span class="trend-percent">{{ point.excellentPercent | number:'1.0-0' }}%</span>
+
+          </div>
+
+        </ion-card-content>
+
+      </ion-card>
+
+    </ng-container>
+
+  </div>
+
 </ion-content>

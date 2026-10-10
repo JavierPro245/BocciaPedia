@@ -1,82 +1,74 @@
-.auth-form {
+/* El lenguaje visual vive en src/theme/_auth.scss.
+   Acá solo los ajustes propios del registro. */
 
-    width: 100%;
-    max-width: 420px;
-
-    margin: auto;
-
-    padding: 20px;
-
+:host {
+    display: block;
 }
 
-.title {
-
-    margin-top: 10px;
-
-    text-align: center;
-
-    font-size: 1.7rem;
-
-    font-weight: 700;
-
-    color: var(--ion-color-primary);
-
+/* Cuatro campos: se compacta un poco el ritmo vertical */
+app-login-input {
+    --login-input-gap: 15px;
 }
 
-.subtitle {
-
-    text-align: center;
-
-    color: #6b7280;
-
-    margin-bottom: 24px;
-
+.signup-intro .auth-sub {
+    margin-bottom: 22px;
 }
 
-.terms-item {
+/* Casilla de términos */
+.terms {
 
-    --background: transparent;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
 
-    margin-top: 10px;
+    margin: 4px 0 22px;
+    padding: 13px 14px;
 
-    margin-bottom: 20px;
+    border: 1px solid var(--auth-border);
+    border-radius: 14px;
 
+    background: var(--auth-field);
+
+    font-size: .87rem;
+    line-height: 1.5;
+
+    color: var(--auth-text-soft);
+
+    cursor: pointer;
+
+    transition: border-color var(--transition-fast, .2s) ease;
 }
 
-.submit {
+.terms:focus-within {
+    border-color: var(--ion-color-secondary);
+}
 
-    height: 50px;
-
-    --border-radius: 16px;
+.terms strong {
 
     font-weight: 600;
 
+    color: var(--auth-text);
 }
 
-.login-link {
+.terms ion-checkbox {
 
-    margin-top: 24px;
+    flex: none;
 
-    text-align: center;
+    margin-top: 1px;
 
-    font-size: .95rem;
+    --size: 20px;
+    --border-radius: 6px;
+    --border-width: 1.5px;
+    --border-color: var(--auth-border-strong);
 
+    --checkbox-background-checked: var(--ion-color-secondary);
+    --border-color-checked: var(--ion-color-secondary);
+    --checkmark-color: #fff;
 }
 
-.login-link span {
+@media (prefers-reduced-motion: reduce) {
 
-    color: #6b7280;
-
-}
-
-.login-link a {
-
-    margin-left: 6px;
-
-    color: var(--ion-color-primary);
-
-    font-weight: 600;
-
-    text-decoration: none;
-
+    .terms {
+        transition: none;
+    }
 }

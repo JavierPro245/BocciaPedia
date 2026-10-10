@@ -1,3 +1,43 @@
-<p>
-  confirm-dialog works!
-</p>
+<div class="confirm-dialog">
+
+  <ion-icon
+    [name]="icon"
+    [color]="confirmColor">
+  </ion-icon>
+
+  <h2>
+
+    {{ title }}
+
+  </h2>
+
+  <p *ngIf="message">
+
+    {{ message }}
+
+  </p>
+
+  <div class="buttons">
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="medium"
+      (click)="cancel.emit()">
+
+      {{ cancelText }}
+
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      [color]="confirmColor"
+      (click)="confirm.emit()">
+
+      {{ confirmText }}
+
+    </ion-button>
+
+  </div>
+
+</div>

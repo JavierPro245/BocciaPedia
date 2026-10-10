@@ -1,3 +1,17 @@
+ion-content {
+
+    --background: var(--boccia-background);
+}
+
+ion-card {
+
+    margin: 16px;
+
+    border-radius: var(--card-radius, 18px);
+
+    box-shadow: var(--shadow-small);
+}
+
 ion-avatar {
     width: 140px;
     height: 140px;

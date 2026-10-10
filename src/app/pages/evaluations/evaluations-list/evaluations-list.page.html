@@ -6,6 +6,7 @@
 <ion-content>
 
   <ion-searchbar
+    class="list-search"
     [(ngModel)]="search"
     placeholder="Buscar evaluación..."
     animated="true">
@@ -26,25 +27,11 @@
 
   <ng-template #emptyState>
 
-    <div class="empty">
-
-      <ion-icon
-        name="clipboard-outline">
-      </ion-icon>
-
-      <h2>
-
-        No existen evaluaciones
-
-      </h2>
-
-      <p>
-
-        Presione el botón + para crear la primera evaluación.
-
-      </p>
-
-    </div>
+    <app-empty-state
+      icon="clipboard-outline"
+      title="No existen evaluaciones"
+      subtitle="Presioná el botón + para crear la primera evaluación.">
+    </app-empty-state>
 
   </ng-template>
 

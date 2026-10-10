@@ -3,58 +3,46 @@
     [showBackButton]="true">
 </app-header>
 
-<ion-content>
+<ion-content class="select-user-content">
 
     <div class="container">
 
-        <ion-list>
+        <app-empty-state
+            *ngIf="users.length === 0"
+            icon="people-outline"
+            title="No hay cuentas disponibles"
+            subtitle="No existen usuarios disponibles para vincular.">
+        </app-empty-state>
 
-            <ion-item
-                button
+        <div
+            class="ba-row-list"
+            *ngIf="users.length > 0">
+
+            <div
+                class="ba-row-card"
                 *ngFor="let user of users"
                 (click)="selectUser(user)">
 
-                <ion-avatar slot="start">
+                <ion-avatar>
 
                     <img
                         [src]="user.photoURL || 'assets/avatars/user.png'">
 
                 </ion-avatar>
 
-                <ion-label>
+                <div class="ba-row-info">
 
-                    <h2>
+                    <h2>{{ user.displayName }}</h2>
 
-                        {{ user.displayName }}
+                    <p>{{ user.email }}</p>
 
-                    </h2>
+                </div>
 
-                    <p>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
 
-                        {{ user.email }}
+            </div>
 
-                    </p>
-
-                </ion-label>
-
-                <ion-icon
-                    slot="end"
-                    name="chevron-forward-outline">
-                </ion-icon>
-
-            </ion-item>
-
-        </ion-list>
-
-        <ion-card *ngIf="users.length === 0">
-
-            <ion-card-content>
-
-                No existen usuarios disponibles para vincular.
-
-            </ion-card-content>
-
-        </ion-card>
+        </div>
 
     </div>
 

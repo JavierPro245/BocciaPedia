@@ -233,23 +233,18 @@ ion-footer{
 
 .menu-header img{
 
-    width:72px;
+    /* logo.png es la pieza completa (incluye el wordmark dibujado
+       encima), no un ícono: antes se achicaba a 72px y quedaba
+       prácticamente ilegible. */
+    width:120px;
 
     margin:auto;
 
     display:block;
 
-}
+    border-radius:18px;
 
-.menu-header h2{
-
-    margin-top:12px;
-
-    color:white;
-
-    font-size:1.4rem;
-
-    font-weight:700;
+    box-shadow:0 10px 24px rgba(0,0,0,.35);
 
 }
 
@@ -257,8 +252,10 @@ ion-footer{
 
     color:rgba(255,255,255,.7);
 
-    margin-top:4px;
+    margin-top:14px;
 
     font-size:.85rem;
+
+    letter-spacing:.4px;
 
 }

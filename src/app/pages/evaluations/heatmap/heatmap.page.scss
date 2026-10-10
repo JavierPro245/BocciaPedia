@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
     padding:16px;
@@ -115,7 +121,7 @@ ion-card{
 
     font-weight:600;
 
-    color:#666;
+    color:var(--boccia-text-secondary, #666);
 
     margin-bottom:6px;
 

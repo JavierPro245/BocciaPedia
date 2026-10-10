@@ -18,6 +18,7 @@
 @import "@ionic/angular/css/palettes/dark.class.css";
 
 @import "theme/cards";
+@import "theme/auth";
 
 /* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
@@ -203,5 +204,116 @@ ion-button {
     padding:12px;
 
   }
+
+}
+
+/* ===========================================
+   BOCCIAPP - Fila tipo tarjeta reutilizable
+   (listas de usuarios, cuentas para vincular, etc.)
+=========================================== */
+
+.ba-row-list{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:10px;
+
+  padding:16px;
+
+}
+
+.ba-row-card{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  padding:12px 14px;
+
+  border-radius:16px;
+
+  background:var(--boccia-card);
+
+  border:1px solid var(--card-border);
+
+  box-shadow:var(--shadow-small);
+
+  cursor:pointer;
+
+  transition:transform .15s ease;
+
+}
+
+.ba-row-card:active{
+
+  transform:scale(.98);
+
+}
+
+.ba-row-card ion-avatar{
+
+  flex:none;
+
+  width:46px;
+
+  height:46px;
+
+}
+
+.ba-row-card .ba-row-info{
+
+  flex:1;
+
+  min-width:0;
+
+}
+
+.ba-row-card .ba-row-info h2{
+
+  margin:0;
+
+  font-size:.98rem;
+
+  font-weight:700;
+
+  color:var(--boccia-text);
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+}
+
+.ba-row-card .ba-row-info p{
+
+  margin:2px 0 0;
+
+  font-size:.82rem;
+
+  color:var(--boccia-text-secondary);
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+}
+
+.ba-row-card > ion-icon:last-child{
+
+  flex:none;
+
+  font-size:16px;
+
+  color:var(--boccia-text-secondary);
+
+  opacity:.6;
 
 }

@@ -1,26 +1,32 @@
-<ion-card
+<div
     class="dashboard-card"
-    [routerLink]="route"
-    button>
+    [class.clickable]="route"
+    [routerLink]="route">
 
-    <ion-card-content>
+    <div
+        class="icon-badge"
+        [class]="'c-' + color">
 
-        <ion-icon
-            [name]="icon">
-        </ion-icon>
+        <ion-icon [name]="icon"></ion-icon>
 
-        <h3>
+    </div>
 
-            {{ title }}
+    <h1>
 
-        </h3>
+        {{ value }}
 
-        <h1>
+    </h1>
 
-            {{ value }}
+    <h3>
 
-        </h1>
+        {{ title }}
 
-    </ion-card-content>
+    </h3>
 
-</ion-card>
+    <ion-icon
+        *ngIf="route"
+        class="chevron"
+        name="chevron-forward-outline">
+    </ion-icon>
+
+</div>

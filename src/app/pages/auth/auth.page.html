@@ -1,103 +1,113 @@
-<app-header
-    title="Iniciar Sesión">
-</app-header>
+<ion-content class="auth-content" [fullscreen]="true">
 
-<ion-content>
+    <div class="auth-shell">
 
-    <form
-        class="auth-form"
-        [formGroup]="form"
-        (ngSubmit)="submit()">
+        <form
+            class="auth-card auth-anim"
+            [formGroup]="form"
+            (ngSubmit)="submit()">
 
-        <!-- Logo -->
+            <!-- Marca -->
 
-        <app-logo></app-logo>
+            <app-logo></app-logo>
 
-        <!-- Correo -->
+            <!-- Correo -->
 
-        <app-login-input
-            label="Correo electrónico"
-            placeholder="correo@bocciapp.cl"
-            icon="mail-outline"
-            type="email"
-            [control]="form.controls.email">
-        </app-login-input>
+            <app-login-input
+                label="Correo electrónico"
+                placeholder="correo@bocciapp.cl"
+                icon="mail-outline"
+                type="email"
+                autocomplete="email"
+                [control]="form.controls.email">
+            </app-login-input>
 
-        <!-- Contraseña -->
+            <!-- Contraseña -->
 
-        <app-login-input
-            label="Contraseña"
-            placeholder="Ingrese su contraseña"
-            icon="lock-closed-outline"
-            type="password"
-            [control]="form.controls.password">
-        </app-login-input>
+            <app-login-input
+                label="Contraseña"
+                placeholder="Ingrese su contraseña"
+                icon="lock-closed-outline"
+                type="password"
+                autocomplete="current-password"
+                [control]="form.controls.password">
+            </app-login-input>
 
-        <!-- Recuperar contraseña -->
+            <!-- Recuperar contraseña -->
 
-        <div class="forgot-password">
+            <div class="auth-forgot">
 
-            <a routerLink="/auth/forgot-password">
+                <a
+                    class="auth-link"
+                    routerLink="/auth/forgot-password">
 
-                ¿Olvidaste tu contraseña?
+                    ¿Olvidaste tu contraseña?
 
-            </a>
+                </a>
 
-        </div>
+            </div>
 
-        <!-- Botón Login -->
+            <!-- Botón Login -->
 
-        <ion-button
-          expand="block"
-          type="submit"
-          class="submit"
-          mode="ios"
-          color="primary"
-          [disabled]="form.invalid">
+            <ion-button
+                expand="block"
+                type="submit"
+                mode="ios"
+                class="auth-cta"
+                [disabled]="form.invalid">
 
-          Ingresar
+                Ingresar
 
-        </ion-button>
+            </ion-button>
 
-        <ion-item lines="none" class="divider">
+            <!-- Separador -->
 
-  <ion-label>
-    o
-  </ion-label>
+            <div class="auth-divider">
 
-</ion-item>
+                o
 
-<ion-button
-  expand="block"
-  type="button"
-  fill="outline"
-  mode="ios"
-  color="medium"
-  (click)="loginGoogle()">
+            </div>
 
-  <ion-icon
-    slot="start"
-    name="logo-google">
-  </ion-icon>
+            <!-- Google -->
 
-  Continuar con Google
+            <ion-button
+                expand="block"
+                type="button"
+                mode="ios"
+                class="auth-ghost auth-google"
+                (click)="loginGoogle()">
 
-</ion-button>
+                <ion-icon
+                    slot="start"
+                    name="logo-google">
+                </ion-icon>
 
-        <!-- Registro -->
+                Continuar con Google
 
-        <ion-button
-            expand="block"
-            type="button"
-            fill="outline"
-            mode="ios"
-            class="register-btn"
-            routerLink="/auth/sign-up">
+            </ion-button>
 
-            Registrarse
+            <!-- Registro -->
 
-        </ion-button>
+            <p class="auth-footer">
 
-    </form>
+                <span>
+
+                    ¿No tienes una cuenta?
+
+                </span>
+
+                <a
+                    class="auth-link"
+                    routerLink="/auth/sign-up">
+
+                    Regístrate
+
+                </a>
+
+            </p>
+
+        </form>
+
+    </div>
 
 </ion-content>

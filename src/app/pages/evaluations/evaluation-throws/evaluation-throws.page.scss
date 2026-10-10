@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
     padding:16px;
@@ -56,6 +62,6 @@ p{
 
     margin:8px 0;
 
-    color:#555;
+    color:var(--boccia-text-secondary, #555);
 
 }

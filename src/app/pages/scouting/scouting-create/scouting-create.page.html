@@ -1,0 +1,103 @@
+<app-header
+  [title]="editingReport ? 'Editar Scouting' : 'Nuevo Scouting'"
+  [showBackButton]="true">
+</app-header>
+
+<ion-content>
+
+  <ion-card>
+
+    <ion-card-content>
+
+      <ion-item>
+
+        <ion-label position="stacked">Mi deportista</ion-label>
+
+        <ion-input
+          placeholder="Ej: María Pérez"
+          [(ngModel)]="athleteName">
+        </ion-input>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label position="stacked">Nombre del rival</ion-label>
+
+        <ion-input
+          placeholder="Ej: John Smith"
+          [(ngModel)]="opponentName">
+        </ion-input>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label position="stacked">País</ion-label>
+
+        <ion-input
+          placeholder="Ej: Brasil"
+          [(ngModel)]="opponentCountry">
+        </ion-input>
+
+      </ion-item>
+
+      <ion-item lines="none">
+
+        <ion-label position="stacked">¿Con qué color juega mi deportista?</ion-label>
+
+        <ion-segment [(ngModel)]="ownColor" class="own-color-segment">
+
+          <ion-segment-button value="red">
+            <ion-label>🔴 Rojo</ion-label>
+          </ion-segment-button>
+
+          <ion-segment-button value="blue">
+            <ion-label>🔵 Azul</ion-label>
+          </ion-segment-button>
+
+        </ion-segment>
+
+        <p class="rival-color-hint">
+          El rival quedará asignado al color {{ ownColor === 'red' ? 'azul' : 'rojo' }}.
+        </p>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label position="stacked">Categoría (opcional)</ion-label>
+
+        <ion-input
+          placeholder="Ej: BC2"
+          [(ngModel)]="category">
+        </ion-input>
+
+      </ion-item>
+
+      <ion-item>
+
+        <ion-label position="stacked">Notas generales</ion-label>
+
+        <ion-textarea
+          placeholder="Estilo de juego, puntos fuertes/débiles, etc."
+          [(ngModel)]="notes">
+        </ion-textarea>
+
+      </ion-item>
+
+      <ion-button
+        expand="block"
+        class="submit"
+        [disabled]="!opponentName.trim() || !athleteName.trim() || saving"
+        (click)="save()">
+
+        {{ saving ? 'Guardando...' : (editingReport ? 'Guardar cambios' : 'Crear y empezar a registrar') }}
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

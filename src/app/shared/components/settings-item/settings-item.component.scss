@@ -1,51 +1,91 @@
-ion-item{
+ion-item {
 
-    --background:var(--boccia-card);
+    --background: var(--boccia-card);
 
-    --border-radius:16px;
+    --border-radius: 16px;
 
-    margin-bottom:12px;
+    margin-bottom: 12px;
 
-    --padding-top:10px;
+    --padding-top: 10px;
 
-    --padding-bottom:10px;
+    --padding-bottom: 10px;
 
-    box-shadow:var(--shadow-small);
+    --padding-start: 14px;
 
-    transition:var(--transition-fast);
+    box-shadow: var(--shadow-small);
 
+    transition: transform var(--transition-fast, .2s) ease, box-shadow var(--transition-fast, .2s) ease;
 }
 
-ion-item:hover{
+ion-item:active {
 
-    transform:translateY(-2px);
-
-    box-shadow:var(--shadow-medium);
-
+    transform: scale(.985);
 }
 
-ion-icon{
+.icon-badge {
 
-    font-size:24px;
+    display: flex;
 
+    align-items: center;
+
+    justify-content: center;
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 12px;
 }
 
-h2{
+.icon-badge ion-icon {
 
-    font-size:16px;
-
-    font-weight:600;
-
-    color:var(--boccia-text);
-
+    font-size: 20px;
 }
 
-p{
+.icon-badge.c-primary {
+    background: rgba(var(--ion-color-primary-rgb), .12);
+    color: var(--ion-color-primary);
+}
 
-    font-size:13px;
+.icon-badge.c-secondary {
+    background: rgba(var(--ion-color-secondary-rgb), .14);
+    color: var(--ion-color-secondary);
+}
 
-    color:var(--boccia-text-secondary);
+.icon-badge.c-success {
+    background: rgba(var(--ion-color-success-rgb), .14);
+    color: var(--ion-color-success);
+}
 
-    margin-top:3px;
+.icon-badge.c-danger {
+    background: rgba(var(--ion-color-danger-rgb), .12);
+    color: var(--ion-color-danger);
+}
 
+.icon-badge.c-warning {
+    background: rgba(var(--ion-color-warning-rgb), .18);
+    color: var(--ion-color-warning-shade, var(--ion-color-warning));
+}
+
+.icon-badge.c-medium {
+    background: rgba(var(--ion-color-medium-rgb, 146, 148, 156), .16);
+    color: var(--ion-color-medium, #92949c);
+}
+
+h2 {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    color: var(--boccia-text);
+}
+
+p {
+
+    font-size: 13px;
+
+    color: var(--boccia-text-secondary);
+
+    margin-top: 3px;
 }

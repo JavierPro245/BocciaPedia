@@ -28,7 +28,9 @@
 
             [maxlength]="maxlength"
 
-            [readonly]="readonly">
+            [readonly]="readonly"
+
+            [attr.autocomplete]="autocomplete || null">
 
         </ion-input>
 
@@ -40,11 +42,17 @@
 
             class="eye-button"
 
+            [attr.aria-label]="showPassword
+                ? 'Ocultar contraseña'
+                : 'Mostrar contraseña'"
+
             (click)="togglePassword()"
 
             type="button">
 
             <ion-icon
+
+                slot="icon-only"
 
                 [name]="showPassword
                 ? 'eye-off-outline'
@@ -59,6 +67,8 @@
     <small
         class="error-message"
         *ngIf="hasError">
+
+        <ion-icon name="alert-circle"></ion-icon>
 
         {{ errorMessage }}
 

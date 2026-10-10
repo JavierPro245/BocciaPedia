@@ -6,7 +6,9 @@
   overflow: hidden;
   border-radius: 50%;
 
-  background: #f4f5f8;
+  /* Antes era un gris claro fijo (#f4f5f8): el círculo de "sin foto"
+     quedaba como una mancha clara sobre tarjetas oscuras. */
+  background: rgba(var(--ion-color-medium-rgb, 146, 148, 156), .15);
 }
 
 .avatar img {

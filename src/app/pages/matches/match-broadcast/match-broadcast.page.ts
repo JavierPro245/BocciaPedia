@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Match } from '../models/match.model';
+import { Match, Penalty } from '../models/match.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 
@@ -59,6 +59,15 @@ penaltyInterval: any;
 
       this.match = match;
 
+      // match.showRest/showPenalty son los que de verdad reflejan lo
+      // que está pasando en match-run; se reflejan acá para que el
+      // overlay de descanso/penalización también se vea en la TV.
+      this.showRest = match.showRest;
+      this.restSeconds = match.restSeconds;
+
+      this.showPenalty = match.showPenalty;
+      this.penaltySeconds = match.penaltySeconds;
+
     }
 
   );
@@ -68,6 +77,36 @@ penaltyInterval: any;
 ngOnDestroy() {
 
   this.unsubscribe?.();
+
+}
+
+// Faltas pendientes de ejecutar (puede haber más de una por parcial).
+get pendingPenalties(): Penalty[] {
+
+  return this.match?.penalties?.filter(
+    p => p.active && !p.executed
+  ) ?? [];
+
+}
+
+// La que se está mostrando en el overlay de penalización ahora mismo.
+get currentPenalty(): Penalty | undefined {
+
+  return this.pendingPenalties[0];
+
+}
+
+get genderLabel(): string {
+
+  switch (this.match?.gender) {
+
+    case 'male': return 'MASCULINO';
+
+    case 'female': return 'FEMENINO';
+
+    default: return 'MIXTO';
+
+  }
 
 }
 

@@ -16,28 +16,43 @@
 
 .end-bar{
 
-    height:70px;
+    min-height:70px;
 
     background:#000;
 
-}
+    display:flex;
 
-.end-bar .line{
+    align-items:center;
 
-    flex:1;
+    justify-content:center;
 
-    height:2px;
+    gap:10px;
 
-    background:#444;
+    flex-wrap:wrap;
+
+    color:white;
+
+    padding:6px 16px;
 
 }
 
 .end-bar .text{
 
-    font-size:34px;
+    font-size:28px;
 
     font-weight:800;
 
+}
+
+.end-bar .sep{
+    opacity:.4;
+    font-size:22px;
+}
+
+.end-bar .category,
+.end-bar .gender{
+    font-size:20px;
+    color:#bbb;
 }
 
 /* =========================
@@ -100,6 +115,16 @@
 
     margin-bottom:28px;
 
+}
+
+.side-flag{
+    display:block;
+    width:54px;
+    height:54px;
+    object-fit:cover;
+    border-radius:10px;
+    margin:0 auto 10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.4);
 }
 
 .score{

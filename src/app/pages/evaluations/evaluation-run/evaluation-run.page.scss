@@ -1,3 +1,9 @@
+ion-content{
+
+    --background: var(--boccia-background);
+
+}
+
 .container{
 
 padding:16px;
@@ -18,7 +24,9 @@ margin-bottom:12px;
 
 height:420px;
 
-border:3px dashed #bdbdbd;
+/* Antes fijos (#bdbdbd borde / #fafafa fondo): un recuadro claro
+   atrapado en medio de una pantalla oscura. */
+border:3px dashed var(--card-border, #bdbdbd);
 
 border-radius:12px;
 
@@ -32,9 +40,9 @@ font-size:24px;
 
 font-weight:700;
 
-color:#9e9e9e;
+color:var(--boccia-text-secondary, #9e9e9e);
 
-background:#fafafa;
+background:var(--boccia-card, #fafafa);
 
 }
 
@@ -94,7 +102,7 @@ font-weight:700;
 
     border-radius:50%;
 
-    border:2px solid #BDBDBD;
+    border:2px solid var(--card-border, #BDBDBD);
 
     display:flex;
 
@@ -104,9 +112,10 @@ font-weight:700;
 
     font-weight:700;
 
-    background:#FFF;
+    /* Antes fijo (#FFF/#9E9E9E): invisible en modo oscuro. */
+    background:var(--boccia-card, #FFF);
 
-    color:#9E9E9E;
+    color:var(--boccia-text-secondary, #9E9E9E);
 
     transition:.25s;
 
@@ -138,7 +147,7 @@ font-weight:700;
 
     height:3px;
 
-    background:#D6D6D6;
+    background:var(--card-border, #D6D6D6);
 
     margin-top:18px;
 
@@ -204,13 +213,16 @@ font-weight:700;
 
     padding:8px 14px;
 
-    background:#F5F5F5;
+    /* Antes era un gris claro fijo (#F5F5F5): no se adaptaba a oscuro. */
+    background:var(--boccia-card, #F5F5F5);
+
+    color: var(--boccia-text);
 
     border-radius:25px;
 
     font-weight:600;
 
-    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    box-shadow:var(--shadow-small, 0 2px 6px rgba(0,0,0,.08));
 
 }
 

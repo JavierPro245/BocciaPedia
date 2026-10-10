@@ -1,5 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-statistics',
@@ -7,22 +6,4 @@ import { Router } from '@angular/router';
   styleUrls: ['./statistics.page.scss'],
   standalone: false
 })
-export class StatisticsPage implements OnInit {
-
-  router = inject(Router);
-  currentPath: string = '';
-
-  pages = [
-    { title: 'Athlete Statistics', url: '/main/statistics/athlete-statistics', icon: 'home-outline'},
-    { title: 'Comparisions', url: '/main/statistics/comparisions', icon: 'person-outline'},
-    { title: 'Dashboard', url: '/main/statistics/dashboard', icon: 'counter-outline'},
-    { title: 'Reports', url: '/main/statistics/reports', icon: 'person-outline'}
-  ]
-
-  ngOnInit() {
-    this.router.events.subscribe((event: any) => {
-      if(event) this.currentPath = event.url
-    })
-  }
-
-}
+export class StatisticsPage {}

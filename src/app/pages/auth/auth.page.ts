@@ -100,21 +100,19 @@ export class AuthPage {
 
   } catch (error: any) {
 
-  console.error('GOOGLE ERROR');
+    console.error('GOOGLE ERROR', error);
 
-  console.error(error);
+    await loading.dismiss();
 
-  await loading.dismiss();
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: this.getGoogleErrorMessage(error?.code),
+      buttons: ['Aceptar']
+    });
 
-  const alert = await this.alertController.create({
-    header: 'Error',
-    message: error.code + ' - ' + error.message,
-    buttons: ['Aceptar']
-  });
+    await alert.present();
 
-  await alert.present();
-
-}
+  }
 
 }
 

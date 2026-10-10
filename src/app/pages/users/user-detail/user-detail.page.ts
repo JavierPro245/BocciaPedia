@@ -84,6 +84,42 @@ export class UserDetailPage implements OnInit {
 
   }
 
+  const roleLabels = this.roles
+    .filter(r => this.user!.roles.includes(r.value as any))
+    .map(r => r.label)
+    .join(', ') || 'Sin rol';
+
+  const confirm = await this.alertController.create({
+
+    header: 'Confirmar cambios',
+
+    message: `¿Guardar estos permisos para ${this.user.displayName}? Rol: ${roleLabels}.`,
+
+    buttons: [
+
+      { text: 'Cancelar', role: 'cancel' },
+
+      {
+        text: 'Guardar',
+        handler: () => this.confirmSave()
+      }
+
+    ]
+
+  });
+
+  await confirm.present();
+
+}
+
+private async confirmSave(){
+
+  if(!this.user){
+
+    return;
+
+  }
+
   await this.userService.saveUser(this.user);
 
   const alert =

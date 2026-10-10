@@ -1,0 +1,153 @@
+/* Antes este componente no tenía estilos propios (archivo vacío):
+   se veía como un ion-card por defecto, sin personalidad. */
+
+:host {
+
+    display: block;
+
+}
+
+.dashboard-card {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+    height: 100%;
+
+    padding: 18px 16px;
+
+    box-sizing: border-box;
+
+    border-radius: var(--card-radius, 20px);
+
+    border: 1px solid var(--card-border, #e5e7eb);
+
+    background: var(--boccia-card, #fff);
+
+    box-shadow: var(--boccia-shadow, 0 6px 18px rgba(0, 0, 0, .12));
+
+    text-align: left;
+
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.dashboard-card.clickable {
+
+    cursor: pointer;
+}
+
+.dashboard-card.clickable:active {
+
+    transform: scale(.97);
+
+    box-shadow: var(--shadow-small, 0 2px 6px rgba(0, 0, 0, .08));
+}
+
+.icon-badge {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 46px;
+
+    height: 46px;
+
+    margin-bottom: 10px;
+
+    border-radius: 14px;
+}
+
+.icon-badge ion-icon {
+
+    font-size: 24px;
+}
+
+/* Un color distinto por tarjeta, reutilizando la paleta de Ionic
+   (ya definida clara/oscura en theme/variables.scss). */
+.icon-badge.c-primary {
+    background: rgba(var(--ion-color-primary-rgb), .12);
+    color: var(--ion-color-primary);
+}
+
+.icon-badge.c-secondary {
+    background: rgba(var(--ion-color-secondary-rgb), .14);
+    color: var(--ion-color-secondary);
+}
+
+.icon-badge.c-success {
+    background: rgba(var(--ion-color-success-rgb), .14);
+    color: var(--ion-color-success);
+}
+
+.icon-badge.c-danger {
+    background: rgba(var(--ion-color-danger-rgb), .12);
+    color: var(--ion-color-danger);
+}
+
+.icon-badge.c-warning {
+    background: rgba(var(--ion-color-warning-rgb), .18);
+    color: var(--ion-color-warning-shade, var(--ion-color-warning));
+}
+
+.dashboard-card h1 {
+
+    margin: 0;
+
+    font-size: 1.9rem;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    color: var(--boccia-text, #263238);
+}
+
+.dashboard-card h3 {
+
+    margin: 2px 0 0;
+
+    font-size: .85rem;
+
+    font-weight: 600;
+
+    color: var(--boccia-text-secondary, #777);
+}
+
+.chevron {
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 14px;
+
+    font-size: 16px;
+
+    color: var(--boccia-text-secondary, #aaa);
+
+    opacity: .6;
+}
+
+@media (max-width: 360px) {
+
+    .dashboard-card {
+        padding: 14px 12px;
+    }
+
+    .icon-badge {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dashboard-card h1 {
+        font-size: 1.6rem;
+    }
+}

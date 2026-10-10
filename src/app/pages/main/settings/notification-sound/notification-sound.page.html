@@ -1,0 +1,41 @@
+<app-header
+  [showBackButton]="true"
+  title="Sonido de notificaciones">
+</app-header>
+
+<ion-content class="sound-content">
+
+  <p class="hint">
+
+    Tocá cada opción para escucharla. Se usa cuando llega una
+    notificación mientras tenés la app abierta.
+
+  </p>
+
+  <div class="sound-list">
+
+    <div
+      class="sound-row"
+      *ngFor="let option of sounds"
+      [class.selected]="selected === option.id"
+      (click)="choose(option)">
+
+      <div class="sound-icon">
+
+        <ion-icon [name]="option.id === 'none' ? 'volume-mute-outline' : 'musical-notes-outline'"></ion-icon>
+
+      </div>
+
+      <span class="sound-label">{{ option.label }}</span>
+
+      <ion-icon
+        *ngIf="selected === option.id"
+        class="check"
+        name="checkmark-circle">
+      </ion-icon>
+
+    </div>
+
+  </div>
+
+</ion-content>

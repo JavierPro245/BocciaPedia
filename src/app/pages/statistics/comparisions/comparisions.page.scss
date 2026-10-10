@@ -1,0 +1,84 @@
+ion-content {
+
+  --background: var(--boccia-background);
+
+}
+
+.container {
+
+  padding: 16px;
+
+}
+
+.selectors {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+
+}
+
+.comparison-grid {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+
+  margin-top: 16px;
+
+}
+
+.athlete-col {
+
+  border-radius: 20px;
+
+  box-shadow: var(--shadow-small);
+
+}
+
+.stat-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid var(--card-border, #ececec);
+
+  font-size: 13px;
+
+  span {
+    color: var(--boccia-text-secondary, #666);
+  }
+
+}
+
+.stat-row:last-child {
+
+  border-bottom: none;
+
+}
+
+.placeholder {
+
+  text-align: center;
+
+  color: var(--boccia-text-secondary, #666);
+
+  padding: 30px 10px;
+
+}
+
+@media (max-width: 480px) {
+
+  .selectors,
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+}

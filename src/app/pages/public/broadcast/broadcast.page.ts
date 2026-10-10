@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Match } from '../../matches/models/match.model';
+import { Match, Penalty } from '../../matches/models/match.model';
 import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 
 @Component({
@@ -67,6 +67,15 @@ export class BroadcastPage implements OnInit, OnDestroy {
 
     this.match = match;
 
+    // match.showRest/showPenalty son los que de verdad reflejan lo
+    // que está pasando en match-run; se reflejan acá para que el
+    // overlay de descanso/penalización también se vea en esta vista.
+    this.showRest = match.showRest;
+    this.restSeconds = match.restSeconds;
+
+    this.showPenalty = match.showPenalty;
+    this.penaltySeconds = match.penaltySeconds;
+
     console.log('Partido cargado correctamente');
 
   }
@@ -78,6 +87,36 @@ export class BroadcastPage implements OnInit, OnDestroy {
   ngOnDestroy() {
 
     this.unsubscribe?.();
+
+  }
+
+  // Faltas pendientes de ejecutar (puede haber más de una por parcial).
+  get pendingPenalties(): Penalty[] {
+
+    return this.match?.penalties?.filter(
+      p => p.active && !p.executed
+    ) ?? [];
+
+  }
+
+  // La que se está mostrando en el overlay de penalización ahora mismo.
+  get currentPenalty(): Penalty | undefined {
+
+    return this.pendingPenalties[0];
+
+  }
+
+  get genderLabel(): string {
+
+    switch (this.match?.gender) {
+
+      case 'male': return 'MASCULINO';
+
+      case 'female': return 'FEMENINO';
+
+      default: return 'MIXTO';
+
+    }
 
   }
 

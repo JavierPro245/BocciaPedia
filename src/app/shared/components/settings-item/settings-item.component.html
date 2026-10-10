@@ -3,11 +3,14 @@
     detail="true"
     [routerLink]="route">
 
-    <ion-icon
-        slot="start"
-        [name]="icon"
-        [color]="color">
-    </ion-icon>
+    <div
+        class="icon-badge"
+        [class]="'c-' + color"
+        slot="start">
+
+        <ion-icon [name]="icon"></ion-icon>
+
+    </div>
 
     <ion-label>
 

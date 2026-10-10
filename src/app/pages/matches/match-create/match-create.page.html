@@ -24,6 +24,34 @@
 
       <ion-card-content>
 
+        <!-- Bandera o escudo de cada lado (opcional, a elección del usuario) -->
+
+        <div class="flags-row">
+
+          <div class="flag-pick">
+
+            <app-image-picker
+              image="assets/avatars/avatar.png"
+              (imageChange)="onRedImageSelected($event)">
+            </app-image-picker>
+
+            <span class="flag-label red">Bandera/escudo rojo</span>
+
+          </div>
+
+          <div class="flag-pick">
+
+            <app-image-picker
+              image="assets/avatars/avatar.png"
+              (imageChange)="onBlueImageSelected($event)">
+            </app-image-picker>
+
+            <span class="flag-label blue">Bandera/escudo azul</span>
+
+          </div>
+
+        </div>
+
         <ion-item>
 
           <ion-label position="stacked">
@@ -161,6 +189,32 @@
 
         </ion-item>
 
+        <ion-item lines="none">
+
+          <ion-label position="stacked">
+
+            Rama
+
+          </ion-label>
+
+          <ion-segment [(ngModel)]="gender" class="gender-segment">
+
+            <ion-segment-button value="male">
+              <ion-label>Masculino</ion-label>
+            </ion-segment-button>
+
+            <ion-segment-button value="female">
+              <ion-label>Femenino</ion-label>
+            </ion-segment-button>
+
+            <ion-segment-button value="mixed">
+              <ion-label>Mixto</ion-label>
+            </ion-segment-button>
+
+          </ion-segment>
+
+        </ion-item>
+
         <ion-item>
 
           <ion-label>
@@ -261,11 +315,11 @@
 
       color="success"
 
-      [disabled]="!playersAreValid"
+      [disabled]="!playersAreValid || uploadingImages"
 
       (click)="startMatch()">
 
-      Iniciar Partido
+      {{ uploadingImages ? 'Subiendo imágenes...' : 'Iniciar Partido' }}
 
     </ion-button>
 

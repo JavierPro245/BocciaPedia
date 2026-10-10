@@ -24,7 +24,9 @@ ion-avatar{
 
     margin:auto;
 
-    border:5px solid white;
+    /* Antes era un blanco fijo: en modo oscuro quedaba un aro blanco
+       pegado a la foto en vez de integrarse con la tarjeta. */
+    border:5px solid var(--boccia-card, white);
 
     box-shadow:0 10px 30px rgba(0,0,0,.15);
 

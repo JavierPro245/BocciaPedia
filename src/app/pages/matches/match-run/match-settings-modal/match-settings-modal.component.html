@@ -1,0 +1,316 @@
+<ion-header>
+
+  <ion-toolbar color="dark">
+
+    <ion-title>
+
+      Ajustes del partido
+
+    </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button (click)="dismiss()">
+
+        Cerrar
+
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="settings-content">
+
+  <!-- VOZ DEL TIEMPO -->
+
+  <section class="settings-section">
+
+    <h3>
+
+      Voz del tiempo
+
+    </h3>
+
+    <ion-item lines="none" class="voice-item">
+
+      <ion-label>
+
+        Avisar "one minute", "thirty seconds", "ten seconds" y "time"
+
+        <p>
+
+          Suena en el reloj del equipo que esté corriendo.
+
+        </p>
+
+      </ion-label>
+
+      <ion-toggle
+        slot="end"
+        [checked]="voiceEnabled"
+        (ionChange)="toggleVoice($event.detail.checked)">
+      </ion-toggle>
+
+    </ion-item>
+
+    <ion-button
+      size="small"
+      fill="outline"
+      class="test-voice-btn"
+      (click)="testVoice()">
+
+      <ion-icon slot="start" name="volume-high-outline"></ion-icon>
+
+      Probar voz
+
+    </ion-button>
+
+  </section>
+
+  <!-- TIEMPO -->
+
+  <section class="settings-section">
+
+    <h3>
+
+      Tiempo
+
+    </h3>
+
+    <div class="team-row">
+
+      <div class="team-row-head">
+
+        <span class="dot red"></span>
+
+        <span class="name">Roja</span>
+
+        <span class="value">{{ formatTime(match.redTime) }}</span>
+
+      </div>
+
+      <div class="btn-row">
+
+        <ion-button size="small" fill="outline" color="danger" (click)="adjustTime('red', -30)">−30s</ion-button>
+        <ion-button size="small" fill="outline" color="danger" (click)="adjustTime('red', -10)">−10s</ion-button>
+        <ion-button size="small" fill="outline" color="danger" (click)="adjustTime('red', 10)">+10s</ion-button>
+        <ion-button size="small" fill="outline" color="danger" (click)="adjustTime('red', 30)">+30s</ion-button>
+
+      </div>
+
+    </div>
+
+    <div class="team-row">
+
+      <div class="team-row-head">
+
+        <span class="dot blue"></span>
+
+        <span class="name">Azul</span>
+
+        <span class="value">{{ formatTime(match.blueTime) }}</span>
+
+      </div>
+
+      <div class="btn-row">
+
+        <ion-button size="small" fill="outline" color="primary" (click)="adjustTime('blue', -30)">−30s</ion-button>
+        <ion-button size="small" fill="outline" color="primary" (click)="adjustTime('blue', -10)">−10s</ion-button>
+        <ion-button size="small" fill="outline" color="primary" (click)="adjustTime('blue', 10)">+10s</ion-button>
+        <ion-button size="small" fill="outline" color="primary" (click)="adjustTime('blue', 30)">+30s</ion-button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- BOCHAS JUGADAS -->
+
+  <section class="settings-section">
+
+    <h3>
+
+      Bochas jugadas
+
+    </h3>
+
+    <div class="team-row">
+
+      <div class="team-row-head">
+
+        <span class="dot red"></span>
+
+        <span class="name">Roja</span>
+
+        <span class="value">{{ match.redBallsPlayed }} / 6</span>
+
+      </div>
+
+      <div class="btn-row">
+
+        <ion-button
+          size="small"
+          fill="outline"
+          color="danger"
+          [disabled]="match.redBallsPlayed <= 0"
+          (click)="adjustBalls('red', -1)">
+
+          −1 bocha
+
+        </ion-button>
+
+        <ion-button
+          size="small"
+          fill="outline"
+          color="danger"
+          [disabled]="match.redBallsPlayed >= 6"
+          (click)="adjustBalls('red', 1)">
+
+          +1 bocha
+
+        </ion-button>
+
+      </div>
+
+    </div>
+
+    <div class="team-row">
+
+      <div class="team-row-head">
+
+        <span class="dot blue"></span>
+
+        <span class="name">Azul</span>
+
+        <span class="value">{{ match.blueBallsPlayed }} / 6</span>
+
+      </div>
+
+      <div class="btn-row">
+
+        <ion-button
+          size="small"
+          fill="outline"
+          color="primary"
+          [disabled]="match.blueBallsPlayed <= 0"
+          (click)="adjustBalls('blue', -1)">
+
+          −1 bocha
+
+        </ion-button>
+
+        <ion-button
+          size="small"
+          fill="outline"
+          color="primary"
+          [disabled]="match.blueBallsPlayed >= 6"
+          (click)="adjustBalls('blue', 1)">
+
+          +1 bocha
+
+        </ion-button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FALTAS / PENALIZACIONES -->
+
+  <section class="settings-section">
+
+    <h3>
+
+      Faltas y penalizaciones — END {{ match.currentEnd }}
+
+    </h3>
+
+    <div class="btn-row">
+
+      <ion-button size="small" color="danger" (click)="addFault('red')">
+
+        + Falta Roja
+
+      </ion-button>
+
+      <ion-button size="small" color="primary" (click)="addFault('blue')">
+
+        + Falta Azul
+
+      </ion-button>
+
+    </div>
+
+    <p class="hint">
+
+      "Falta Roja" marca una falta del equipo rojo: el tiro de
+      penalización queda a favor del azul (y viceversa).
+
+    </p>
+
+    <ion-list *ngIf="currentEndPenalties.length; else noPenalties" lines="full">
+
+      <ion-item *ngFor="let p of currentEndPenalties">
+
+        <span
+          class="dot"
+          slot="start"
+          [class.red]="p.team === 'red'"
+          [class.blue]="p.team === 'blue'">
+        </span>
+
+        <ion-label>
+
+          Bocha {{ p.team === 'red' ? 'Roja' : 'Azul' }}
+
+          <p>
+
+            <ng-container *ngIf="!p.executed">
+              Pendiente de ejecutar
+            </ng-container>
+
+            <ng-container *ngIf="p.executed && p.success">
+              Lograda ✔
+            </ng-container>
+
+            <ng-container *ngIf="p.executed && p.success === false">
+              No lograda ✖
+            </ng-container>
+
+          </p>
+
+        </ion-label>
+
+        <ion-button
+          *ngIf="!p.executed"
+          slot="end"
+          fill="clear"
+          color="medium"
+          (click)="removePenalty(p.id)">
+
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+
+        </ion-button>
+
+      </ion-item>
+
+    </ion-list>
+
+    <ng-template #noPenalties>
+
+      <p class="empty-hint">
+
+        No hay faltas registradas en este parcial.
+
+      </p>
+
+    </ng-template>
+
+  </section>
+
+</ion-content>

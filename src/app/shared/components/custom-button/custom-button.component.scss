@@ -1,0 +1,10 @@
+.custom-btn {
+
+    height: 50px;
+
+    --border-radius: var(--button-radius, 14px);
+
+    font-weight: 600;
+
+    text-transform: none;
+}

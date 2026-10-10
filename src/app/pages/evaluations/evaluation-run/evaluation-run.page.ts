@@ -12,6 +12,8 @@ import { EvaluationFlow } from
 '../engine/evaluation-flow';
 import { CourtMode } from '../models/court-mode.model';
 import { pixelDistanceToMeters, formatCourtDistance, metersFromThrowLine } from '../engine/physics/court-scale';
+import { AthleteService } from 'src/app/services/athlete.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-evaluation-run',
@@ -31,6 +33,8 @@ export class EvaluationRunPage implements OnInit {
 
   private sessionService: EvaluationSessionService,
   private evaluationService: EvaluationService,
+  private athleteService: AthleteService,
+  private notificationService: NotificationService,
 
   private modalController: ModalController,
 
@@ -527,6 +531,8 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
     }
   );
 
+  await this.notifyAthleteIfLinked();
+
 }
   this.evaluationService.setDetailViewMode('finish');
   this.viewMode = this.evaluationService.getDetailViewMode();
@@ -538,6 +544,38 @@ private async showThrowResultModal(ball: Throw): Promise<void> {
   this.router.navigate([
     '/main/evaluations/evaluations-list'
   ]);
+
+}
+
+private async notifyAthleteIfLinked(): Promise<void> {
+
+  const currentEvaluation = this.evaluationService.getEvaluation();
+
+  if (!currentEvaluation?.athleteId) {
+    return;
+  }
+
+  const athlete = await this.athleteService.getAthlete(currentEvaluation.athleteId);
+
+  if (!athlete?.linkedUserId) {
+    return;
+  }
+
+  await this.notificationService.create({
+
+    userId: athlete.linkedUserId,
+
+    title: 'Nueva evaluación completada',
+
+    message: `Tu entrenador registró una evaluación de ${currentEvaluation.evaluationType}.`,
+
+    link: '/main/evaluations/evaluations-list',
+
+    read: false,
+
+    createdAt: new Date()
+
+  });
 
 }
 

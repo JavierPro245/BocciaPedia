@@ -106,7 +106,13 @@ export class TrainerEditPage {
 
     this.form.markAllAsTouched();
 
-    console.log('Formulario inválido', this.form.value);
+    const toast = await this.toastController.create({
+      message: 'Revisa los campos marcados en rojo antes de guardar.',
+      duration: 2500,
+      color: 'warning'
+    });
+
+    await toast.present();
 
     return;
 

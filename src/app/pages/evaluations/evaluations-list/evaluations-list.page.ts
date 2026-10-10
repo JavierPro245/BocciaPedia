@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Evaluation } from 'src/app/models/evaluation.model';
 import { SessionService } from 'src/app/services/session.service';
 import { EvaluationService } from 'src/app/services/evaluation.service';
@@ -26,6 +26,8 @@ export class EvaluationsListPage implements OnInit {
 
   private router: Router,
 
+  private route: ActivatedRoute,
+
   private evaluationService: EvaluationService,
 
   private sessionService: SessionService,
@@ -37,6 +39,14 @@ export class EvaluationsListPage implements OnInit {
 ){}
   
   ngOnInit(): void {
+
+  // Al llegar desde "Ver evaluaciones" de un deportista puntual, se
+  // precarga el buscador con su nombre para filtrar de inmediato.
+  const athleteFilter = this.route.snapshot.queryParamMap.get('athlete');
+
+  if (athleteFilter) {
+    this.search = athleteFilter;
+  }
 
   const user = this.sessionService.getUser();
 

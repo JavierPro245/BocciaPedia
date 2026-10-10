@@ -1,0 +1,98 @@
+/* Este componente no tenía ni un solo estilo propio (archivo vacío):
+   dependía por completo de .app-card (tema global) + el look por
+   defecto de ion-list/ion-item. */
+
+:host {
+
+    display: block;
+
+    margin: 16px;
+}
+
+.info-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    border-radius: var(--card-radius, 20px);
+
+    background: var(--boccia-card, #fff);
+
+    border: 1px solid var(--card-border, #e5e7eb);
+
+    box-shadow: var(--boccia-shadow, var(--shadow-small));
+}
+
+.info-row {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+}
+
+.info-row ion-icon {
+
+    flex: none;
+
+    margin-top: 2px;
+
+    font-size: 22px;
+
+    color: var(--ion-color-primary);
+}
+
+.info-row ion-icon.ok {
+    color: var(--ion-color-success);
+}
+
+.info-row ion-icon.bad {
+    color: var(--ion-color-danger);
+}
+
+.info-row ion-icon.pending {
+    color: var(--ion-color-warning);
+}
+
+.info-row h3 {
+
+    margin: 0 0 2px;
+
+    font-size: .78rem;
+
+    font-weight: 600;
+
+    color: var(--boccia-text-secondary, #777);
+
+    text-transform: uppercase;
+
+    letter-spacing: .4px;
+}
+
+.info-row p {
+
+    margin: 0;
+
+    font-size: .95rem;
+
+    font-weight: 500;
+
+    color: var(--boccia-text, #263238);
+
+    word-break: break-word;
+}
+
+.info-row p.uid {
+
+    font-family: monospace;
+
+    font-size: .82rem;
+
+    color: var(--boccia-text-secondary, #777);
+}

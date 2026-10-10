@@ -1,3 +1,8 @@
+ion-content {
+
+  --background: var(--boccia-background);
+}
+
 .grid {
 
   display: grid;
@@ -20,7 +25,9 @@
 
   aspect-ratio: 1 / 1;
 
-  background: #ececec;
+  box-shadow: var(--shadow-small);
+
+  background: var(--boccia-card, #ececec);
 
   ion-img {
 

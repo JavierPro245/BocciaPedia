@@ -1,119 +1,259 @@
-ion-content{
+/* Los tokens --boccia-xxx y --ion-color-xxx ya cambian solos entre
+   claro y oscuro (ver theme/variables.scss), así que esta hoja no
+   necesita ramas de modo oscuro propias. */
 
-    --background: var(--boccia-background);
+.home-content {
 
-}
-
-.welcome-card{
-
-    background: linear-gradient(
-        135deg,
-        var(--boccia-blue),
-        var(--boccia-light-blue)
-    );
-
-    color:white;
-
-    border-radius:24px;
-
-    padding:24px;
-
-    margin-bottom:24px;
-
-    box-shadow:var(--shadow-medium);
+    --background: var(--page-background, var(--boccia-background));
 
 }
 
-.welcome-card h2{
+.home-wrap {
 
-    margin:0;
+    max-width: 720px;
 
-    font-size:1.6rem;
+    margin: 0 auto;
 
-    font-weight:700;
+    padding: 16px;
 
-}
-
-.welcome-card p{
-
-    margin-top:8px;
-
-    opacity:.9;
+    box-sizing: border-box;
 
 }
 
-.dashboard-grid{
+/* ----------------------------------------------------------
+   Bienvenida
+---------------------------------------------------------- */
 
-    display:grid;
+.welcome-card {
 
-    grid-template-columns:repeat(2,1fr);
+    position: relative;
 
-    gap:16px;
+    isolation: isolate;
+    overflow: hidden;
 
-    margin-bottom:28px;
+    background: linear-gradient(135deg, var(--boccia-blue), var(--boccia-light-blue));
 
+    border-radius: var(--card-radius, 24px);
+
+    padding: 26px 22px;
+
+    margin-bottom: 22px;
+
+    box-shadow: var(--shadow-medium);
 }
 
-.dashboard-card{
+/* Un par de círculos difusos como decoración, sin usar imágenes. */
+.welcome-card::before,
+.welcome-card::after {
 
-    margin:0;
+    content: '';
 
-    border-radius:20px;
+    position: absolute;
+    z-index: -1;
 
-    box-shadow:var(--shadow-small);
+    border-radius: 50%;
 
-    text-align:center;
-
+    background: rgba(255, 255, 255, .14);
 }
 
-.dashboard-card ion-card-content{
-
-    padding:20px;
-
+.welcome-card::before {
+    width: 160px;
+    height: 160px;
+    top: -70px;
+    right: -50px;
 }
 
-.dashboard-card ion-icon{
-
-    font-size:38px;
-
-    color:var(--boccia-blue);
-
+.welcome-card::after {
+    width: 110px;
+    height: 110px;
+    bottom: -55px;
+    left: -30px;
+    background: rgba(255, 255, 255, .1);
 }
 
-.dashboard-card h3{
-
-    margin:12px 0 6px;
-
-    font-size:.95rem;
-
+.welcome-text {
+    color: white;
 }
 
-.dashboard-card h1{
+.greeting {
 
-    margin:0;
+    margin: 0 0 4px;
 
-    font-size:2rem;
+    font-size: .92rem;
 
-    color:var(--boccia-blue);
+    font-weight: 600;
 
+    opacity: .92;
 }
 
-.section-title{
+.welcome-text h2 {
 
-    margin-bottom:14px;
+    margin: 0;
 
-    color:var(--boccia-blue);
+    font-size: 1.4rem;
 
-    font-size:1.2rem;
+    font-weight: 700;
 
-    font-weight:700;
-
+    line-height: 1.3;
 }
 
-ion-item{
+.roles {
 
-    --border-radius:16px;
+    display: flex;
 
-    margin-bottom:10px;
+    flex-wrap: wrap;
 
+    gap: 6px;
+
+    margin-top: 14px;
+}
+
+/* app-role-chip renderiza su propio <ion-chip> en su propia plantilla:
+   sin ::ng-deep el selector normal nunca llega a matchearlo (la
+   encapsulación de Angular le exige un atributo que ese elemento no
+   tiene). */
+.roles ::ng-deep ion-chip {
+
+    --background: rgba(255, 255, 255, .18);
+
+    --color: white;
+
+    font-weight: 600;
+}
+
+/* ----------------------------------------------------------
+   Tarjetas del dashboard
+---------------------------------------------------------- */
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 26px;
+}
+
+/* ----------------------------------------------------------
+   Accesos rápidos
+---------------------------------------------------------- */
+
+.section-title {
+
+    margin: 0 0 12px;
+
+    color: var(--boccia-text, #263238);
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+}
+
+.quick-actions {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+}
+
+.quick-action {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    border-radius: 16px;
+
+    background: var(--boccia-card, #fff);
+
+    border: 1px solid var(--card-border, #e5e7eb);
+
+    box-shadow: var(--shadow-small);
+
+    cursor: pointer;
+
+    transition: transform .15s ease;
+}
+
+.quick-action:active {
+
+    transform: scale(.98);
+}
+
+.quick-action span {
+
+    flex: 1;
+
+    font-weight: 600;
+
+    font-size: .95rem;
+
+    color: var(--boccia-text, #263238);
+}
+
+.qa-chevron {
+
+    font-size: 16px;
+
+    color: var(--boccia-text-secondary, #aaa);
+
+    opacity: .6;
+}
+
+.qa-icon {
+
+    display: flex;
+
+    flex: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 12px;
+}
+
+.qa-icon ion-icon {
+    font-size: 20px;
+}
+
+.qa-icon.c-primary {
+    background: rgba(var(--ion-color-primary-rgb), .12);
+    color: var(--ion-color-primary);
+}
+
+.qa-icon.c-secondary {
+    background: rgba(var(--ion-color-secondary-rgb), .14);
+    color: var(--ion-color-secondary);
+}
+
+.qa-icon.c-success {
+    background: rgba(var(--ion-color-success-rgb), .14);
+    color: var(--ion-color-success);
+}
+
+.qa-icon.c-warning {
+    background: rgba(var(--ion-color-warning-rgb), .18);
+    color: var(--ion-color-warning-shade, var(--ion-color-warning));
+}
+
+@media (max-width: 360px) {
+
+    .welcome-text h2 {
+        font-size: 1.22rem;
+    }
 }

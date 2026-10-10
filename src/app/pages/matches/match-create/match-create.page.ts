@@ -10,6 +10,7 @@ import { SessionService } from 'src/app/services/session.service';
 import { Athlete } from 'src/app/models/athlete.model';
 
 import { MatchRepositoryService } from 'src/app/services/match-repository.service';
+import { StorageService } from 'src/app/services/storageService';
 
 import { Match } from '../models/match.model';
 
@@ -38,6 +39,18 @@ manualBluePlayer = '';
 
 category = 'BC2';
 
+gender: 'male' | 'female' | 'mixed' = 'mixed';
+
+// Bandera/escudo opcional por lado: el usuario elige la imagen que
+// quiera (no tiene que ser necesariamente una bandera de país).
+redImagePreview = 'assets/avatars/avatar.png';
+blueImagePreview = 'assets/avatars/avatar.png';
+
+private redImageFile: File | null = null;
+private blueImageFile: File | null = null;
+
+uploadingImages = false;
+
 totalEnds = 4;
 
 // Tiempo editable por el usuario (en minutos)
@@ -56,9 +69,23 @@ constructor(
 
   private athleteService: AthleteService,
 
-  private sessionService: SessionService
+  private sessionService: SessionService,
+
+  private storageService: StorageService
 
 ){}
+
+onRedImageSelected(file: File): void {
+
+  this.redImageFile = file;
+
+}
+
+onBlueImageSelected(file: File): void {
+
+  this.blueImageFile = file;
+
+}
 
 ngOnInit() {
 
@@ -221,6 +248,35 @@ async startMatch() {
   }
 
   // ==========================
+  // Subir bandera/escudo (si se eligió alguna)
+  // ==========================
+
+  let redImage = '';
+  let blueImage = '';
+
+  this.uploadingImages = true;
+
+  try {
+
+    if (this.redImageFile) {
+      redImage = await this.storageService.uploadImage(this.redImageFile, 'match-flags');
+    }
+
+    if (this.blueImageFile) {
+      blueImage = await this.storageService.uploadImage(this.blueImageFile, 'match-flags');
+    }
+
+  } catch (error) {
+
+    console.error('Error subiendo bandera/escudo del partido:', error);
+
+  } finally {
+
+    this.uploadingImages = false;
+
+  }
+
+  // ==========================
   // Crear objeto Match
   // ==========================
 
@@ -237,6 +293,16 @@ async startMatch() {
     bluePlayer: blueName,
 
     category: this.category as any,
+
+    gender: this.gender,
+
+    redImage,
+
+    blueImage,
+
+    reportUrl: '',
+
+    reportGeneratedAt: 0,
 
     totalEnds: this.totalEnds,
 
@@ -274,7 +340,7 @@ async startMatch() {
 
     ends: [],
 
-    penalty: null,
+    penalties: [],
 
     showRest:false,
 

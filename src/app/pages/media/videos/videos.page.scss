@@ -1,3 +1,8 @@
+ion-content {
+
+  --background: var(--boccia-background);
+}
+
 .list {
 
   display: flex;
@@ -17,6 +22,8 @@
   overflow: hidden;
 
   background: #000;
+
+  box-shadow: var(--shadow-small);
 
   video {
 
@@ -40,7 +47,9 @@
 
     padding: 6px 10px;
 
-    background: #f4f4f4;
+    /* Antes era un gris claro fijo (#f4f4f4): quedaba pegado como un
+       cartel claro sobre el video en modo oscuro. */
+    background: var(--boccia-card, #f4f4f4);
 
   }
 
@@ -48,7 +57,7 @@
 
     font-size: 0.9rem;
 
-    color: #333;
+    color: var(--boccia-text, #333);
 
     overflow: hidden;
 

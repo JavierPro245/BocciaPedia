@@ -1,3 +1,35 @@
+ion-content{
+
+    --background: var(--boccia-background);
+}
+
+ion-card{
+
+    margin: 16px;
+
+    border-radius: var(--card-radius, 18px);
+
+    box-shadow: var(--shadow-small);
+}
+
+ion-item{
+
+    --border-color: var(--card-border);
+}
+
+ion-button{
+
+    margin-top: 20px;
+
+    margin-bottom: 8px;
+
+    height: 50px;
+
+    --border-radius: 14px;
+
+    font-weight: 600;
+}
+
 .distance-buttons{
 
     display:flex;

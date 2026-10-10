@@ -3,9 +3,10 @@
   [showBackButton]="true">
 </app-header>
 
-<ion-content>
+<ion-content class="reports-content">
 
   <ion-searchbar
+    class="list-search"
     [(ngModel)]="search"
     placeholder="Buscar por deportista o tipo..."
     animated="true">
@@ -13,28 +14,37 @@
 
   <ng-container *ngIf="filteredEvaluations.length > 0; else emptyState">
 
-    <ion-list>
+    <div class="report-list">
 
-      <ion-item *ngFor="let evaluation of filteredEvaluations">
+      <div
+        class="report-row"
+        *ngFor="let evaluation of filteredEvaluations">
 
-        <ion-label>
+        <div class="report-icon">
+
+          <ion-icon name="document-text-outline"></ion-icon>
+
+        </div>
+
+        <div class="report-info">
 
           <h2>{{ evaluation.athleteName }}</h2>
 
           <p>{{ evaluation.evaluationType }} · {{ evaluation.throwList?.length ?? 0 }} lanzamientos</p>
 
-          <p>{{ evaluation.date | date:'dd/MM/yyyy' }}</p>
+          <span class="report-date">{{ evaluation.date | date:'dd/MM/yyyy' }}</span>
 
-        </ion-label>
+        </div>
 
         <ion-button
-          slot="end"
+          class="pdf-btn"
           fill="outline"
+          size="small"
           [disabled]="generatingId === evaluation.id"
           (click)="downloadPdf(evaluation)">
 
           <ion-icon
-            name="document-text-outline"
+            name="download-outline"
             slot="start">
           </ion-icon>
 
@@ -42,23 +52,19 @@
 
         </ion-button>
 
-      </ion-item>
+      </div>
 
-    </ion-list>
+    </div>
 
   </ng-container>
 
   <ng-template #emptyState>
 
-    <div class="empty">
-
-      <ion-icon name="document-text-outline"></ion-icon>
-
-      <h2>No hay evaluaciones para reportar</h2>
-
-      <p>Cuando tengas evaluaciones registradas, vas a poder descargarlas en PDF desde acá.</p>
-
-    </div>
+    <app-empty-state
+      icon="document-text-outline"
+      title="No hay evaluaciones para reportar"
+      subtitle="Cuando tengas evaluaciones registradas, vas a poder descargarlas en PDF desde acá.">
+    </app-empty-state>
 
   </ng-template>
 

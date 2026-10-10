@@ -312,18 +312,15 @@ mode: CourtMode = 'placement';
 
     this.ctx=context;
 
-    canvas.addEventListener(
-
-      'click',
-
-      event=>this.onCanvasClick(event)
-
-    );
-
+    // Se usa 'pointerup' (no 'click') para colocar Box/Jack/bochas/
+    // tiros: con touch-action:none en el canvas, algunos WebView de
+    // Android/iOS nunca sintetizan el 'click' a partir de un toque,
+    // dejando el tap sin efecto.
+    //
     // Arrastre de bochas rivales durante el armado previo al tiro
-    // (Push On/Off, Bochada, Ricochet). No interfiere con el click
-    // de arriba: si el pointerdown no cae sobre una bocha ya
-    // colocada, no hace nada y el click normal sigue su curso.
+    // (Push On/Off, Bochada, Ricochet): si el pointerdown cae sobre
+    // una bocha ya colocada, el pointerup que sigue solo termina el
+    // arrastre y no coloca nada nuevo (ver onCanvasPointerUp).
     canvas.addEventListener(
       'pointerdown',
       event => this.onCanvasPointerDown(event)
@@ -336,12 +333,12 @@ mode: CourtMode = 'placement';
 
     canvas.addEventListener(
       'pointerup',
-      () => this.onCanvasPointerUp()
+      event => this.onCanvasPointerUp(event)
     );
 
     canvas.addEventListener(
       'pointerleave',
-      () => this.onCanvasPointerUp()
+      () => this.onCanvasPointerLeave()
     );
 
     // Zoom con pellizco de dos dedos + doble toque para restablecer.
@@ -472,9 +469,9 @@ mode: CourtMode = 'placement';
 
     if (this.pinchState && event.touches.length < 2) {
 
-      // Algunos navegadores disparan un "click" sintético al soltar
-      // los dedos de un pellizco; se ignora ese próximo click para
-      // no colocar una bocha/jack sin querer en el punto medio.
+      // Al soltar los dedos de un pellizco sigue un pointerup; se
+      // ignora ese próximo tap para no colocar una bocha/jack sin
+      // querer en el punto medio del pellizco.
       this.suppressNextClick = true;
 
     }
@@ -604,17 +601,30 @@ mode: CourtMode = 'placement';
 
   }
 
-  private onCanvasPointerUp(): void {
+  private onCanvasPointerUp(event: PointerEvent): void {
 
-    if (this.opponentDragIndex !== null) {
+    const wasDragging = this.opponentDragIndex !== null;
 
-      // El "click" sintético que sigue a un arrastre no debe
-      // registrarse como un lanzamiento (relevante en modo
-      // "custom", donde no hay un paso "opponent" que absorba ese
-      // click sobrante).
-      this.suppressNextClick = true;
+    this.opponentDragIndex = null;
+
+    // El pointerup que suelta un arrastre no debe registrarse además
+    // como un lanzamiento (relevante en modo "custom", donde no hay
+    // un paso "opponent" que absorba ese tap sobrante). Tampoco se
+    // procesa si viene justo después de un pellizco de zoom (ver
+    // onTouchEnd).
+    if (wasDragging || this.suppressNextClick) {
+
+      this.suppressNextClick = false;
+
+      return;
 
     }
+
+    this.onCanvasClick(event);
+
+  }
+
+  private onCanvasPointerLeave(): void {
 
     this.opponentDragIndex = null;
 
@@ -666,15 +676,7 @@ mode: CourtMode = 'placement';
 
   //------------------------------------------------
 
-  private onCanvasClick(event:MouseEvent){
-
-    if (this.suppressNextClick) {
-
-      this.suppressNextClick = false;
-
-      return;
-
-    }
+  private onCanvasClick(event:PointerEvent){
 
     if(this.locked){
 

@@ -1,3 +1,18 @@
-<p>
-  custom-button works!
-</p>
+<ion-button
+    class="custom-btn"
+    [type]="type"
+    [color]="color"
+    [fill]="fill"
+    [expand]="expand"
+    [disabled]="disabled"
+    (click)="onClick()">
+
+    <ion-icon
+        *ngIf="icon"
+        slot="start"
+        [name]="icon">
+    </ion-icon>
+
+    {{ label }}
+
+</ion-button>

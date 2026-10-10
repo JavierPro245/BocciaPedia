@@ -71,6 +71,13 @@ export class MenuService {
           icon: 'football-outline',
           url: '/main/matches/match-create',
           roles: ['admin', 'trainer', 'referee', 'athlete']
+        },
+
+        {
+          title: 'Partidos en vivo',
+          icon: 'tv-outline',
+          url: '/main/matches/live',
+          roles: ['admin', 'trainer', 'referee', 'athlete']
         }
 
       ]
@@ -108,6 +115,13 @@ export class MenuService {
           icon: 'document-text-outline',
           url: '/main/statistics/reports',
           roles: ['admin', 'trainer','athlete']
+        },
+
+        {
+          title: 'Scouting',
+          icon: 'flag-outline',
+          url: '/main/scouting/scouting-list',
+          roles: ['admin', 'trainer']
         }
 
       ]
@@ -135,6 +149,13 @@ export class MenuService {
         }
 
       ]
+    },
+
+    {
+      title: 'Notificaciones',
+      icon: 'notifications-outline',
+      url: '/main/notifications',
+      order: 97
     },
 
     {

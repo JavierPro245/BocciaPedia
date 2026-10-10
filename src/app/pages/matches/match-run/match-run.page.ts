@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatchService } from '../services/match.service';
-import { Match } from '../models/match.model';
+import { MatchVoiceService } from '../services/match-voice.service';
+import { Match, Penalty } from '../models/match.model';
 import { MatchRepositoryService } from 'src/app/services/match-repository.service';
 import { Capacitor } from '@capacitor/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { BocciaCast } from 'bocciapedia-cast';
+import { MatchSettingsModalComponent } from './match-settings-modal/match-settings-modal.component';
 
 @Component({
   selector: 'app-match-run',
@@ -14,7 +16,7 @@ import { BocciaCast } from 'bocciapedia-cast';
   styleUrls: ['./match-run.page.scss'],
   standalone: false
 })
-export class MatchRunPage implements OnInit {
+export class MatchRunPage implements OnInit, OnDestroy {
 
   match!: Match;
 
@@ -24,6 +26,9 @@ penaltySeconds = 60;
 
 penaltyInterval: any;
 
+  // Id de la falta de la lista que se está mostrando/ejecutando ahora.
+  currentPenaltyId: string | null = null;
+
   showRest = false;
 
   restSeconds = 60;
@@ -32,19 +37,59 @@ penaltyInterval: any;
 
   private gameTimer?: any;
 
+  // Umbrales (en segundos restantes) en los que se anuncia el tiempo
+  // por voz, en inglés, mientras corre el reloj de cada equipo.
+  private readonly announceThresholds = [60, 30, 10, 0];
+
+  // Qué umbrales ya se anunciaron en el parcial actual, por equipo
+  // (para no repetir el aviso en cada tick mientras el segundo no cambia
+  // de valor, y para poder reiniciarlos al pasar de END).
+  private announcedRed = new Set<number>();
+  private announcedBlue = new Set<number>();
+
   constructor(
 
     private matchService: MatchService,
+
+    private matchVoice: MatchVoiceService,
 
     private matchRepository: MatchRepositoryService,
 
     private alertController: AlertController,
 
+    private modalController: ModalController,
+
     private router: Router,
 
-  
+
 
   ){}
+
+  // Faltas de la lista todavía no ejecutadas.
+  get pendingPenalties(): Penalty[] {
+
+    return this.match?.penalties?.filter(
+      p => p.active && !p.executed
+    ) ?? [];
+
+  }
+
+  // La falta que se está mostrando/ejecutando en este momento.
+  get currentPenalty(): Penalty | undefined {
+
+    return this.match?.penalties?.find(
+      p => p.id === this.currentPenaltyId
+    );
+
+  }
+
+  ngOnDestroy(): void {
+
+    clearInterval(this.gameTimer);
+    clearInterval(this.interval);
+    clearInterval(this.penaltyInterval);
+
+  }
 
   ngOnInit(): void {
 
@@ -109,71 +154,18 @@ penaltyInterval: any;
     return;
   }
 
-  // Si existe una penalización pendiente de ejecutar,
-  // mostrarla antes de cerrar el END.
-  if (this.match.penalty &&
-      this.match.penalty.active &&
-      !this.match.penalty.executed) {
+  // Si quedan faltas pendientes de ejecutar en este parcial, mostrar
+  // la siguiente antes de poder cerrar el END. Pueden ser varias: al
+  // resolver cada una, finishPenalty() vuelve a llamar acá mismo.
+  if (this.pendingPenalties.length > 0) {
 
-    this.showPenalty = true;
-
-    this.penaltySeconds = 60;
-
-    this.match.showPenalty = true;
-
-    this.match.penaltySeconds = 60;
-
-    this.syncMatch();
-
-    this.penaltyInterval = setInterval(() => {
-
-  this.penaltySeconds--;
-
-  // Variable local
-  this.match.penaltySeconds = this.penaltySeconds;
-
-  // Variable del objeto penalty
-  if (this.match.penalty) {
-
-    this.match.penalty.timeRemaining = this.penaltySeconds;
-
-  }
-
-  this.syncMatch();
-
-  if (this.penaltySeconds <= 0) {
-
-    clearInterval(this.penaltyInterval);
-
-  }
-
-}, 1000);
+    this.showNextPenalty();
 
     return;
 
   }
 
-  // Si la penalización ya fue ejecutada y logró el punto,
-  // agregarlo al parcial antes de confirmar el END.
-  if (this.match.penalty?.executed &&
-      this.match.penalty.success) {
-
-    if (this.match.penalty.team === 'red') {
-
-      this.match.currentEndRedScore++;
-
-    } else {
-
-      this.match.currentEndBlueScore++;
-
-    }
-
-  }
-
   this.matchService.confirmEnd();
-
-  // Ya no se necesita la penalización
-  this.match.penalty = null;
 
   this.match = this.matchService.getMatch()!;
 
@@ -195,6 +187,8 @@ penaltyInterval: any;
       this.match.currentEndRedScore = 0;
       this.match.currentEndBlueScore = 0;
 
+      this.resetTimeAnnouncements();
+
       this.matchService.updateMatch(this.match);
 
       this.syncMatch();
@@ -212,6 +206,44 @@ penaltyInterval: any;
   }
 
   this.startRestCountdown();
+
+}
+
+// Muestra la ejecución (bocha de penalización) de la primera falta
+// pendiente de la lista.
+private showNextPenalty(): void {
+
+  const penalty = this.pendingPenalties[0];
+
+  if (!penalty) return;
+
+  this.currentPenaltyId = penalty.id;
+
+  this.showPenalty = true;
+
+  this.penaltySeconds = 60;
+
+  this.match.showPenalty = true;
+
+  this.match.penaltySeconds = 60;
+
+  this.syncMatch();
+
+  this.penaltyInterval = setInterval(() => {
+
+    this.penaltySeconds--;
+
+    this.match.penaltySeconds = this.penaltySeconds;
+
+    this.syncMatch();
+
+    if (this.penaltySeconds <= 0) {
+
+      clearInterval(this.penaltyInterval);
+
+    }
+
+  }, 1000);
 
 }
   async addRedPoint(): Promise<void> {
@@ -274,6 +306,10 @@ removeBluePoint(): void {
 
 startRedTimer(): void {
 
+  // Si ya se le acabó el tiempo, no se puede reanudar ni marcar otra
+  // bocha: no le alcanzaría el tiempo para tirarla.
+  if (this.match.redTime <= 0) return;
+
   this.matchService.useTurn('red');
 
   this.matchService.startRedTimer();
@@ -283,6 +319,8 @@ startRedTimer(): void {
 }
 
 startBlueTimer(): void {
+
+  if (this.match.blueTime <= 0) return;
 
   this.matchService.useTurn('blue');
 
@@ -319,6 +357,8 @@ private startGameClock(): void {
 
       changed = true;
 
+      this.announceTime('red', this.match.redTime);
+
     }
 
     if (
@@ -329,6 +369,8 @@ private startGameClock(): void {
       this.match.blueTime--;
 
       changed = true;
+
+      this.announceTime('blue', this.match.blueTime);
 
     }
 
@@ -341,6 +383,60 @@ private startGameClock(): void {
     }
 
   },1000);
+
+}
+
+// Avisa por voz, en inglés, cuando al equipo que está corriendo el
+// reloj le quedan 60, 30 o 10 segundos, y cuando se le acaba el tiempo.
+private announceTime(team: 'red' | 'blue', secondsLeft: number): void {
+
+  if (!this.announceThresholds.includes(secondsLeft)) {
+    return;
+  }
+
+  const announced = team === 'red' ? this.announcedRed : this.announcedBlue;
+
+  if (announced.has(secondsLeft)) {
+    return;
+  }
+
+  announced.add(secondsLeft);
+
+  const phrase =
+    secondsLeft === 60 ? 'One minute' :
+    secondsLeft === 30 ? 'Thirty seconds' :
+    secondsLeft === 10 ? 'Ten seconds' :
+    'Time';
+
+  this.matchVoice.speak(phrase);
+
+}
+
+// Permite que los mismos avisos (1 min, 30s, 10s, tiempo) vuelvan a
+// sonar en el siguiente parcial, o para un solo equipo si se indica.
+private resetTimeAnnouncements(team?: 'red' | 'blue'): void {
+
+  if (!team || team === 'red') {
+    this.announcedRed.clear();
+  }
+
+  if (!team || team === 'blue') {
+    this.announcedBlue.clear();
+  }
+
+}
+
+get genderLabel(): string {
+
+  switch (this.match?.gender) {
+
+    case 'male': return 'MASCULINO';
+
+    case 'female': return 'FEMENINO';
+
+    default: return 'MIXTO';
+
+  }
 
 }
 
@@ -390,6 +486,29 @@ async finishTieBreak(winner:'red'|'blue'): Promise<void> {
 
 }
 
+// Menú de ajustes del partido: corregir tiempo, bochas jugadas y
+// faltas/penalizaciones (por errores del árbitro, etc).
+async openMatchSettings(): Promise<void> {
+
+  const modal = await this.modalController.create({
+    component: MatchSettingsModalComponent,
+    componentProps: { match: this.match }
+  });
+
+  await modal.present();
+
+  await modal.onDidDismiss();
+
+  this.match = this.matchService.getMatch()!;
+
+  // Por si se corrigió el tiempo manualmente, que los avisos de voz
+  // puedan volver a sonar en los umbrales ya pasados.
+  this.resetTimeAnnouncements();
+
+  await this.syncMatch();
+
+}
+
 assignPenalty(team: 'red' | 'blue') {
 
   console.log('Botón presionado:', team);
@@ -406,9 +525,15 @@ finishPenalty(success: boolean) {
 
     clearInterval(this.penaltyInterval);
 
-    this.match.penalty!.success = success;
+    if (this.currentPenaltyId) {
 
-    this.match.penalty!.executed = true;
+      this.matchService.resolvePenalty(this.currentPenaltyId, success);
+
+      this.match = this.matchService.getMatch()!;
+
+    }
+
+    this.currentPenaltyId = null;
 
     this.showPenalty = false;
 
@@ -417,6 +542,19 @@ finishPenalty(success: boolean) {
     this.match.penaltySeconds = 0;
 
     this.syncMatch();
+
+    // Si quedan más faltas pendientes, finishEnd() mostrará la
+    // siguiente; si no, continúa cerrando el END.
+    this.finishEnd();
+
+}
+
+// Elimina una falta pendiente marcada por error, sin ejecutarla.
+removePenalty(id: string): void {
+
+  this.matchService.removePenalty(id);
+
+  this.match = this.matchService.getMatch()!;
 
 }
 async startRestCountdown() {
@@ -453,12 +591,22 @@ async startRestCountdown() {
 
       this.match = this.matchService.getMatch()!;
 
+      // Los relojes vuelven a secondsPerPlayer: los avisos de voz
+      // deben poder sonar de nuevo en este nuevo parcial.
+      this.resetTimeAnnouncements();
+
       // Asegurar que el Broadcast reciba el cambio
       this.syncMatch();
 
     }
 
   }, 1000);
+
+}
+
+viewSummary(){
+
+    this.router.navigate(['/main/matches/match-summary']);
 
 }
 

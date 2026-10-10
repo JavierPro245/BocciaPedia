@@ -1,0 +1,53 @@
+.confirm-dialog {
+
+    padding: 30px 24px;
+
+    text-align: center;
+}
+
+.confirm-dialog ion-icon {
+
+    font-size: 60px;
+
+    margin-bottom: 14px;
+}
+
+.confirm-dialog h2 {
+
+    margin: 0 0 8px;
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+
+    color: var(--boccia-text, #263238);
+}
+
+.confirm-dialog p {
+
+    margin: 0;
+
+    font-size: .95rem;
+
+    color: var(--boccia-text-secondary, #777);
+
+    line-height: 1.5;
+}
+
+.buttons {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin-top: 22px;
+}
+
+.buttons ion-button {
+
+    height: 48px;
+
+    font-weight: 600;
+}

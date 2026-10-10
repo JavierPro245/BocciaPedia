@@ -24,7 +24,9 @@ img{
 
     object-fit:cover;
 
-    border:4px solid #EDF2F7;
+    /* Antes era un gris claro fijo (#EDF2F7): en modo oscuro se veía
+       como un borde blanco pegado a la foto. */
+    border:4px solid var(--boccia-card, #EDF2F7);
 
     box-shadow:0 5px 20px rgba(0,0,0,.12);
 

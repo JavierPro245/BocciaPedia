@@ -3,132 +3,177 @@
   subtitle="Panel Principal">
 </app-header>
 
-<ion-content class="ion-padding">
+<ion-content class="home-content">
 
-  <!-- Bienvenida -->
+  <div class="home-wrap">
 
-  <div class="welcome-card">
+    <!-- Bienvenida -->
 
-    <h2>¡Bienvenido!</h2>
+    <div class="welcome-card">
 
-    <p>
-      Sistema de Gestión y Análisis de Boccia
-    </p>
+      <div class="welcome-text">
+
+        <p class="greeting">
+
+          {{ greeting }}{{ userFirstName ? ', ' + userFirstName : '' }}
+
+        </p>
+
+        <h2>
+
+          Sistema de Gestión y Análisis de Boccia
+
+        </h2>
+
+        <div
+          class="roles"
+          *ngIf="userRoles.length">
+
+          <app-role-chip
+            *ngFor="let role of userRoles"
+            [role]="role">
+          </app-role-chip>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Tarjetas -->
+
+    <div class="dashboard-grid">
+
+      <app-dashboard-card
+        icon="people-outline"
+        title="Deportistas"
+        color="primary"
+        [value]="athleteCount"
+        route="/main/athlete-list">
+      </app-dashboard-card>
+
+      <app-dashboard-card
+        icon="clipboard-outline"
+        title="Evaluaciones"
+        color="secondary"
+        [value]="0"
+        route="/main/evaluations/evaluations-list">
+      </app-dashboard-card>
+
+      <app-dashboard-card
+        icon="analytics-outline"
+        title="Estadísticas"
+        color="success"
+        [value]="0"
+        route="/main/statistics/dashboard">
+      </app-dashboard-card>
+
+      <app-dashboard-card
+        icon="trophy-outline"
+        title="Partidos"
+        color="danger"
+        [value]="0"
+        route="/main/matches/match-create">
+      </app-dashboard-card>
+
+    </div>
+
+    <!-- Accesos rápidos -->
+
+    <h2 class="section-title">
+
+      Accesos rápidos
+
+    </h2>
+
+    <div class="quick-actions">
+
+      <div
+        class="quick-action"
+        routerLink="/main/athlete-create">
+
+        <div class="qa-icon c-primary">
+          <ion-icon name="person-add-outline"></ion-icon>
+        </div>
+
+        <span>
+
+          Nuevo Deportista
+
+        </span>
+
+        <ion-icon
+          class="qa-chevron"
+          name="chevron-forward-outline">
+        </ion-icon>
+
+      </div>
+
+      <div
+        class="quick-action"
+        (click)="goToNewEvaluation()">
+
+        <div class="qa-icon c-secondary">
+          <ion-icon name="clipboard-outline"></ion-icon>
+        </div>
+
+        <span>
+
+          Nueva Evaluación
+
+        </span>
+
+        <ion-icon
+          class="qa-chevron"
+          name="chevron-forward-outline">
+        </ion-icon>
+
+      </div>
+
+      <div
+        class="quick-action"
+        routerLink="/main/statistics/dashboard">
+
+        <div class="qa-icon c-success">
+          <ion-icon name="bar-chart-outline"></ion-icon>
+        </div>
+
+        <span>
+
+          Dashboard
+
+        </span>
+
+        <ion-icon
+          class="qa-chevron"
+          name="chevron-forward-outline">
+        </ion-icon>
+
+      </div>
+
+      <div
+        class="quick-action"
+        routerLink="/main/statistics/reports">
+
+        <div class="qa-icon c-warning">
+          <ion-icon name="document-text-outline"></ion-icon>
+        </div>
+
+        <span>
+
+          Reportes
+
+        </span>
+
+        <ion-icon
+          class="qa-chevron"
+          name="chevron-forward-outline">
+        </ion-icon>
+
+      </div>
+
+    </div>
 
   </div>
-
-  <!-- Tarjetas -->
-
-  <div class="dashboard-grid">
-
-    <app-dashboard-card
-      icon="people-outline"
-      title="Deportistas"
-      [value]="athleteCount"
-      route="/main/athlete-list">
-    </app-dashboard-card>
-
-    <app-dashboard-card
-      icon="clipboard-outline"
-      title="Evaluaciones"
-      [value]="0"
-      route="/main/evaluations/evaluations-list">
-    </app-dashboard-card>
-
-    <app-dashboard-card
-      icon="analytics-outline"
-      title="Estadísticas"
-      [value]="0"
-      route="/main/statistics/dashboard">
-    </app-dashboard-card>
-
-    <app-dashboard-card
-      icon="trophy-outline"
-      title="Partidos"
-      [value]="0"
-      route="/main/matches/match-create">
-    </app-dashboard-card>
-
-  </div>
-
-  <!-- Accesos rápidos -->
-
-  <h2 class="section-title">
-
-    Accesos rápidos
-
-  </h2>
-
-  <ion-list>
-
-    <ion-item
-      button
-      routerLink="/main/athlete-create">
-
-      <ion-icon
-        slot="start"
-        name="person-add-outline">
-      </ion-icon>
-
-      <ion-label>
-
-        Nuevo Deportista
-
-      </ion-label>
-
-    </ion-item>
-
-    <ion-item
-      button
-      (click)="goToNewEvaluation()">
-
-      <ion-icon
-        slot="start"
-        name="clipboard-outline">
-      </ion-icon>
-
-      <ion-label>
-
-        Nueva Evaluación
-
-      </ion-label>
-
-    </ion-item>
-
-    <ion-item
-      button
-      routerLink="/main/statistics/dashboard">
-
-      <ion-icon
-        slot="start"
-        name="bar-chart-outline">
-      </ion-icon>
-
-      <ion-label>
-
-        Dashboard
-
-      </ion-label>
-
-    </ion-item>
-
-    <ion-item
-      button
-      routerLink="/main/statistics/reports">
-
-      <ion-icon
-        slot="start"
-        name="document-text-outline">
-      </ion-icon>
-
-      <ion-label>
-
-        Reportes
-
-      </ion-label>
-
-    </ion-item>
-
-  </ion-list>
 
 </ion-content>

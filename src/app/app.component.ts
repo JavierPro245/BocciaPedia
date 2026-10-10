@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { Router, NavigationStart} from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { SessionService } from './services/session.service';
 import { ThemeService } from './services/theme.service';
+import { ConnectivityService } from './services/connectivity.service';
+import { PushNotificationService } from './services/push-notification.service';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 
 @Component({
@@ -17,26 +19,13 @@ export class AppComponent {
   private authService: AuthService,
   private sessionService: SessionService,
   private themeService: ThemeService,
+  public connectivityService: ConnectivityService,
+  private pushNotificationService: PushNotificationService,
   private router: Router
 ) {
   this.themeService.init();
   this.initializeGoogleSignIn();
   this.listenSession();
-  this.router.events.subscribe(event => {
-
-  if (event instanceof NavigationStart) {
-
-    console.log('====================');
-
-    console.log('NAVEGANDO A');
-
-    console.log(event.url);
-
-    console.trace();
-
-  }
-
-});
 }
 
   private async initializeGoogleSignIn() {
@@ -53,16 +42,12 @@ export class AppComponent {
 
   this.sessionService.setUser(user);
 
-  console.log('Usuario autenticado');
-
-  console.log(user);
+  this.pushNotificationService.initialize(user.uid);
 
   // Solo navegar automáticamente
   // cuando la aplicación se abre desde la raíz.
 
   const currentUrl = this.router.url;
-
-  console.log('URL actual:', currentUrl);
 
   if (
     currentUrl === '/' ||
@@ -81,8 +66,6 @@ export class AppComponent {
 } else {
 
   this.sessionService.clear();
-
-  console.log('No hay usuario autenticado');
 
   // Las rutas /public/** (ej. broadcast para TV) son de acceso
   // libre y no deben expulsar al usuario a /auth. Se usa

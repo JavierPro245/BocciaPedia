@@ -21,6 +21,8 @@ export class LoginInputComponent {
 
   @Input() readonly = false;
 
+  @Input() autocomplete = '';
+
   @Input({ required: true })
   control!: FormControl;
 

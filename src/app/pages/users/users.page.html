@@ -3,39 +3,46 @@
     title="Usuarios">
 </app-header>
 
-<ion-content>
+<ion-content class="users-content">
 
-    <ion-list *ngIf="!loading">
+    <app-loading
+        *ngIf="loading"
+        message="Cargando usuarios...">
+    </app-loading>
 
-        <ion-item
-    button
-    *ngFor="let user of users"
-    [routerLink]="[user.uid]">
+    <app-empty-state
+        *ngIf="!loading && users.length === 0"
+        icon="people-outline"
+        title="No hay usuarios"
+        subtitle="Todavía no se registró ningún usuario.">
+    </app-empty-state>
 
-            <ion-avatar slot="start">
+    <div
+        class="ba-row-list"
+        *ngIf="!loading && users.length > 0">
 
-                <img
-                    [src]="user.photoURL || 'assets/avatars/avatar.png'">
+        <div
+            class="ba-row-card"
+            *ngFor="let user of users"
+            [routerLink]="[user.uid]">
 
-            </ion-avatar>
+            <app-user-avatar
+                [photoURL]="user.photoURL"
+                [size]="50">
+            </app-user-avatar>
 
-            <ion-label>
+            <div class="ba-row-info">
 
                 <h2>{{ user.displayName }}</h2>
 
                 <p>{{ user.email }}</p>
 
-                <p>
+                <span class="role-text">{{ getRole(user) }}</span>
 
-                    <strong>Rol:</strong>
-
-                    {{ getRole(user) }}
-
-                </p>
-
-            </ion-label>
+            </div>
 
             <ion-badge
+                class="status-badge"
                 color="success"
                 *ngIf="user.approved">
 
@@ -44,6 +51,7 @@
             </ion-badge>
 
             <ion-badge
+                class="status-badge"
                 color="warning"
                 *ngIf="!user.approved">
 
@@ -51,13 +59,10 @@
 
             </ion-badge>
 
-        </ion-item>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
 
-    </ion-list>
+        </div>
 
-    <ion-spinner
-        *ngIf="loading"
-        class="ion-margin">
-    </ion-spinner>
+    </div>
 
 </ion-content>

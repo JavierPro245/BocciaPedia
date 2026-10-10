@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ComparisionsPageRoutingModule } from './comparisions-routing.module';
 
 import { ComparisionsPage } from './comparisions.page';
+import { SharedModule } from 'src/app/shared/shared-module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ComparisionsPageRoutingModule
+    ComparisionsPageRoutingModule,
+    SharedModule
   ],
   declarations: [ComparisionsPage]
 })
